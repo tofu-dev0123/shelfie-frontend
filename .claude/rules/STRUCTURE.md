@@ -25,6 +25,7 @@ src/
 │   └── api/                    # fetch関数（Server Components・SWR両方から呼ぶ）
 ├── constants/                  # 定数（APIエンドポイント、ステータス値など）
 ├── hooks/                      # SWRをラップしたカスタムフック
+├── store/                      # Zustandストア（アクセストークンなど）
 ├── types/                      # TypeScript型定義（Railsレスポンス型など）
 └── middleware.ts               # Clerk認証ガード
 ```
