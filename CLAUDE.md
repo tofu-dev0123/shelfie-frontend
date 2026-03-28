@@ -31,3 +31,4 @@ Shelfie。読了した本を投稿して本棚を作成・公開できる読書�
 - `.claude/rules/CONVENTIONS.md` — コーディング規約・命名規則
 - `.claude/rules/STRUCTURE.md` — ディレクトリ構成と各ディレクトリの役割
 - `.claude/rules/ARCHITECTURE.md` — アーキテクチャ・設計方針
+- `.claude/rules/DESIGN.md` — デザインシステム（カラー・タイポグラフィ・スペーシングなど）
