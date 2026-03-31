@@ -2,19 +2,19 @@
 
 ## 画面一覧
 
-| 画面名 | パス | 認証 | 説明 |
-|---|---|---|---|
-| ホーム・フィード | `/` | 任意 | 未ログイン時は全投稿、ログイン時はフォロー中ユーザーの投稿を表示 |
-| タグフィード | `/feed/tags` | 必須 | フォロー中タグの投稿を表示 |
-| ログイン | `/login` | 不要 | Google / GitHub ログイン |
-| サインアップ（プロフィール設定） | `/signup` | Clerk 認証済み | 初回登録時の nickname / username 設定 |
-| ユーザープロフィール | `/users/:username` | 任意 | ユーザーの公開プロフィールと本棚一覧 |
-| 本棚投稿詳細 | `/users/:username/books/:google_books_id` | 任意 | 特定ユーザーの本棚投稿詳細 |
-| 本棚投稿フォーム | `/me/books/new` | 必須 | 書籍検索 → 投稿作成 |
-| 本棚編集フォーム | `/me/books/:google_books_id/edit` | 必須 | 投稿内容の編集 |
-| 書籍詳細 | `/books/:google_books_id` | 任意 | 書籍情報とその書籍を読んだユーザー一覧 |
-| フォロワー一覧 | `/users/:username/followers` | 任意 | フォロワーのユーザー一覧 |
-| フォロー中一覧 | `/users/:username/following` | 任意 | フォロー中のユーザー一覧 |
-| スキルマップ | `/users/:username/skill_map` | 任意 | タグ別読了数の可視化 |
-| プロフィール編集 | `/settings/profile` | 必須 | nickname / bio / links / アバター画像の編集 |
-| 読みたいリスト | `/me/want_to_reads` | 必須 | 自分の読みたい本一覧 |
+| 画面名                           | パス                                      | 認証           | 説明                                                             |
+| -------------------------------- | ----------------------------------------- | -------------- | ---------------------------------------------------------------- |
+| ホーム・フィード                 | `/`                                       | 任意           | 未ログイン時は全投稿、ログイン時はフォロー中ユーザーの投稿を表示 |
+| タグフィード                     | `/feed/tags`                              | 必須           | フォロー中タグの投稿を表示                                       |
+| ログイン                         | `/login`                                  | 不要           | Google / GitHub ログイン                                         |
+| サインアップ（プロフィール設定） | `/signup`                                 | Clerk 認証済み | 初回登録時の nickname / username 設定                            |
+| ユーザープロフィール             | `/users/:username`                        | 任意           | ユーザーの公開プロフィールと本棚一覧                             |
+| 本棚投稿詳細                     | `/users/:username/books/:google_books_id` | 任意           | 特定ユーザーの本棚投稿詳細                                       |
+| 本棚投稿フォーム                 | `/me/books/new`                           | 必須           | 書籍検索 → 投稿作成                                              |
+| 本棚編集フォーム                 | `/me/books/:google_books_id/edit`         | 必須           | 投稿内容の編集                                                   |
+| 書籍詳細                         | `/books/:google_books_id`                 | 任意           | 書籍情報とその書籍を読んだユーザー一覧                           |
+| フォロワー一覧                   | `/users/:username/followers`              | 任意           | フォロワーのユーザー一覧                                         |
+| フォロー中一覧                   | `/users/:username/following`              | 任意           | フォロー中のユーザー一覧                                         |
+| スキルマップ                     | `/users/:username/skill_map`              | 任意           | タグ別読了数の可視化                                             |
+| プロフィール編集                 | `/settings/profile`                       | 必須           | nickname / bio / links / アバター画像の編集                      |
+| 読みたいリスト                   | `/me/want_to_reads`                       | 必須           | 自分の読みたい本一覧                                             |

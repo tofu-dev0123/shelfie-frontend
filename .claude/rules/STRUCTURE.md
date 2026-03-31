@@ -25,6 +25,7 @@ src/
 │   └── api/                    # fetch関数（Server Components・SWR両方から呼ぶ）
 ├── constants/                  # 定数（APIエンドポイント、ステータス値など）
 ├── hooks/                      # SWRをラップしたカスタムフック
+├── schemas/                    # Zodスキーマ（フォームバリデーション）
 ├── store/                      # Zustandストア（アクセストークンなど）
 ├── types/                      # TypeScript型定義（Railsレスポンス型など）
 └── middleware.ts               # Clerk認証ガード
@@ -46,9 +47,10 @@ src/
 
 ```
 constants/
-├── api.ts      # APIベースURL、エンドポイント
-├── book.ts     # 読了ステータスなどbook関連
-└── app.ts      # ページサイズなどアプリ全般
+├── api.ts        # APIベースURL、エンドポイント
+├── messages.ts   # ユーザー向けメッセージ文字列
+├── book.ts       # 読了ステータスなどbook関連
+└── app.ts        # ページサイズなどアプリ全般
 ```
 
 ### `lib/api/`
@@ -67,6 +69,16 @@ export const getUser = (username: string) =>
 // hooks/useUser.ts の例
 export const useUser = (username: string) =>
   useSWR(`/users/${username}`, () => getUser(username))
+```
+
+### `schemas/`
+React Hook Form + Zod のバリデーションスキーマを集約。ドメインごとにファイルを分割する。
+
+```
+schemas/
+├── book.ts     # 本の投稿・編集フォーム
+├── user.ts     # プロフィール編集フォーム
+└── auth.ts     # サインアップフォームなど
 ```
 
 ### `types/`

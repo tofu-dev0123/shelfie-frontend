@@ -51,6 +51,7 @@ components/users/
 ```
 
 - デザインシステム（カラー・タイポグラフィ・スペーシング）の詳細は `DESIGN.md` を参照
+- CSS Modules の具体的な実装方法（トークン参照・レスポンシブ・クラス命名）は `CSS_MODULES.md` を参照
 
 ## import順序
 
