@@ -40,3 +40,6 @@ Shelfie。読了した本を投稿して本棚を作成・公開できる読書�
 - `.claude/rules/FORMS.md` — フォーム実装ガイド（RHF+Zod・スキーマ配置・エラー表示）
 - `.claude/rules/AUTH.md` — 認証実装ガイド（Clerk JWT → Rails・サインアップフロー・middleware）
 - `.claude/rules/CONSTANTS.md` — 定数管理ガイド（配置基準・as const・ファイル構成）
+- `.claude/rules/LOGGING.md` — ログ設計ガイド（共通ロガー・環境別出力レベル・差し込み箇所）
+- `.claude/rules/COMMENTS.md` — コメント規定（Why重視・JSDoc対象と記載タグ）
+- `.claude/rules/IMPLEMENTATION.md` — 実装ルール（関数の書き方・any禁止・ネスト制限・catchブロック）
