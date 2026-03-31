@@ -5,13 +5,13 @@
 ```
 src/
 ├── app/                        # Next.js ルーティング（App Router）
-│   ├── (public)/               # 認証不要ページ
+│   ├── (public)/               # 認証不要・任意ページ
 │   │   ├── page.tsx            # ホーム・フィード
+│   │   ├── feed/               # フィード（認証任意・未ログインでも閲覧可）
 │   │   ├── login/
 │   │   ├── users/
 │   │   └── books/
 │   ├── (protected)/            # 認証必須ページ（レイアウトでガード）
-│   │   ├── feed/
 │   │   ├── me/
 │   │   └── settings/
 │   └── signup/                 # Clerk認証済みだが特殊なので独立

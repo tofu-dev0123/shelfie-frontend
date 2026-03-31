@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Template project",
-  description: "Next.jsのプロジェクトのテンプレートです",
+  title: "Shelfie",
+  description: "読了した本を投稿して本棚を作成・公開できる読書管理アプリ",
 };
 
 export default function RootLayout({
@@ -23,12 +14,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="ja">
+        <body>
+          {children}
+          <Toaster position="bottom-right" />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -127,6 +127,8 @@ export const updateUser = (data: UpdateUserInput): Promise<User> =>
 
 `lib/api/*.ts` ではエラー処理を行わない。呼び出し元（フック・コンポーネント）でハンドリングする。
 
+**例外**: HTTPエラーコードを業務ロジックの戻り値に変換する必要がある場合は `try/catch` を許容する。`auth.ts` の `login()` で404を `'not_found'` として返すケースが該当する。エラーを握りつぶさず、業務上の戻り値に変換するか `throw` し直すこと。
+
 ```ts
 // ✅ lib/api/follows.ts（エラー処理しない）
 import { apiPost } from './client'
