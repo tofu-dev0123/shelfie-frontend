@@ -113,6 +113,7 @@ export function FollowButton({ username }: { username: string }) {
 ## catchブロック
 
 - `catch (e)` は使わない。`catch` のみで記述する
+- **例外**: エラーオブジェクトを参照する必要がある場合（型チェック・ステータスコード確認など）は `catch (error)` を許容する。その場合も `error.message` をそのままトーストに表示しないこと
 - catchブロックでは必ず**ロガー＋トーストの両方**を呼ぶ
 - エラーメッセージは `MESSAGES` 定数から参照する（直書き禁止）
 

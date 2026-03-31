@@ -84,17 +84,25 @@ async function tryRefresh(): Promise<boolean> {
 // ----------------------------------------------------------------
 // クライアントサイド用メソッドハンドラ
 // ----------------------------------------------------------------
-export const apiGet = <T>(path: string): Promise<T> =>
-  _client.get<T>(path).then((r) => r.data)
+export const apiGet = async <T>(path: string): Promise<T> => {
+  const r = await _client.get<T>(path)
+  return r.data
+}
 
-export const apiPost = <T>(path: string, data?: unknown): Promise<T> =>
-  _client.post<T>(path, data).then((r) => r.data)
+export const apiPost = async <T>(path: string, data?: unknown): Promise<T> => {
+  const r = await _client.post<T>(path, data)
+  return r.data
+}
 
-export const apiPatch = <T>(path: string, data?: unknown): Promise<T> =>
-  _client.patch<T>(path, data).then((r) => r.data)
+export const apiPatch = async <T>(path: string, data?: unknown): Promise<T> => {
+  const r = await _client.patch<T>(path, data)
+  return r.data
+}
 
-export const apiDelete = <T>(path: string): Promise<T> =>
-  _client.delete<T>(path).then((r) => r.data)
+export const apiDelete = async <T>(path: string): Promise<T> => {
+  const r = await _client.delete<T>(path)
+  return r.data
+}
 
 // ----------------------------------------------------------------
 // サーバーサイド用メソッドハンドラ（Server Components から使用）
@@ -105,17 +113,25 @@ const serverHeaders = (token: string) => ({
   Authorization: `Bearer ${token}`,
 })
 
-export const serverGet = <T>(path: string, token: string): Promise<T> =>
-  axios.get<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true }).then((r) => r.data)
+export const serverGet = async <T>(path: string, token: string): Promise<T> => {
+  const r = await axios.get<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true })
+  return r.data
+}
 
-export const serverPost = <T>(path: string, token: string, data?: unknown): Promise<T> =>
-  axios.post<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true }).then((r) => r.data)
+export const serverPost = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
+  const r = await axios.post<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true })
+  return r.data
+}
 
-export const serverPatch = <T>(path: string, token: string, data?: unknown): Promise<T> =>
-  axios.patch<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true }).then((r) => r.data)
+export const serverPatch = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
+  const r = await axios.patch<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true })
+  return r.data
+}
 
-export const serverDelete = <T>(path: string, token: string): Promise<T> =>
-  axios.delete<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true }).then((r) => r.data)
+export const serverDelete = async <T>(path: string, token: string): Promise<T> => {
+  const r = await axios.delete<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true })
+  return r.data
+}
 ```
 
 ---
