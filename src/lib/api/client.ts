@@ -86,21 +86,44 @@ const serverHeaders = (token: string) => ({
 });
 
 export const serverGet = async <T>(path: string, token: string): Promise<T> => {
-  const r = await axios.get<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true });
+  const r = await axios.get<T>(`${BASE_URL}${path}`, {
+    headers: serverHeaders(token),
+    withCredentials: true,
+  });
   return r.data;
 };
 
-export const serverPost = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
-  const r = await axios.post<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true });
+export const serverPost = async <T>(
+  path: string,
+  token: string,
+  data?: unknown,
+): Promise<T> => {
+  const r = await axios.post<T>(`${BASE_URL}${path}`, data, {
+    headers: serverHeaders(token),
+    withCredentials: true,
+  });
   return r.data;
 };
 
-export const serverPatch = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
-  const r = await axios.patch<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true });
+export const serverPatch = async <T>(
+  path: string,
+  token: string,
+  data?: unknown,
+): Promise<T> => {
+  const r = await axios.patch<T>(`${BASE_URL}${path}`, data, {
+    headers: serverHeaders(token),
+    withCredentials: true,
+  });
   return r.data;
 };
 
-export const serverDelete = async <T>(path: string, token: string): Promise<T> => {
-  const r = await axios.delete<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true });
+export const serverDelete = async <T>(
+  path: string,
+  token: string,
+): Promise<T> => {
+  const r = await axios.delete<T>(`${BASE_URL}${path}`, {
+    headers: serverHeaders(token),
+    withCredentials: true,
+  });
   return r.data;
 };

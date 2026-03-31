@@ -1,28 +1,28 @@
 :root {
   /* カラー */
-  --color-primary-50: #EEF3F9;
-  --color-primary-100: #D6E4F0;
-  --color-primary-200: #AECCE3;
-  --color-primary-600: #1E3A5F;
-  --color-primary-700: #172D4A;
-  --color-primary-900: #0D1B2E;
+  --color-primary-50: #eef3f9;
+  --color-primary-100: #d6e4f0;
+  --color-primary-200: #aecce3;
+  --color-primary-600: #1e3a5f;
+  --color-primary-700: #172d4a;
+  --color-primary-900: #0d1b2e;
 
-  --color-gray-50: #F9FAFB;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
   --color-gray-700: #374151;
   --color-gray-900: #111827;
 
   --color-success: #059669;
-  --color-warning: #D97706;
-  --color-error: #DC2626;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
 
   /* タイポグラフィ */
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: "Inter", sans-serif;
   --text-xs: 11px;
   --text-sm: 13px;
   --text-base: 15px;
