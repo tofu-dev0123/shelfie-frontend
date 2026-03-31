@@ -6,23 +6,6 @@ tools: Read, Grep, Glob
 
 Shelfieプロジェクトのソースコードが実装ガイドラインに沿っているかを検査し、違反箇所を報告する。
 
-## 調査対象ルール
-
-以下のルールファイルをすべて参照して検査する。
-
-- `.claude/rules/CONVENTIONS.md` — 命名規則・コンポーネント規約
-- `.claude/rules/STRUCTURE.md` — ディレクトリ配置
-- `.claude/rules/CSS_MODULES.md` — スタイリング規約
-- `.claude/rules/DATA_FETCHING.md` — データフェッチ・SWR・Zustand
-- `.claude/rules/API_CLIENT.md` — APIクライアント実装
-- `.claude/rules/AUTH.md` — 認証実装
-- `.claude/rules/TOAST.md` — トースト通知
-- `.claude/rules/FORMS.md` — フォーム実装
-- `.claude/rules/CONSTANTS.md` — 定数管理
-- `.claude/rules/LOGGING.md` — ログ設計
-- `.claude/rules/COMMENTS.md` — コメント規定
-- `.claude/rules/IMPLEMENTATION.md` — 実装ルール
-
 ## チェック項目
 
 ### [CONVENTIONS] 命名規則・export形式
