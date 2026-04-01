@@ -5,8 +5,8 @@ info:
   version: v1
   description: Shelfie バックエンド API ドキュメント
 servers:
-- url: http://localhost:3000
-  description: 開発環境
+  - url: http://localhost:3000
+    description: 開発環境
 components:
   securitySchemes:
     Bearer:
@@ -20,11 +20,11 @@ paths:
     post:
       summary: ログインAPI
       tags:
-      - 認証系
+        - 認証系
       security:
-      - Bearer: []
+        - Bearer: []
       responses:
-        '200':
+        "200":
           description: ログイン成功
           content:
             application/json:
@@ -35,8 +35,8 @@ paths:
                     type: string
                     example: eyJ...
                 required:
-                - access_token
-        '401':
+                  - access_token
+        "401":
           description: Clerk JWT が無効
           content:
             application/json:
@@ -51,7 +51,7 @@ paths:
                         example: UNAUTHORIZED
                       message:
                         type: string
-        '404':
+        "404":
           description: ユーザーが存在しない
           content:
             application/json:
@@ -70,9 +70,9 @@ paths:
     delete:
       summary: ログアウトAPI
       tags:
-      - 認証系
+        - 認証系
       responses:
-        '200':
+        "200":
           description: すでにログアウト済み（DBにレコードなし）
           content:
             application/json:
@@ -83,14 +83,14 @@ paths:
                     type: string
                     example: すでにログアウト済みです。
                 required:
-                - message
+                  - message
   "/v1/auth/refresh":
     post:
       summary: アクセストークン再発行API
       tags:
-      - 認証系
+        - 認証系
       responses:
-        '200':
+        "200":
           description: 再発行成功（リフレッシュトークンのローテーションあり）
           content:
             application/json:
@@ -101,8 +101,8 @@ paths:
                     type: string
                     example: eyJ...
                 required:
-                - access_token
-        '401':
+                  - access_token
+        "401":
           description: リフレッシュトークンが期限切れ
           content:
             application/json:
@@ -121,12 +121,12 @@ paths:
     post:
       summary: アバター画像アップロードAPI
       tags:
-      - マイページ系
+        - マイページ系
       security:
-      - Bearer: []
+        - Bearer: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: アップロード成功
           content:
             application/json:
@@ -138,8 +138,8 @@ paths:
                     nullable: true
                     example: https://example.cloudfront.net/avatars/1.jpg
                 required:
-                - avatar_url
-        '400':
+                  - avatar_url
+        "400":
           description: avatar フィールドが未添付
           content:
             application/json:
@@ -154,7 +154,7 @@ paths:
                         example: BAD_REQUEST
                       message:
                         type: string
-        '401':
+        "401":
           description: アクセストークンなし
           content:
             application/json:
@@ -169,7 +169,7 @@ paths:
                         example: UNAUTHORIZED
                       message:
                         type: string
-        '422':
+        "422":
           description: ファイルサイズが 5MB 超
           content:
             application/json:
@@ -184,7 +184,7 @@ paths:
                         example: UNPROCESSABLE_ENTITY
                       message:
                         type: string
-        '500':
+        "500":
           description: S3 アップロード失敗
           content:
             application/json:
@@ -209,11 +209,11 @@ paths:
     delete:
       summary: アバター画像削除API
       tags:
-      - マイページ系
+        - マイページ系
       security:
-      - Bearer: []
+        - Bearer: []
       responses:
-        '200':
+        "200":
           description: 削除成功（アバターなし・冪等）
           content:
             application/json:
@@ -224,8 +224,8 @@ paths:
                     type: string
                     example: 削除が完了しました
                 required:
-                - message
-        '401':
+                  - message
+        "401":
           description: アクセストークンなし
           content:
             application/json:
@@ -240,7 +240,7 @@ paths:
                         example: UNAUTHORIZED
                       message:
                         type: string
-        '500':
+        "500":
           description: S3 削除失敗
           content:
             application/json:
@@ -259,11 +259,11 @@ paths:
     get:
       summary: マイプロフィール取得API
       tags:
-      - マイページ系
+        - マイページ系
       security:
-      - Bearer: []
+        - Bearer: []
       responses:
-        '200':
+        "200":
           description: プロフィール取得成功
           content:
             application/json:
@@ -302,16 +302,16 @@ paths:
                       type: string
                     example: []
                 required:
-                - id
-                - username
-                - nickname
-                - bio
-                - avatar_url
-                - followers_count
-                - following_count
-                - books_count
-                - links
-        '401':
+                  - id
+                  - username
+                  - nickname
+                  - bio
+                  - avatar_url
+                  - followers_count
+                  - following_count
+                  - books_count
+                  - links
+        "401":
           description: アクセストークンなし
           content:
             application/json:
@@ -329,12 +329,12 @@ paths:
     patch:
       summary: プロフィール更新API
       tags:
-      - マイページ系
+        - マイページ系
       security:
-      - Bearer: []
+        - Bearer: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: プロフィール更新成功（links全件削除）
           content:
             application/json:
@@ -354,10 +354,10 @@ paths:
                       type: string
                     example: []
                 required:
-                - nickname
-                - bio
-                - links
-        '400':
+                  - nickname
+                  - bio
+                  - links
+        "400":
           description: 全フィールド未送信
           content:
             application/json:
@@ -372,7 +372,7 @@ paths:
                         example: BAD_REQUEST
                       message:
                         type: string
-        '401':
+        "401":
           description: アクセストークンなし
           content:
             application/json:
@@ -387,7 +387,7 @@ paths:
                         example: UNAUTHORIZED
                       message:
                         type: string
-        '422':
+        "422":
           description: バリデーションエラー（links不正URL）
           content:
             application/json:
@@ -430,18 +430,18 @@ paths:
                   items:
                     type: string
                   example:
-                  - https://github.com/komusan
+                    - https://github.com/komusan
         required: true
   "/v1/users":
     post:
       summary: ユーザー登録API
       tags:
-      - ユーザー系
+        - ユーザー系
       security:
-      - Bearer: []
+        - Bearer: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: ユーザー作成成功
           content:
             application/json:
@@ -452,8 +452,8 @@ paths:
                     type: string
                     example: eyJ...
                 required:
-                - access_token
-        '401':
+                  - access_token
+        "401":
           description: Clerk JWT が無効
           content:
             application/json:
@@ -468,7 +468,7 @@ paths:
                         example: UNAUTHORIZED
                       message:
                         type: string
-        '409':
+        "409":
           description: username 重複
           content:
             application/json:
@@ -483,7 +483,7 @@ paths:
                         example: USERNAME_TAKEN
                       message:
                         type: string
-        '422':
+        "422":
           description: バリデーションエラー
           content:
             application/json:
@@ -520,23 +520,23 @@ paths:
                   type: string
                   example: komusan
               required:
-              - nickname
-              - username
+                - nickname
+                - username
         required: true
   "/v1/users/username/check":
     get:
       summary: ユーザーネーム重複チェックAPI
       tags:
-      - ユーザー系
+        - ユーザー系
       parameters:
-      - name: value
-        in: query
-        required: true
-        description: チェックする username（3〜40文字、小文字英数字と _ のみ、連続する _ は不可）
-        schema:
-          type: string
+        - name: value
+          in: query
+          required: true
+          description: チェックする username（3〜40文字、小文字英数字と _ のみ、連続する _ は不可）
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: 重複あり（使用不可）
           content:
             application/json:
@@ -547,8 +547,8 @@ paths:
                     type: boolean
                     example: false
                 required:
-                - available
-        '400':
+                  - available
+        "400":
           description: value パラメータがない
           content:
             application/json:
@@ -564,9 +564,9 @@ paths:
                       message:
                         type: string
                     required:
-                    - code
-                    - message
-        '422':
+                      - code
+                      - message
+        "422":
           description: 形式不正
           content:
             application/json:
@@ -582,25 +582,25 @@ paths:
                       message:
                         type: string
                     required:
-                    - code
-                    - message
+                      - code
+                      - message
   "/v1/users/{username}":
     get:
       summary: ユーザープロフィール取得API
       tags:
-      - ユーザー系
+        - ユーザー系
       security:
-      - Bearer: []
-      - {}
+        - Bearer: []
+        - {}
       parameters:
-      - name: username
-        in: path
-        required: true
-        description: 取得するユーザーの username
-        schema:
-          type: string
+        - name: username
+          in: path
+          required: true
+          description: 取得するユーザーの username
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: プロフィール取得成功（自分自身・is_following が false）
           content:
             application/json:
@@ -639,16 +639,16 @@ paths:
                     type: boolean
                     example: false
                 required:
-                - username
-                - nickname
-                - bio
-                - avatar_url
-                - followers_count
-                - following_count
-                - books_count
-                - links
-                - is_following
-        '404':
+                  - username
+                  - nickname
+                  - bio
+                  - avatar_url
+                  - followers_count
+                  - following_count
+                  - books_count
+                  - links
+                  - is_following
+        "404":
           description: ユーザーが存在しない
           content:
             application/json:
@@ -663,7 +663,7 @@ paths:
                         example: NOT_FOUND
                       message:
                         type: string
-        '401':
+        "401":
           description: アクセストークンが不正
           content:
             application/json:

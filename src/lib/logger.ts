@@ -19,7 +19,11 @@ const MIN_LEVEL: LogLevel =
 const shouldLog = (level: LogLevel): boolean =>
   LOG_LEVELS[level] >= LOG_LEVELS[MIN_LEVEL];
 
-const format = (level: LogLevel, message: string, context?: LogContext): string => {
+const format = (
+  level: LogLevel,
+  message: string,
+  context?: LogContext,
+): string => {
   const timestamp = new Date().toISOString();
   const base = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
   if (!context || Object.keys(context).length === 0) return base;
