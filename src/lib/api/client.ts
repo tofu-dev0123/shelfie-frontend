@@ -33,26 +33,30 @@ _client.interceptors.response.use(
   },
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
-      original._retry = true;
-      logger.warn("アクセストークン期限切れ。リフレッシュを試みます", {
-        endpoint: original.url,
+
+    if (error.response?.status !== 401 || original._retry) {
+      logger.error("APIリクエスト失敗", {
+        endpoint: error.config?.url,
+        status: error.response?.status,
       });
-      const refreshed = await tryRefresh();
-      if (!refreshed) {
-        logger.error("トークンリフレッシュ失敗。ログイン画面へリダイレクト");
-        useAuthStore.getState().clearAccessToken();
-        window.location.href = "/login";
-        return Promise.reject(error);
-      }
-      original.headers.Authorization = `Bearer ${useAuthStore.getState().accessToken}`;
-      return _client(original);
+      return Promise.reject(error);
     }
-    logger.error("APIリクエスト失敗", {
-      endpoint: error.config?.url,
-      status: error.response?.status,
+
+    original._retry = true;
+    logger.warn("アクセストークン期限切れ。リフレッシュを試みます", {
+      endpoint: original.url,
     });
-    return Promise.reject(error);
+
+    const refreshed = await tryRefresh();
+    if (!refreshed) {
+      logger.error("トークンリフレッシュ失敗。ログイン画面へリダイレクト");
+      useAuthStore.getState().clearAccessToken();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
+    original.headers.Authorization = `Bearer ${useAuthStore.getState().accessToken}`;
+    return _client(original);
   },
 );
 
