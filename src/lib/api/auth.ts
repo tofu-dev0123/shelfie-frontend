@@ -2,6 +2,7 @@ import axios from "axios";
 import { serverPost, apiDelete } from "./client";
 import { useAuthStore } from "@/store/authStore";
 import { API_ENDPOINTS } from "@/constants/api";
+import { logger } from "@/lib/logger";
 
 type SignupInput = {
   username: string;
@@ -15,11 +16,14 @@ export async function login(clerkToken: string): Promise<"ok" | "not_found"> {
       clerkToken,
     );
     useAuthStore.getState().setAccessToken(data.access_token);
+    logger.info("ログイン成功");
     return "ok";
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
+      logger.info("Railsにユーザーが存在しない。サインアップへリダイレクト");
       return "not_found";
     }
+    logger.error("ログイン失敗");
     throw error;
   }
 }
@@ -34,9 +38,11 @@ export async function signup(
     data,
   );
   useAuthStore.getState().setAccessToken(res.access_token);
+  logger.info("サインアップ成功");
 }
 
 export async function logout(): Promise<void> {
   await apiDelete(API_ENDPOINTS.AUTH_LOGOUT);
   useAuthStore.getState().clearAccessToken();
+  logger.info("ログアウト");
 }
