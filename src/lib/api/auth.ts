@@ -3,11 +3,7 @@ import { serverPost, apiDelete } from "./client";
 import { useAuthStore } from "@/store/authStore";
 import { API_ENDPOINTS } from "@/constants/api";
 import { logger } from "@/lib/logger";
-
-type SignupInput = {
-  username: string;
-  nickname: string;
-};
+import type { SignupFormData } from "@/schemas/auth";
 
 export async function login(clerkToken: string): Promise<"ok" | "not_found"> {
   try {
@@ -30,7 +26,7 @@ export async function login(clerkToken: string): Promise<"ok" | "not_found"> {
 
 export async function signup(
   clerkToken: string,
-  data: SignupInput,
+  data: SignupFormData,
 ): Promise<void> {
   const res = await serverPost<{ access_token: string }>(
     API_ENDPOINTS.AUTH_SIGNUP,
