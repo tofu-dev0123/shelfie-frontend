@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signupFormSchema, type SignupFormData } from '@/schemas/auth'
 import { useSignupForm } from '@/hooks/useSignupForm'
+import { useUsernameCheck } from '@/hooks/useUsernameCheck'
 import styles from './styles/SignupForm.module.css'
 
 export function SignupForm() {
@@ -12,10 +13,13 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupFormSchema),
   })
+
+  const { status } = useUsernameCheck(watch('username') ?? '')
 
   return (
     <div className={styles.container}>
@@ -46,8 +50,23 @@ export function SignupForm() {
               autoComplete="username"
             />
             <p className={styles.hint}>他のユーザーに表示される ID です（変更不可）</p>
-            {errors.username && (
+            {errors.username ? (
               <p className={styles.error}>{errors.username.message}</p>
+            ) : (
+              <>
+                {status === 'checking' && (
+                  <p className={styles.checking}>確認中...</p>
+                )}
+                {status === 'available' && (
+                  <p className={styles.available}>使用できます</p>
+                )}
+                {status === 'taken' && (
+                  <p className={styles.error}>このユーザー名は使用されています</p>
+                )}
+                {status === 'invalid' && (
+                  <p className={styles.error}>使用できないユーザー名です</p>
+                )}
+              </>
             )}
           </div>
 
@@ -69,7 +88,7 @@ export function SignupForm() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || status === 'checking' || status === 'taken' || status === 'invalid'}
             className={styles.submitButton}
           >
             {isSubmitting ? '送信中...' : 'はじめる'}

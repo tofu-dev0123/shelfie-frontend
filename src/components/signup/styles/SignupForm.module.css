@@ -87,6 +87,16 @@
   color: var(--color-error);
 }
 
+.checking {
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+}
+
+.available {
+  font-size: var(--text-sm);
+  color: var(--color-success);
+}
+
 .submitButton {
   width: 100%;
   padding: var(--space-3) var(--space-4);
