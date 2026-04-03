@@ -16,17 +16,16 @@ export type SignupView = 'oauth' | 'form' | 'loading'
 export const useSignupPage = () => {
   const { isSignedIn, isLoaded, getToken } = useAuth()
   const router = useRouter()
-  const [view, setView] = useState<SignupView>('loading')
+  // Railsログイン成功後にフォームを表示するためのフラグ
+  const [formReady, setFormReady] = useState(false)
   // ページ滞在中に login() を複数回呼ばないためのフラグ
   const loginAttempted = useRef(false)
 
+  // isLoaded・isSignedIn から同期的に計算できる状態はEffectを介さず派生させる
+  const view: SignupView = !isLoaded ? 'loading' : !isSignedIn ? 'oauth' : formReady ? 'form' : 'loading'
+
   useEffect(() => {
-    if (!isLoaded) return
-    if (!isSignedIn) {
-      setView('oauth')
-      return
-    }
-    if (loginAttempted.current) return
+    if (!isLoaded || !isSignedIn || loginAttempted.current) return
     loginAttempted.current = true
 
     const tryLogin = async () => {
@@ -34,14 +33,13 @@ export const useSignupPage = () => {
         const token = await getToken()
         if (!token) {
           toast.error(MESSAGES.AUTH.SIGNUP_ERROR)
-          setView('oauth')
           return
         }
         const result = await login(token)
         if (result === 'ok') {
           router.push('/')
         } else {
-          setView('form')
+          setFormReady(true)
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -49,7 +47,6 @@ export const useSignupPage = () => {
         } else {
           toast.error(MESSAGES.AUTH.LOGIN_ERROR)
         }
-        setView('oauth')
       }
     }
 

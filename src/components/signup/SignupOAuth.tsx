@@ -2,18 +2,18 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSignIn } from '@clerk/nextjs'
+import { useSignUp } from '@clerk/nextjs'
 import styles from './styles/SignupOAuth.module.css'
 
 export function SignupOAuth() {
-  const { signIn } = useSignIn()
+  const { signUp } = useSignUp()
 
   const handleOAuth = async (strategy: 'oauth_google' | 'oauth_github') => {
-    if (!signIn) return
-    await signIn.sso({
+    if (!signUp) return
+    await signUp.sso({
       strategy,
-      redirectUrl: `${window.location.origin}/sso-callback`,
-      redirectCallbackUrl: `${window.location.origin}/signup`,
+      redirectUrl: '/signup/continue',
+      redirectCallbackUrl: '/sso-callback',
     })
   }
 
