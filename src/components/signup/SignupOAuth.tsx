@@ -92,6 +92,7 @@ export function SignupOAuth() {
           <Link href="/login">こちら</Link>
         </p>
       </div>
+      <div id="clerk-captcha" />
     </div>
   )
 }

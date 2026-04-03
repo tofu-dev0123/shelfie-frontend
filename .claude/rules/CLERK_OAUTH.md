@@ -52,6 +52,8 @@ export default function SignUpPage() {
 
 **注意：** `signIn.sso()` と `signUp.sso()` は同じ `/sso-callback` を使い回す。
 
+**注意：** `sso()` を呼ぶコンポーネントには `<div id="clerk-captcha" />` を配置すること。Clerkのボット対策（Smart CAPTCHA）に使用される。ない場合はInvisible CAPTCHAにフォールバックする。
+
 ---
 
 ## 2. `/sso-callback` ページ
