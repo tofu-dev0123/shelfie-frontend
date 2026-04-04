@@ -7,7 +7,7 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-xl);
   padding: var(--space-8);
@@ -22,7 +22,6 @@
   gap: var(--space-2);
   margin-bottom: var(--space-6);
 }
-
 
 .heading {
   font-size: var(--text-xl);
@@ -54,7 +53,7 @@
   gap: var(--space-2);
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-md);
   font-size: var(--text-base);
@@ -85,9 +84,11 @@
   border-radius: var(--radius-md);
   font-size: var(--text-base);
   font-weight: var(--font-medium);
-  color: #fff;
+  color: var(--color-white);
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .githubButton:hover:not(:disabled) {
@@ -109,7 +110,7 @@
 
 .divider::before,
 .divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
   background: var(--color-gray-200);

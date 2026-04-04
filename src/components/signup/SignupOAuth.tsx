@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { useSignUp } from '@clerk/nextjs'
-import styles from './styles/SignupOAuth.module.css'
+import Image from "next/image";
+import Link from "next/link";
+import { useSignUp } from "@clerk/nextjs";
+import styles from "./styles/SignupOAuth.module.css";
 
 export function SignupOAuth() {
-  const { signUp } = useSignUp()
+  const { signUp } = useSignUp();
 
-  const handleOAuth = async (strategy: 'oauth_google' | 'oauth_github') => {
-    if (!signUp) return
+  const handleOAuth = async (strategy: "oauth_google" | "oauth_github") => {
+    if (!signUp) return;
     await signUp.sso({
       strategy,
-      redirectUrl: '/signup/continue',
-      redirectCallbackUrl: '/sso-callback',
-    })
-  }
+      redirectUrl: "/signup/continue",
+      redirectCallbackUrl: "/sso-callback",
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -26,7 +26,7 @@ export function SignupOAuth() {
             alt="Shelfie"
             width={140}
             height={40}
-            style={{ height: 'auto' }}
+            style={{ height: "auto" }}
             priority
           />
         </div>
@@ -42,7 +42,7 @@ export function SignupOAuth() {
           <button
             type="button"
             className={styles.googleButton}
-            onClick={() => handleOAuth('oauth_google')}
+            onClick={() => handleOAuth("oauth_google")}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -68,7 +68,7 @@ export function SignupOAuth() {
           <button
             type="button"
             className={styles.githubButton}
-            onClick={() => handleOAuth('oauth_github')}
+            onClick={() => handleOAuth("oauth_github")}
           >
             <svg
               width="18"
@@ -94,5 +94,5 @@ export function SignupOAuth() {
       </div>
       <div id="clerk-captcha" />
     </div>
-  )
+  );
 }
