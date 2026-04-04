@@ -5,7 +5,9 @@ import { API_ENDPOINTS } from "@/constants/api";
 import { logger } from "@/lib/logger";
 import type { SignupFormData } from "@/schemas/auth";
 
-export async function login(clerkToken: string): Promise<"ok" | "not_found"> {
+export const login = async (
+  clerkToken: string,
+): Promise<"ok" | "not_found"> => {
   try {
     const data = await serverPost<{ access_token: string }>(
       API_ENDPOINTS.AUTH_LOGIN,
@@ -22,23 +24,28 @@ export async function login(clerkToken: string): Promise<"ok" | "not_found"> {
     logger.error("ログイン失敗");
     throw error;
   }
-}
+};
 
-export async function signup(
+export const signup = async (
   clerkToken: string,
   data: SignupFormData,
-): Promise<void> {
-  const res = await serverPost<{ access_token: string }>(
-    API_ENDPOINTS.AUTH_SIGNUP,
-    clerkToken,
-    data,
-  );
-  useAuthStore.getState().setAccessToken(res.access_token);
-  logger.info("サインアップ成功");
-}
+): Promise<void> => {
+  try {
+    const res = await serverPost<{ access_token: string }>(
+      API_ENDPOINTS.AUTH_SIGNUP,
+      clerkToken,
+      data,
+    );
+    useAuthStore.getState().setAccessToken(res.access_token);
+    logger.info("サインアップ成功");
+  } catch (error) {
+    logger.error("サインアップ失敗");
+    throw error;
+  }
+};
 
-export async function logout(): Promise<void> {
+export const logout = async (): Promise<void> => {
   await apiDelete(API_ENDPOINTS.AUTH_LOGOUT);
   useAuthStore.getState().clearAccessToken();
   logger.info("ログアウト");
-}
+};
