@@ -32,7 +32,7 @@ export const signup = async (
 ): Promise<void> => {
   try {
     const res = await serverPost<{ access_token: string }>(
-      API_ENDPOINTS.AUTH_SIGNUP,
+      API_ENDPOINTS.USERS,
       clerkToken,
       data,
     );
