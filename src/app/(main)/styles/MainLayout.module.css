@@ -1,0 +1,10 @@
+/* モバイルではBottomNavの高さ分のパディングを確保する */
+.main {
+  padding-bottom: 60px;
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding-bottom: 0;
+  }
+}
