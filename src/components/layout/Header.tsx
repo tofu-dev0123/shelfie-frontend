@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { useHeader } from "@/hooks/useHeader";
+import { useMe } from "@/hooks/useMe";
 import styles from "./styles/Header.module.css";
 
 export function Header() {
@@ -11,6 +12,7 @@ export function Header() {
   const { isSignedIn } = useAuth();
   const { dropdownOpen, dropdownRef, toggleDropdown, handleLogout } =
     useHeader();
+  const { data: me } = useMe(!!isSignedIn);
 
   return (
     <header className={styles.header}>
@@ -51,6 +53,16 @@ export function Header() {
             </button>
             {dropdownOpen && (
               <div className={styles.dropdown}>
+                {me && (
+                  <div className={styles.dropdownUser}>
+                    <span className={styles.dropdownNickname}>
+                      {me.nickname}
+                    </span>
+                    <span className={styles.dropdownUsername}>
+                      @{me.username}
+                    </span>
+                  </div>
+                )}
                 <button className={styles.dropdownItem} onClick={handleLogout}>
                   ログアウト
                 </button>
