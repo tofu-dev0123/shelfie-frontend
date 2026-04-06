@@ -6,6 +6,9 @@ export const API_ENDPOINTS = {
   AUTH_LOGOUT: "/v1/auth/logout",
   AUTH_REFRESH: "/v1/auth/refresh",
 
+  // 自分のプロフィール
+  ME: "/v1/me",
+
   // ユーザー
   USERS: "/v1/users",
   USERNAME_CHECK: "/v1/users/username/check",
