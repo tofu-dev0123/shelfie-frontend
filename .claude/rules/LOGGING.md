@@ -131,7 +131,23 @@ logger.error('サインアップ失敗')
 logger.info('ログアウト')
 ```
 
-### コンポーネント・フック
+### `hooks/`
+
+フック内でもデバッグのために `logger` を使用してよい。エラー時は `logger.error` を呼びつつトースト通知も行う。
+
+```ts
+const handleLogout = async () => {
+  try {
+    await logout()
+    await signOut()
+  } catch {
+    logger.error('ログアウト失敗')
+    toast.error(MESSAGES.AUTH.LOGOUT_ERROR)
+  }
+}
+```
+
+### コンポーネント
 
 ログは不要。エラーはトースト通知で表示する（TOAST.md参照）。
 
