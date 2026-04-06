@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
@@ -17,9 +18,11 @@ export function Header() {
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.logoLink}>
-        <img
+        <Image
           src="/images/shelfie-text-logo.png"
           alt="Shelfie"
+          width={120}
+          height={32}
           className={styles.logoImage}
         />
       </Link>
