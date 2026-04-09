@@ -1,13 +1,15 @@
 "use client";
 
 import { useSSOCallback } from "@/hooks/useSSOCallback";
+import { Loading } from "@/components/ui/Loading";
 
 export function SSOCallback() {
   useSSOCallback();
 
   return (
-    <div>
+    <>
+      <Loading />
       <div id="clerk-captcha" />
-    </div>
+    </>
   );
 }

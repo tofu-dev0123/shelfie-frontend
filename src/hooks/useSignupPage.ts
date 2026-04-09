@@ -31,6 +31,10 @@ export const useSignupPage = () => {
         : "loading";
 
   useEffect(() => {
+    if (view === "oauth") router.push("/signup");
+  }, [view, router]);
+
+  useEffect(() => {
     if (!isLoaded || !isSignedIn || loginAttempted.current) return;
     loginAttempted.current = true;
 

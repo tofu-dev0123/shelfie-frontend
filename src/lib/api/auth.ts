@@ -30,18 +30,13 @@ export const signup = async (
   clerkToken: string,
   data: SignupFormData,
 ): Promise<void> => {
-  try {
-    const res = await serverPost<{ access_token: string }>(
-      API_ENDPOINTS.USERS,
-      clerkToken,
-      data,
-    );
-    useAuthStore.getState().setAccessToken(res.access_token);
-    logger.info("サインアップ成功");
-  } catch (error) {
-    logger.error("サインアップ失敗");
-    throw error;
-  }
+  const res = await serverPost<{ access_token: string }>(
+    API_ENDPOINTS.USERS,
+    clerkToken,
+    data,
+  );
+  useAuthStore.getState().setAccessToken(res.access_token);
+  logger.info("サインアップ成功");
 };
 
 export const logout = async (): Promise<void> => {
