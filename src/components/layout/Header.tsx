@@ -45,38 +45,42 @@ export function Header() {
           <i className="fa-solid fa-plus" />
           投稿
         </Link>
-        {isLoaded && (isSignedIn ? (
-          <div ref={dropdownRef} className={styles.avatarWrapper}>
-            <button
-              className={styles.avatar}
-              onClick={toggleDropdown}
-              aria-label="メニューを開く"
-            >
-              <i className="fa-solid fa-user" />
-            </button>
-            {dropdownOpen && (
-              <div className={styles.dropdown}>
-                {me && (
-                  <div className={styles.dropdownUser}>
-                    <span className={styles.dropdownNickname}>
-                      {me.nickname}
-                    </span>
-                    <span className={styles.dropdownUsername}>
-                      @{me.username}
-                    </span>
-                  </div>
-                )}
-                <button className={styles.dropdownItem} onClick={handleLogout}>
-                  ログアウト
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link href="/login" className={styles.loginButton}>
-            ログイン
-          </Link>
-        ))}
+        {isLoaded &&
+          (isSignedIn ? (
+            <div ref={dropdownRef} className={styles.avatarWrapper}>
+              <button
+                className={styles.avatar}
+                onClick={toggleDropdown}
+                aria-label="メニューを開く"
+              >
+                <i className="fa-solid fa-user" />
+              </button>
+              {dropdownOpen && (
+                <div className={styles.dropdown}>
+                  {me && (
+                    <div className={styles.dropdownUser}>
+                      <span className={styles.dropdownNickname}>
+                        {me.nickname}
+                      </span>
+                      <span className={styles.dropdownUsername}>
+                        @{me.username}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    className={styles.dropdownItem}
+                    onClick={handleLogout}
+                  >
+                    ログアウト
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href="/login" className={styles.loginButton}>
+              ログイン
+            </Link>
+          ))}
       </nav>
     </header>
   );

@@ -28,9 +28,18 @@
 }
 
 @keyframes logoPulse {
-  0%   { transform: scale(1);    opacity: 1; }
-  50%  { transform: scale(0.80); opacity: 0.6; }
-  100% { transform: scale(1);    opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* 軌道全体が回転 */
@@ -41,7 +50,9 @@
 }
 
 @keyframes orbitSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /*
@@ -56,14 +67,38 @@
   justify-content: center;
 }
 
-.dotArm:nth-child(1) { transform: rotate(0deg);   opacity: 1; }
-.dotArm:nth-child(2) { transform: rotate(45deg);  opacity: 0.85; }
-.dotArm:nth-child(3) { transform: rotate(90deg);  opacity: 0.65; }
-.dotArm:nth-child(4) { transform: rotate(135deg); opacity: 0.5; }
-.dotArm:nth-child(5) { transform: rotate(180deg); opacity: 0.35; }
-.dotArm:nth-child(6) { transform: rotate(225deg); opacity: 0.22; }
-.dotArm:nth-child(7) { transform: rotate(270deg); opacity: 0.12; }
-.dotArm:nth-child(8) { transform: rotate(315deg); opacity: 0.06; }
+.dotArm:nth-child(1) {
+  transform: rotate(0deg);
+  opacity: 1;
+}
+.dotArm:nth-child(2) {
+  transform: rotate(45deg);
+  opacity: 0.85;
+}
+.dotArm:nth-child(3) {
+  transform: rotate(90deg);
+  opacity: 0.65;
+}
+.dotArm:nth-child(4) {
+  transform: rotate(135deg);
+  opacity: 0.5;
+}
+.dotArm:nth-child(5) {
+  transform: rotate(180deg);
+  opacity: 0.35;
+}
+.dotArm:nth-child(6) {
+  transform: rotate(225deg);
+  opacity: 0.22;
+}
+.dotArm:nth-child(7) {
+  transform: rotate(270deg);
+  opacity: 0.12;
+}
+.dotArm:nth-child(8) {
+  transform: rotate(315deg);
+  opacity: 0.06;
+}
 
 .dot {
   width: 9px;
