@@ -10,7 +10,7 @@ import styles from "./styles/Header.module.css";
 
 export function Header() {
   const pathname = usePathname();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const { dropdownOpen, dropdownRef, toggleDropdown, handleLogout } =
     useHeader();
   const { data: me } = useMe(!!isSignedIn);
@@ -45,7 +45,7 @@ export function Header() {
           <i className="fa-solid fa-plus" />
           投稿
         </Link>
-        {isSignedIn ? (
+        {isLoaded && (isSignedIn ? (
           <div ref={dropdownRef} className={styles.avatarWrapper}>
             <button
               className={styles.avatar}
@@ -76,7 +76,7 @@ export function Header() {
           <Link href="/login" className={styles.loginButton}>
             ログイン
           </Link>
-        )}
+        ))}
       </nav>
     </header>
   );
