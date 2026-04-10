@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useBookShelf } from "@/hooks/useBookShelf";
+import { useBookShelf } from "@/hooks/users/useBookShelf";
 import { BookCard } from "./BookCard";
 import styles from "./styles/BookShelf.module.css";
 

@@ -2,7 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import { useMe } from "@/hooks/useMe";
-import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/users/useUser";
 import type { User } from "@/types/user";
 import { ProfileHeader } from "./ProfileHeader";
 import { BookShelf } from "./BookShelf";

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { useBottomNav } from "@/hooks/useBottomNav";
+import { useBottomNav } from "@/hooks/layout/useBottomNav";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/BottomNav.module.css";
 

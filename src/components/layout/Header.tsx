@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { useHeader } from "@/hooks/useHeader";
+import { useHeader } from "@/hooks/layout/useHeader";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/Header.module.css";
 

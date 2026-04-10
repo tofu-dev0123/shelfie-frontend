@@ -1,6 +1,6 @@
 "use client";
 
-import { useFollow } from "@/hooks/useFollow";
+import { useFollow } from "@/hooks/users/useFollow";
 import styles from "./styles/FollowButton.module.css";
 
 type Props = {
