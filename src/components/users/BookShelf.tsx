@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useUserBooks } from "@/hooks/useUserBooks";
+import { useBookShelf } from "@/hooks/useBookShelf";
 import { BookCard } from "./BookCard";
 import styles from "./styles/BookShelf.module.css";
 
@@ -17,30 +16,8 @@ const TABS = [
 ];
 
 export function BookShelf({ username, isMe }: Props) {
-  const [activeTab, setActiveTab] = useState<"done" | "want">("done");
-  const sentinelRef = useRef<HTMLDivElement>(null);
-
-  const { books, hasMore, isEmpty, isLoading, loadMore } = useUserBooks(
-    username,
-    activeTab,
-  );
-
-  // スクロールが末尾に達したら次ページを自動取得
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel || !hasMore) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isLoading) {
-          loadMore();
-        }
-      },
-      { rootMargin: "100px" },
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [hasMore, isLoading, loadMore]);
+  const { activeTab, setActiveTab, sentinelRef, books, isEmpty, isLoading } =
+    useBookShelf(username);
 
   const visibleTabs = isMe ? TABS : TABS.filter((t) => t.key === "done");
 

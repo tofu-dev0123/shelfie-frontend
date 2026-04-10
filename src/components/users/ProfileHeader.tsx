@@ -70,9 +70,7 @@ export function ProfileHeader({ user, isMe, isLoggedIn }: Props) {
                   プロフィールを編集
                 </Link>
               )}
-              {!isMe && isLoggedIn && (
-                <FollowButton username={user.username} />
-              )}
+              {!isMe && isLoggedIn && <FollowButton username={user.username} />}
             </div>
           </div>
         </div>

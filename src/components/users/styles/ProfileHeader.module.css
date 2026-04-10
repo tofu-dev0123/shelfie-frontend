@@ -1,7 +1,7 @@
 .profileSection {
   border-bottom: 1px solid var(--color-gray-200);
   padding: var(--space-10) 0;
-  background: #fff;
+  background: var(--color-white);
 }
 
 .container {
@@ -122,7 +122,7 @@
   font-weight: var(--font-medium);
   color: var(--color-primary-600);
   text-decoration: none;
-  background: #fff;
+  background: var(--color-white);
   transition: background-color 0.15s ease;
 }
 

@@ -25,11 +25,7 @@ export function UserProfile({ username, fallbackUser }: Props) {
 
   return (
     <>
-      <ProfileHeader
-        user={user}
-        isMe={isMe}
-        isLoggedIn={!!isSignedIn}
-      />
+      <ProfileHeader user={user} isMe={isMe} isLoggedIn={!!isSignedIn} />
       <BookShelf username={username} isMe={isMe} />
     </>
   );
