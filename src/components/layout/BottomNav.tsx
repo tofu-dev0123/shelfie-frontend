@@ -28,7 +28,7 @@ export function BottomNav() {
       >
         <i className={`fa-solid fa-magnifying-glass ${styles.icon}`} />
       </Link>
-      <Link href="/me/books/new" className={styles.item}>
+      <Link href="/books/new" className={styles.item}>
         <span className={styles.postIcon}>
           <i className="fa-solid fa-plus" />
         </span>
@@ -38,7 +38,7 @@ export function BottomNav() {
         className={`${styles.item} ${styles.accountWrapper}`}
       >
         <button
-          className={`${styles.iconButton} ${pathname.startsWith("/me") ? styles.active : ""}`}
+          className={`${styles.iconButton} ${me && pathname.startsWith(`/users/${me.username}`) ? styles.active : ""}`}
           onClick={toggleAccountMenu}
           aria-label="アカウントメニューを開く"
         >
@@ -47,18 +47,20 @@ export function BottomNav() {
         {accountMenuOpen && (
           <div className={styles.accountMenu}>
             {me && (
-              <div className={styles.accountUser}>
-                <span className={styles.accountNickname}>{me.nickname}</span>
-                <span className={styles.accountUsername}>@{me.username}</span>
-              </div>
+              <>
+                <div className={styles.accountUser}>
+                  <span className={styles.accountNickname}>{me.nickname}</span>
+                  <span className={styles.accountUsername}>@{me.username}</span>
+                </div>
+                <Link
+                  href={`/users/${me.username}`}
+                  className={styles.accountItem}
+                  onClick={() => toggleAccountMenu()}
+                >
+                  本棚
+                </Link>
+              </>
             )}
-            <Link
-              href="/me"
-              className={styles.accountItem}
-              onClick={() => toggleAccountMenu()}
-            >
-              本棚
-            </Link>
             <button className={styles.accountItem} onClick={handleLogout}>
               ログアウト
             </button>
