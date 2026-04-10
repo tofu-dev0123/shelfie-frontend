@@ -5,10 +5,11 @@ import styles from "./styles/ProfileHeader.module.css";
 
 type Props = {
   user: User;
+  isMe: boolean;
   isLoggedIn: boolean;
 };
 
-export function ProfileHeader({ user, isLoggedIn }: Props) {
+export function ProfileHeader({ user, isMe, isLoggedIn }: Props) {
   return (
     <div className={styles.profileSection}>
       <div className={styles.container}>
@@ -64,16 +65,13 @@ export function ProfileHeader({ user, isLoggedIn }: Props) {
             </div>
 
             <div className={styles.actions}>
-              {user.is_me && (
+              {isMe && (
                 <Link href="/settings/profile" className={styles.editButton}>
                   プロフィールを編集
                 </Link>
               )}
-              {!user.is_me && isLoggedIn && (
-                <FollowButton
-                  username={user.username}
-                  initialIsFollowing={user.is_following}
-                />
+              {!isMe && isLoggedIn && (
+                <FollowButton username={user.username} />
               )}
             </div>
           </div>

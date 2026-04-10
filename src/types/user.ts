@@ -8,6 +8,4 @@ export type User = {
   following_count: number;
   books_count: number;
   links: string[];
-  is_me: boolean;
-  is_following: boolean;
 };

@@ -10,13 +10,13 @@ import { logger } from "@/lib/logger";
 
 /**
  * フォロー・アンフォロー操作を管理するフック。
+ * is_followingの初期値は取得できないためfalse（未フォロー）をデフォルトとする。
  * APIレスポンスを受けてからUIを更新する（楽観的更新なし）。
  * @param username - 操作対象のユーザー名
- * @param initialIsFollowing - 初期フォロー状態
  * @returns isFollowing, isPending, handleFollow
  */
-export const useFollow = (username: string, initialIsFollowing: boolean) => {
-  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
+export const useFollow = (username: string) => {
+  const [isFollowing, setIsFollowing] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const { mutate } = useSWRConfig();
 

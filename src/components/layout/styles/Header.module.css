@@ -166,6 +166,7 @@
   background: none;
   border: none;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.15s;
 }
 

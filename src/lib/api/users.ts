@@ -1,20 +1,16 @@
-import { apiGet, apiPost, apiDelete, serverGet } from "./client";
+import { apiGet, apiPost, apiDelete } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
 import type { User } from "@/types/user";
 
 /**
- * ユーザー情報を取得する。
- * tokenを渡した場合はServer Components用のサーバーサイドリクエストを使用する。
- * is_meおよびis_followingフラグはRailsがアクセストークンをもとに判定して返す。
+ * ユーザーの公開情報を取得する。認証不要。
+ * is_me・is_followingは含まない。認証状態に依存するUIはクライアントで判定する。
  * @param username - ユーザー名
- * @param token - Railsアクセストークン（Server Componentsから呼ぶ場合に指定）
- * @returns ユーザー情報
+ * @returns ユーザーの公開情報
  * @throws ユーザーが存在しない場合は404エラー
  */
-export const getUser = (username: string, token?: string): Promise<User> =>
-  token
-    ? serverGet(API_ENDPOINTS.USER(username), token)
-    : apiGet(API_ENDPOINTS.USER(username));
+export const getUser = (username: string): Promise<User> =>
+  apiGet(API_ENDPOINTS.USER(username));
 
 /**
  * ユーザー名の重複チェックを行う。

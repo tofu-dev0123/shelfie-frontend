@@ -58,14 +58,22 @@ export function Header() {
               {dropdownOpen && (
                 <div className={styles.dropdown}>
                   {me && (
-                    <div className={styles.dropdownUser}>
-                      <span className={styles.dropdownNickname}>
-                        {me.nickname}
-                      </span>
-                      <span className={styles.dropdownUsername}>
-                        @{me.username}
-                      </span>
-                    </div>
+                    <>
+                      <div className={styles.dropdownUser}>
+                        <span className={styles.dropdownNickname}>
+                          {me.nickname}
+                        </span>
+                        <span className={styles.dropdownUsername}>
+                          @{me.username}
+                        </span>
+                      </div>
+                      <Link
+                        href={`/users/${me.username}`}
+                        className={styles.dropdownItem}
+                      >
+                        マイページ
+                      </Link>
+                    </>
                   )}
                   <button
                     className={styles.dropdownItem}

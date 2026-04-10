@@ -5,14 +5,10 @@ import styles from "./styles/FollowButton.module.css";
 
 type Props = {
   username: string;
-  initialIsFollowing: boolean;
 };
 
-export function FollowButton({ username, initialIsFollowing }: Props) {
-  const { isFollowing, isPending, handleFollow } = useFollow(
-    username,
-    initialIsFollowing,
-  );
+export function FollowButton({ username }: Props) {
+  const { isFollowing, isPending, handleFollow } = useFollow(username);
 
   return (
     <button
