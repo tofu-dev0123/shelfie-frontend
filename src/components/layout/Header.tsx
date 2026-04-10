@@ -41,7 +41,7 @@ export function Header() {
           <i className="fa-solid fa-magnifying-glass" />
           探す
         </Link>
-        <Link href="/me/books/new" className={styles.postButton}>
+        <Link href="/books/new" className={styles.postButton}>
           <i className="fa-solid fa-plus" />
           投稿
         </Link>
