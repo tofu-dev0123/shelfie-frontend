@@ -2,10 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { useBottomNav } from "@/hooks/useBottomNav";
+import { useMe } from "@/hooks/useMe";
 import styles from "./styles/BottomNav.module.css";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
+  const { accountMenuOpen, accountMenuRef, toggleAccountMenu, handleLogout } =
+    useBottomNav();
+  const { data: me } = useMe(!!isSignedIn);
 
   return (
     <nav className={styles.nav}>
@@ -26,12 +33,38 @@ export function BottomNav() {
           <i className="fa-solid fa-plus" />
         </span>
       </Link>
-      <Link
-        href="/me"
-        className={`${styles.item} ${pathname.startsWith("/me") ? styles.active : ""}`}
+      <div
+        ref={accountMenuRef}
+        className={`${styles.item} ${styles.accountWrapper}`}
       >
-        <i className={`fa-solid fa-user ${styles.icon}`} />
-      </Link>
+        <button
+          className={`${styles.iconButton} ${pathname.startsWith("/me") ? styles.active : ""}`}
+          onClick={toggleAccountMenu}
+          aria-label="アカウントメニューを開く"
+        >
+          <i className={`fa-solid fa-user ${styles.icon}`} />
+        </button>
+        {accountMenuOpen && (
+          <div className={styles.accountMenu}>
+            {me && (
+              <div className={styles.accountUser}>
+                <span className={styles.accountNickname}>{me.nickname}</span>
+                <span className={styles.accountUsername}>@{me.username}</span>
+              </div>
+            )}
+            <Link
+              href="/me"
+              className={styles.accountItem}
+              onClick={() => toggleAccountMenu()}
+            >
+              マイページ
+            </Link>
+            <button className={styles.accountItem} onClick={handleLogout}>
+              ログアウト
+            </button>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

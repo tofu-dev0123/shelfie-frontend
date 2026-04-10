@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { signup } from "@/lib/api/auth";
 import { MESSAGES } from "@/constants/messages";
+import { logger } from "@/lib/logger";
 import type { SignupFormData } from "@/schemas/auth";
 
 /**
@@ -24,6 +25,7 @@ export const useSignupForm = () => {
       await signup(token, data);
       router.push("/");
     } catch (error) {
+      logger.error("サインアップ失敗");
       if (axios.isAxiosError(error) && error.response?.status === 422) {
         toast.error(MESSAGES.AUTH.SIGNUP_VALIDATION_ERROR);
       } else {
