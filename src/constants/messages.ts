@@ -24,6 +24,7 @@ export const MESSAGES = {
     UPDATE_ERROR: "更新に失敗しました",
     DELETE_SUCCESS: "削除しました",
     DELETE_ERROR: "削除に失敗しました",
+    SHELF_FETCH_ERROR: "本棚の取得に失敗しました",
   },
   COMMON: {
     ERROR: "操作に失敗しました",

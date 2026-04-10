@@ -1,6 +1,6 @@
 "use client";
 
-import { useSSOCallback } from "@/hooks/useSSOCallback";
+import { useSSOCallback } from "@/hooks/auth/useSSOCallback";
 import { Loading } from "@/components/ui/Loading";
 
 export function SSOCallback() {

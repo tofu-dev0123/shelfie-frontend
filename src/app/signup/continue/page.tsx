@@ -1,6 +1,6 @@
 "use client";
 
-import { useSignupPage } from "@/hooks/useSignupPage";
+import { useSignupPage } from "@/hooks/signup/useSignupPage";
 import { SignupForm } from "@/components/signup/SignupForm";
 import { SignupError } from "@/components/signup/SignupError";
 import { Loading } from "@/components/ui/Loading";

@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupFormSchema, type SignupFormData } from "@/schemas/auth";
-import { useSignupForm } from "@/hooks/useSignupForm";
-import { useUsernameCheck } from "@/hooks/useUsernameCheck";
+import { useSignupForm } from "@/hooks/signup/useSignupForm";
+import { useUsernameCheck } from "@/hooks/signup/useUsernameCheck";
 import styles from "./styles/SignupForm.module.css";
 
 export function SignupForm() {

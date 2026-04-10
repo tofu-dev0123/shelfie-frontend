@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { useHeader } from "@/hooks/useHeader";
+import { useHeader } from "@/hooks/layout/useHeader";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/Header.module.css";
 
@@ -41,7 +41,7 @@ export function Header() {
           <i className="fa-solid fa-magnifying-glass" />
           探す
         </Link>
-        <Link href="/me/books/new" className={styles.postButton}>
+        <Link href="/books/new" className={styles.postButton}>
           <i className="fa-solid fa-plus" />
           投稿
         </Link>
@@ -58,14 +58,22 @@ export function Header() {
               {dropdownOpen && (
                 <div className={styles.dropdown}>
                   {me && (
-                    <div className={styles.dropdownUser}>
-                      <span className={styles.dropdownNickname}>
-                        {me.nickname}
-                      </span>
-                      <span className={styles.dropdownUsername}>
-                        @{me.username}
-                      </span>
-                    </div>
+                    <>
+                      <div className={styles.dropdownUser}>
+                        <span className={styles.dropdownNickname}>
+                          {me.nickname}
+                        </span>
+                        <span className={styles.dropdownUsername}>
+                          @{me.username}
+                        </span>
+                      </div>
+                      <Link
+                        href={`/users/${me.username}`}
+                        className={styles.dropdownItem}
+                      >
+                        本棚
+                      </Link>
+                    </>
                   )}
                   <button
                     className={styles.dropdownItem}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { useBottomNav } from "@/hooks/useBottomNav";
+import { useBottomNav } from "@/hooks/layout/useBottomNav";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/BottomNav.module.css";
 
@@ -57,7 +57,7 @@ export function BottomNav() {
               className={styles.accountItem}
               onClick={() => toggleAccountMenu()}
             >
-              マイページ
+              本棚
             </Link>
             <button className={styles.accountItem} onClick={handleLogout}>
               ログアウト

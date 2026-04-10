@@ -79,6 +79,6 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   color: var(--color-gray-700);
-  background-color: var(--color-gray-50);
+  background-color: var(--color-white);
   line-height: var(--leading-normal);
 }
