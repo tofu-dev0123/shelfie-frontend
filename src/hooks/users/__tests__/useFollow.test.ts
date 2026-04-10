@@ -88,7 +88,9 @@ describe("useFollow", () => {
   it("処理中は isPending が true になる", async () => {
     let resolve: () => void;
     vi.mocked(followUser).mockReturnValueOnce(
-      new Promise<void>((res) => { resolve = res; }),
+      new Promise<void>((res) => {
+        resolve = res;
+      }),
     );
 
     const { result } = renderHook(() => useFollow("testuser"));

@@ -34,7 +34,8 @@ describe("useUser", () => {
 
     useUser("testuser");
 
-    const fetcher = vi.mocked(useSWR).mock.calls[0][1] as () => Promise<unknown>;
+    const fetcher = vi.mocked(useSWR).mock
+      .calls[0][1] as () => Promise<unknown>;
     await fetcher();
     expect(getUser).toHaveBeenCalledWith("testuser");
   });

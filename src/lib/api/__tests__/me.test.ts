@@ -19,7 +19,11 @@ describe("getMe", () => {
   });
 
   it("レスポンスをそのまま返す", async () => {
-    const mockUser = { id: 1, username: "testuser", nickname: "テストユーザー" };
+    const mockUser = {
+      id: 1,
+      username: "testuser",
+      nickname: "テストユーザー",
+    };
     vi.mocked(apiGet).mockResolvedValueOnce(mockUser);
     const result = await getMe();
     expect(result).toEqual(mockUser);

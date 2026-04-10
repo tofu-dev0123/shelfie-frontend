@@ -3,7 +3,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 
 vi.mock("@/lib/api/books", () => ({
-  getUserBooks: vi.fn().mockResolvedValue({ books: [], has_next: false, page: 1 }),
+  getUserBooks: vi
+    .fn()
+    .mockResolvedValue({ books: [], has_next: false, page: 1 }),
 }));
 
 import { getUserBooks } from "@/lib/api/books";
@@ -11,7 +13,11 @@ import { useUserBooks } from "../useUserBooks";
 
 beforeEach(() => {
   vi.mocked(getUserBooks).mockReset();
-  vi.mocked(getUserBooks).mockResolvedValue({ books: [], has_next: false, page: 1 });
+  vi.mocked(getUserBooks).mockResolvedValue({
+    books: [],
+    has_next: false,
+    page: 1,
+  });
 });
 
 describe("useUserBooks", () => {
@@ -24,7 +30,7 @@ describe("useUserBooks", () => {
     const { result, rerender } = renderHook(
       ({ status }: { status: "done" | "want" }) =>
         useUserBooks("testuser", status),
-      { initialProps: { status: "done" as const } },
+      { initialProps: { status: "done" as "done" | "want" } },
     );
 
     act(() => {

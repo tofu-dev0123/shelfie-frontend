@@ -82,7 +82,11 @@ describe("signup", () => {
     const formData = { username: "testuser", nickname: "テスト" };
     await signup("clerk-token", formData);
 
-    expect(serverPost).toHaveBeenCalledWith("/v1/users", "clerk-token", formData);
+    expect(serverPost).toHaveBeenCalledWith(
+      "/v1/users",
+      "clerk-token",
+      formData,
+    );
     expect(setAccessToken).toHaveBeenCalledWith("token456");
   });
 });
