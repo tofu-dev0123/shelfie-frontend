@@ -86,7 +86,10 @@ export const logger = {
 
 ## ログを差し込む箇所
 
-### `lib/api/client.ts`
+`logger` はアプリ全体のどこでも使用してよい（`lib/api/`, `hooks/`, `store/` など）。
+コンポーネントではトースト通知を優先し、ログは補助的に使う。
+
+### `lib/api/client.ts`（例）
 
 ```ts
 import { logger } from '@/lib/logger'
@@ -107,33 +110,9 @@ logger.error('トークンリフレッシュ失敗。ログイン画面へリダ
 logger.error('APIリクエスト失敗', { endpoint: error.config?.url, status: error.response?.status })
 ```
 
-### `lib/api/auth.ts`
+### `hooks/`（例）
 
-```ts
-import { logger } from '@/lib/logger'
-
-// ログイン成功
-logger.info('ログイン成功')
-
-// ログイン失敗（404: ユーザー未登録）
-logger.info('Railsにユーザーが存在しない。サインアップへリダイレクト')
-
-// ログインエラー
-logger.error('ログイン失敗')
-
-// サインアップ成功
-logger.info('サインアップ成功')
-
-// サインアップ失敗
-logger.error('サインアップ失敗')
-
-// ログアウト
-logger.info('ログアウト')
-```
-
-### `hooks/`
-
-フック内でもデバッグのために `logger` を使用してよい。エラー時は `logger.error` を呼びつつトースト通知も行う。
+エラー時は `logger.error` を呼びつつトースト通知も行う。
 
 ```ts
 const handleLogout = async () => {
@@ -146,10 +125,6 @@ const handleLogout = async () => {
   }
 }
 ```
-
-### コンポーネント
-
-ログは不要。エラーはトースト通知で表示する（TOAST.md参照）。
 
 ---
 

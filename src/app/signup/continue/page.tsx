@@ -10,8 +10,6 @@ export default function SignupContinuePage() {
 
   if (view === "loading" || view === "oauth") return <Loading />;
   if (view === "error")
-    return (
-      <SignupError onRetry={handleRetry} onGoToLogin={handleGoToLogin} />
-    );
+    return <SignupError onRetry={handleRetry} onGoToLogin={handleGoToLogin} />;
   return <SignupForm />;
 }
