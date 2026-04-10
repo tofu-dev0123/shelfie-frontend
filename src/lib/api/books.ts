@@ -15,6 +15,6 @@ export const getUserBooks = (
   status: "done" | "want",
   page: number,
 ): Promise<UserBooksResponse> =>
-  apiGet(
+  apiGet<UserBooksResponse>(
     `${API_ENDPOINTS.USER_BOOKS(username)}?status=${status}&page=${page}`,
   );

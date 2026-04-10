@@ -37,9 +37,9 @@ export const useUserBooks = (username: string, status: "done" | "want") => {
     setSize(1);
   }, [status, setSize]);
 
-  const books = data ? data.flatMap((d) => d.books) : [];
+  const books = data ? data.flatMap((d) => d?.books ?? []) : [];
   const hasMore = data ? (data[data.length - 1]?.has_next ?? false) : false;
-  const isEmpty = data?.[0]?.books.length === 0;
+  const isEmpty = !isLoading && data !== undefined && books.length === 0;
 
   const loadMore = useCallback(() => setSize((prev) => prev + 1), [setSize]);
 
