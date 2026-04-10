@@ -71,7 +71,7 @@ export function Header() {
                         href={`/users/${me.username}`}
                         className={styles.dropdownItem}
                       >
-                        マイページ
+                        本棚
                       </Link>
                     </>
                   )}

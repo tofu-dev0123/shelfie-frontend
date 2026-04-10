@@ -57,7 +57,7 @@ export function BottomNav() {
               className={styles.accountItem}
               onClick={() => toggleAccountMenu()}
             >
-              マイページ
+              本棚
             </Link>
             <button className={styles.accountItem} onClick={handleLogout}>
               ログアウト
