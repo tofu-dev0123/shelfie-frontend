@@ -2,13 +2,32 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("../client", () => ({
   apiGet: vi.fn(),
+  apiPost: vi.fn(),
+  apiDelete: vi.fn(),
 }));
 
-import { apiGet } from "../client";
-import { checkUsername } from "../users";
+import { apiGet, apiPost, apiDelete } from "../client";
+import { getUser, checkUsername, followUser, unfollowUser } from "../users";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
+  vi.mocked(apiPost).mockReset();
+  vi.mocked(apiDelete).mockReset();
+});
+
+describe("getUser", () => {
+  it("正しいエンドポイントにGETリクエストを送る", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce({ id: 1, username: "testuser" });
+    await getUser("testuser");
+    expect(apiGet).toHaveBeenCalledWith("/v1/users/testuser");
+  });
+
+  it("レスポンスをそのまま返す", async () => {
+    const mockUser = { id: 1, username: "testuser", nickname: "テストユーザー" };
+    vi.mocked(apiGet).mockResolvedValueOnce(mockUser);
+    const result = await getUser("testuser");
+    expect(result).toEqual(mockUser);
+  });
 });
 
 describe("checkUsername", () => {
@@ -38,5 +57,21 @@ describe("checkUsername", () => {
     expect(apiGet).toHaveBeenCalledWith(
       "/v1/users/username/check?value=test%20user",
     );
+  });
+});
+
+describe("followUser", () => {
+  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
+    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
+    await followUser("testuser");
+    expect(apiPost).toHaveBeenCalledWith("/v1/users/testuser/follow");
+  });
+});
+
+describe("unfollowUser", () => {
+  it("正しいエンドポイントにDELETEリクエストを送る", async () => {
+    vi.mocked(apiDelete).mockResolvedValueOnce(undefined);
+    await unfollowUser("testuser");
+    expect(apiDelete).toHaveBeenCalledWith("/v1/users/testuser/follow");
   });
 });
