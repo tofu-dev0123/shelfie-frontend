@@ -1,6 +1,6 @@
 import { apiGet } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
-import type { UserBooksResponse } from "@/types/book";
+import type { SearchBooksResponse, UserBooksResponse } from "@/types/book";
 
 /**
  * ユーザーの本棚を取得する。
@@ -17,4 +17,15 @@ export const getUserBooks = (
 ): Promise<UserBooksResponse> =>
   apiGet<UserBooksResponse>(
     `${API_ENDPOINTS.USER_BOOKS(username)}?status=${status}&page=${page}`,
+  );
+
+/**
+ * 書籍をキーワードで検索する。
+ * @param q - 検索キーワード
+ * @returns 検索結果レスポンス（books）
+ * @throws 検索失敗時にエラー
+ */
+export const searchBooks = (q: string): Promise<SearchBooksResponse> =>
+  apiGet<SearchBooksResponse>(
+    `${API_ENDPOINTS.BOOKS_SEARCH}?q=${encodeURIComponent(q)}`,
   );

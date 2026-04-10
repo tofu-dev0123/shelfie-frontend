@@ -1,0 +1,110 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+.searchForm {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.searchInput {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  background: white;
+  color: var(--color-gray-900);
+  outline: none;
+  font-family: var(--font-sans);
+}
+
+.searchInput::placeholder {
+  color: var(--color-gray-400);
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary-600);
+}
+
+.searchButton {
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-primary-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+}
+
+.searchButton:hover:not(:disabled) {
+  background: var(--color-primary-700);
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resultList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-16) 0;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  color: var(--color-gray-300);
+}
+
+.emptyText {
+  font-size: var(--text-base);
+  color: var(--color-gray-500);
+}
+
+.loginRequired {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-16) 0;
+}
+
+.loginRequiredIcon {
+  font-size: 40px;
+  color: var(--color-gray-300);
+}
+
+.loginRequiredText {
+  font-size: var(--text-base);
+  color: var(--color-gray-500);
+}
+
+.loginLink {
+  padding: var(--space-2) var(--space-6);
+  background: var(--color-primary-600);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  background: var(--color-primary-700);
+}
