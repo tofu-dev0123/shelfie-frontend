@@ -25,6 +25,8 @@ export const MESSAGES = {
     DELETE_SUCCESS: "削除しました",
     DELETE_ERROR: "削除に失敗しました",
     SHELF_FETCH_ERROR: "本棚の取得に失敗しました",
+    SEARCH_ERROR: "書籍の検索に失敗しました",
+    SEARCH_LOGIN_REQUIRED: "書籍の検索にはログインが必要です",
   },
   COMMON: {
     ERROR: "操作に失敗しました",

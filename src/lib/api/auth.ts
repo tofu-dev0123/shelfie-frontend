@@ -44,3 +44,26 @@ export const logout = async (): Promise<void> => {
   useAuthStore.getState().clearAccessToken();
   logger.info("ログアウト");
 };
+
+/**
+ * リフレッシュトークン（HttpOnly Cookie）を使いアクセストークンを取得する。
+ * ページリロード時にZustandのトークンを復元するために使用する。
+ * @returns 取得成功したか
+ */
+export const refreshAccessToken = async (): Promise<boolean> => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.AUTH_REFRESH}`,
+      {},
+      { withCredentials: true },
+    );
+    useAuthStore.getState().setAccessToken(res.data.access_token);
+    logger.info("アクセストークン復元成功");
+    return true;
+  } catch {
+    logger.warn(
+      "アクセストークン復元失敗（未ログインまたはセッション期限切れ）",
+    );
+    return false;
+  }
+};

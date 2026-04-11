@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { UserBook } from "@/types/book";
+import type { Book } from "@/types/book";
 import styles from "./styles/BookCard.module.css";
 
 type Props = {
-  book: UserBook;
+  book: Book;
   username: string;
 };
 
@@ -24,7 +24,9 @@ export function BookCard({ book, username }: Props) {
         ) : null}
       </div>
       <p className={styles.title}>{book.title}</p>
-      <p className={styles.author}>{book.author}</p>
+      {book.authors.length > 0 && (
+        <p className={styles.author}>{book.authors.join(", ")}</p>
+      )}
     </Link>
   );
 }
