@@ -76,13 +76,11 @@ export function SearchContent() {
 
       {/* 検索結果 — isAuthenticated は SWR キー側で保証済みのため描画条件には含めない */}
       {hasSearched && !isLoading && books && books.length > 0 && (
-        <ul className={styles.resultList}>
+        <div className={styles.resultGrid}>
           {books.map((book) => (
-            <li key={book.google_books_id}>
-              <SearchBookCard book={book} />
-            </li>
+            <SearchBookCard key={book.google_books_id} book={book} />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
