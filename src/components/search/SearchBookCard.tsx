@@ -24,9 +24,8 @@ export function SearchBookCard({ book }: Props) {
       </div>
       <div className={styles.info}>
         <p className={styles.title}>{book.title}</p>
-        <p className={styles.author}>{book.author}</p>
-        {book.published_year && (
-          <p className={styles.year}>{book.published_year}年</p>
+        {book.authors.length > 0 && (
+          <p className={styles.author}>{book.authors.join(", ")}</p>
         )}
       </div>
     </Link>

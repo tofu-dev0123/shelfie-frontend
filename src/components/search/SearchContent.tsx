@@ -9,7 +9,7 @@ import { SearchBookCard } from "./SearchBookCard";
 import styles from "./styles/SearchContent.module.css";
 
 export function SearchContent() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
 
   // RailsトークンまたはClerkセッションのどちらかがあれば認証済みとみなす
@@ -19,7 +19,7 @@ export function SearchContent() {
   const { keyword, setKeyword, handleSubmit, q } = useSearchForm();
   const { data, isLoading } = useBookSearch(q, isAuthenticated);
 
-  const books = data?.books;
+  const books = data?.items;
   const hasSearched = q !== "";
 
   return (
@@ -51,8 +51,8 @@ export function SearchContent() {
         </div>
       )}
 
-      {/* qパラメータあり・未認証（直接URLアクセスなど） */}
-      {hasSearched && !isAuthenticated && (
+      {/* qパラメータあり・未認証（Clerkロード完了後のみ表示してフラッシュを防ぐ） */}
+      {hasSearched && isLoaded && !isAuthenticated && (
         <div className={styles.loginRequired}>
           <i className={`fa-solid fa-lock ${styles.loginRequiredIcon}`} />
           <p className={styles.loginRequiredText}>
@@ -74,8 +74,8 @@ export function SearchContent() {
         </div>
       )}
 
-      {/* 検索結果 */}
-      {hasSearched && isAuthenticated && books && books.length > 0 && (
+      {/* 検索結果 — isAuthenticated は SWR キー側で保証済みのため描画条件には含めない */}
+      {hasSearched && !isLoading && books && books.length > 0 && (
         <ul className={styles.resultList}>
           {books.map((book) => (
             <li key={book.google_books_id}>

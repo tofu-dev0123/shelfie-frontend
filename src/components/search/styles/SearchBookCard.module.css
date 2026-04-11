@@ -53,8 +53,3 @@
   font-size: var(--text-sm);
   color: var(--color-gray-500);
 }
-
-.year {
-  font-size: var(--text-sm);
-  color: var(--color-gray-400);
-}

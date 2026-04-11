@@ -14,11 +14,14 @@ export type UserBooksResponse = {
 export type SearchBook = {
   google_books_id: string;
   title: string;
-  author: string;
+  authors: string[];
   thumbnail_url: string | null;
-  published_year: number | null;
 };
 
 export type SearchBooksResponse = {
-  books: SearchBook[];
+  items: SearchBook[];
+  pagination: {
+    next_cursor: string | null;
+    has_next: boolean;
+  };
 };
