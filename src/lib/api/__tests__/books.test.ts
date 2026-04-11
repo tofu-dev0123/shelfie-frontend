@@ -5,7 +5,7 @@ vi.mock("../client", () => ({
 }));
 
 import { apiGet } from "../client";
-import { getUserBooks } from "../books";
+import { getUserBooks, searchBooks } from "../books";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
@@ -54,5 +54,28 @@ describe("getUserBooks", () => {
     vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
     const result = await getUserBooks("testuser", "done");
     expect(result).toEqual(mockResponse);
+  });
+});
+
+const emptySearchResponse = {
+  items: [],
+  pagination: { next_cursor: null, has_next: false },
+};
+
+describe("searchBooks", () => {
+  it("正しいエンドポイントにGETリクエストを送る（カーソルなし）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce(emptySearchResponse);
+    await searchBooks("村上春樹");
+    expect(apiGet).toHaveBeenCalledWith(
+      "/v1/books/search?q=%E6%9D%91%E4%B8%8A%E6%98%A5%E6%A8%B9",
+    );
+  });
+
+  it("正しいエンドポイントにGETリクエストを送る（カーソルあり）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce(emptySearchResponse);
+    await searchBooks("村上春樹", "cursor_abc");
+    expect(apiGet).toHaveBeenCalledWith(
+      "/v1/books/search?q=%E6%9D%91%E4%B8%8A%E6%98%A5%E6%A8%B9&cursor=cursor_abc",
+    );
   });
 });

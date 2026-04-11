@@ -17,10 +17,14 @@ export function SearchContent() {
   const isAuthenticated = !!accessToken || !!isSignedIn;
 
   const { keyword, setKeyword, handleSubmit, q } = useSearchForm();
-  const { data, isLoading } = useBookSearch(q, isAuthenticated);
+  const { books, isEmpty, isLoading, sentinelRef } = useBookSearch(
+    q,
+    isAuthenticated,
+  );
 
-  const books = data?.items;
   const hasSearched = q !== "";
+  // 追加ロード中はスピナーのみ表示し、ボタンは「検索中...」にしない
+  const isFirstLoading = isLoading && books.length === 0;
 
   return (
     <div className={styles.container}>
@@ -34,10 +38,10 @@ export function SearchContent() {
         />
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isFirstLoading}
           className={styles.searchButton}
         >
-          {isLoading ? "検索中..." : "検索"}
+          {isFirstLoading ? "検索中..." : "検索"}
         </button>
       </form>
 
@@ -65,7 +69,7 @@ export function SearchContent() {
       )}
 
       {/* 0件 */}
-      {hasSearched && isAuthenticated && !isLoading && books?.length === 0 && (
+      {hasSearched && isAuthenticated && isEmpty && (
         <div className={styles.emptyState}>
           <i className={`fa-solid fa-box-open ${styles.emptyIcon}`} />
           <p className={styles.emptyText}>
@@ -75,12 +79,20 @@ export function SearchContent() {
       )}
 
       {/* 検索結果 — isAuthenticated は SWR キー側で保証済みのため描画条件には含めない */}
-      {hasSearched && !isLoading && books && books.length > 0 && (
-        <div className={styles.resultGrid}>
-          {books.map((book) => (
-            <SearchBookCard key={book.google_books_id} book={book} />
-          ))}
-        </div>
+      {hasSearched && books.length > 0 && (
+        <>
+          <div className={styles.resultGrid}>
+            {books.map((book) => (
+              <SearchBookCard key={book.google_books_id} book={book} />
+            ))}
+          </div>
+          <div ref={sentinelRef} className={styles.sentinel} />
+          {isLoading && (
+            <div className={styles.loading}>
+              <i className="fa-solid fa-spinner fa-spin" />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

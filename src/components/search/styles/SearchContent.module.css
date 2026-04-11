@@ -121,3 +121,15 @@
 .loginLink:hover {
   background: var(--color-primary-700);
 }
+
+.sentinel {
+  height: 1px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) 0;
+  color: var(--color-gray-400);
+  font-size: var(--text-lg);
+}

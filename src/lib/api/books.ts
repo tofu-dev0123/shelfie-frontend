@@ -25,10 +25,17 @@ export const getUserBooks = (
 /**
  * 書籍をキーワードで検索する。
  * @param q - 検索キーワード
+ * @param cursor - ページネーションカーソル（省略時は先頭から取得）
  * @returns 検索結果レスポンス（items・pagination）
  * @throws 検索失敗時にエラー
  */
-export const searchBooks = (q: string): Promise<SearchBooksResponse> =>
-  apiGet<SearchBooksResponse>(
-    `${API_ENDPOINTS.BOOKS_SEARCH}?q=${encodeURIComponent(q)}`,
+export const searchBooks = (
+  q: string,
+  cursor?: string | null,
+): Promise<SearchBooksResponse> => {
+  const params = new URLSearchParams({ q });
+  if (cursor) params.set("cursor", cursor);
+  return apiGet<SearchBooksResponse>(
+    `${API_ENDPOINTS.BOOKS_SEARCH}?${params.toString()}`,
   );
+};
