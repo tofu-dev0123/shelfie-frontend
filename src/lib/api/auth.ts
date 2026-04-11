@@ -61,7 +61,9 @@ export const refreshAccessToken = async (): Promise<boolean> => {
     logger.info("アクセストークン復元成功");
     return true;
   } catch {
-    logger.warn("アクセストークン復元失敗（未ログインまたはセッション期限切れ）");
+    logger.warn(
+      "アクセストークン復元失敗（未ログインまたはセッション期限切れ）",
+    );
     return false;
   }
 };

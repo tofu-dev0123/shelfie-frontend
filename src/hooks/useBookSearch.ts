@@ -42,7 +42,9 @@ export const useBookSearch = (q: string, isAuthenticated: boolean) => {
       ({ q, cursor }: SearchKey) => searchBooks(q, cursor),
       {
         onError: () => {
-          logger.error("書籍検索失敗", { endpoint: API_ENDPOINTS.BOOKS_SEARCH });
+          logger.error("書籍検索失敗", {
+            endpoint: API_ENDPOINTS.BOOKS_SEARCH,
+          });
           toast.error(MESSAGES.BOOK.SEARCH_ERROR);
         },
         shouldRetryOnError: false,

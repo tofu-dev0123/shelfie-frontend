@@ -30,12 +30,11 @@ export const useUserBooks = (username: string, status: "done" | "want") => {
     return { type: "user-books", username, status, cursor };
   };
 
-  const { data, size, setSize, isLoading } =
-    useSWRInfinite<BookPostsResponse>(
-      getKey,
-      ({ username, status, cursor }: BookKey) =>
-        getUserBooks(username, status, cursor),
-    );
+  const { data, size, setSize, isLoading } = useSWRInfinite<BookPostsResponse>(
+    getKey,
+    ({ username, status, cursor }: BookKey) =>
+      getUserBooks(username, status, cursor),
+  );
 
   // statusが変わったらページをリセット
   useEffect(() => {

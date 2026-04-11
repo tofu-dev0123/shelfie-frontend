@@ -20,9 +20,7 @@ describe("getUserBooks", () => {
   it("正しいエンドポイントにGETリクエストを送る（done・カーソルなし）", async () => {
     vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
     await getUserBooks("testuser", "done");
-    expect(apiGet).toHaveBeenCalledWith(
-      "/v1/users/testuser/books?status=done",
-    );
+    expect(apiGet).toHaveBeenCalledWith("/v1/users/testuser/books?status=done");
   });
 
   it("正しいエンドポイントにGETリクエストを送る（want・カーソルあり）", async () => {

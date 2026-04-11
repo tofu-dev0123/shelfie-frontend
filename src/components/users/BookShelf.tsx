@@ -53,11 +53,7 @@ export function BookShelf({ username, isMe }: Props) {
           <>
             <div className={styles.grid}>
               {books.map((post) => (
-                <BookCard
-                  key={post.id}
-                  book={post.book}
-                  username={username}
-                />
+                <BookCard key={post.id} book={post.book} username={username} />
               ))}
             </div>
 
