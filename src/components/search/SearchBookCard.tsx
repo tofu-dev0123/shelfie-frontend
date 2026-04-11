@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { SearchBook } from "@/types/book";
+import type { Book } from "@/types/book";
 import styles from "./styles/SearchBookCard.module.css";
 
 type Props = {
-  book: SearchBook;
+  book: Book;
 };
 
 export function SearchBookCard({ book }: Props) {
