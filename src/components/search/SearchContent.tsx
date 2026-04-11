@@ -12,9 +12,9 @@ export function SearchContent() {
   const { isSignedIn, isLoaded } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
 
-  // RailsトークンまたはClerkセッションのどちらかがあれば認証済みとみなす
-  // （ページリロード直後はZustandが空でもClerkセッションがあればサイレントリフレッシュで対応できる）
-  const isAuthenticated = !!accessToken || !!isSignedIn;
+  // SWRのキー条件: Railsトークンが揃うまでフェッチしない
+  // （AuthInitializerがリロード時にトークンを復元するまで待機する）
+  const isAuthenticated = !!accessToken;
 
   const { keyword, setKeyword, handleSubmit, q } = useSearchForm();
   const { books, isEmpty, isLoading, sentinelRef } = useBookSearch(
@@ -55,8 +55,8 @@ export function SearchContent() {
         </div>
       )}
 
-      {/* qパラメータあり・未認証（Clerkロード完了後のみ表示してフラッシュを防ぐ） */}
-      {hasSearched && isLoaded && !isAuthenticated && (
+      {/* qパラメータあり・未ログイン（Clerkロード完了後のみ表示してフラッシュを防ぐ） */}
+      {hasSearched && isLoaded && !isSignedIn && (
         <div className={styles.loginRequired}>
           <i className={`fa-solid fa-lock ${styles.loginRequiredIcon}`} />
           <p className={styles.loginRequiredText}>
@@ -69,7 +69,7 @@ export function SearchContent() {
       )}
 
       {/* 0件 */}
-      {hasSearched && isAuthenticated && isEmpty && (
+      {hasSearched && isSignedIn && isEmpty && (
         <div className={styles.emptyState}>
           <i className={`fa-solid fa-box-open ${styles.emptyIcon}`} />
           <p className={styles.emptyText}>
