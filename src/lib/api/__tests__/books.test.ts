@@ -40,7 +40,7 @@ describe("getUserBooks", () => {
           tags: [],
           created_at: "2026-01-01T00:00:00Z",
           book: {
-            google_books_id: "abc",
+            isbn: "abc",
             title: "吾輩は猫である",
             authors: ["夏目漱石"],
             thumbnail_url: null,

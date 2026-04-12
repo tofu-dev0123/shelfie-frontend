@@ -1,6 +1,6 @@
 // GET /v1/books/search および本棚の book オブジェクト共通型
 export type Book = {
-  google_books_id: string;
+  isbn: string;
   title: string;
   authors: string[];
   thumbnail_url: string | null;

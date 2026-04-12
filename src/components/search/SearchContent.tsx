@@ -83,7 +83,7 @@ export function SearchContent() {
         <>
           <div className={styles.resultGrid}>
             {books.map((book) => (
-              <SearchBookCard key={book.google_books_id} book={book} />
+              <SearchBookCard key={book.isbn} book={book} />
             ))}
           </div>
           <div ref={sentinelRef} className={styles.sentinel} />

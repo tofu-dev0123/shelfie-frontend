@@ -9,7 +9,7 @@ type Props = {
 export function SearchBookCard({ book }: Props) {
   return (
     <div className={styles.card}>
-      <Link href={`/books/${book.google_books_id}`} className={styles.cardLink}>
+      <Link href={`/books/${book.isbn}`} className={styles.cardLink}>
         <div className={styles.cover}>
           {book.thumbnail_url ? (
             // eslint-disable-next-line @next/next/no-img-element
