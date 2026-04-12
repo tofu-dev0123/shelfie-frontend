@@ -53,7 +53,7 @@ describe("useUserBooks", () => {
           tags: [],
           created_at: "2026-01-01T00:00:00Z",
           book: {
-            google_books_id: "abc",
+            isbn: "abc",
             title: "テスト本",
             authors: ["著者名"],
             thumbnail_url: null,
@@ -79,7 +79,7 @@ describe("useUserBooks", () => {
           tags: [],
           created_at: "2026-01-01T00:00:00Z",
           book: {
-            google_books_id: "abc",
+            isbn: "abc",
             title: "テスト本",
             authors: ["著者名"],
             thumbnail_url: null,

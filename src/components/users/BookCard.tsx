@@ -10,7 +10,7 @@ type Props = {
 export function BookCard({ book, username }: Props) {
   return (
     <Link
-      href={`/users/${username}/books/${book.google_books_id}`}
+      href={`/users/${username}/books/${book.isbn}`}
       className={styles.card}
     >
       <div className={styles.cover}>
