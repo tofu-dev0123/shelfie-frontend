@@ -1,6 +1,11 @@
-import { apiGet } from "./client";
+import { apiGet, apiPost } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
-import type { SearchBooksResponse, BookPostsResponse } from "@/types/book";
+import type {
+  SearchBooksResponse,
+  BookPostsResponse,
+  TagsResponse,
+  CreateBookInput,
+} from "@/types/book";
 
 /**
  * ユーザーの本棚を取得する。
@@ -39,3 +44,19 @@ export const searchBooks = (
     `${API_ENDPOINTS.BOOKS_SEARCH}?${params.toString()}`,
   );
 };
+
+/**
+ * タグ一覧を取得する。
+ * @returns タグ名の配列
+ * @throws 取得失敗時にエラー
+ */
+export const getTags = (): Promise<TagsResponse> =>
+  apiGet<TagsResponse>(API_ENDPOINTS.TAGS);
+
+/**
+ * 本棚に書籍を投稿する。
+ * @param data - 投稿データ（isbn・content・tags）
+ * @throws 投稿失敗時にエラー
+ */
+export const createBook = (data: CreateBookInput): Promise<void> =>
+  apiPost<void>(API_ENDPOINTS.ME_BOOKS, data);
