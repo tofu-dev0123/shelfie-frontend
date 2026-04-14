@@ -46,7 +46,10 @@ export const useBookPostSearch = (isAuthenticated: boolean) => {
 
   const books = data?.items ?? [];
   const isEmpty =
-    !isLoading && debouncedKeyword !== "" && data !== undefined && books.length === 0;
+    !isLoading &&
+    debouncedKeyword !== "" &&
+    data !== undefined &&
+    books.length === 0;
 
   const selectBook = (book: Book) => setSelectedBook(book);
   const clearBook = () => setSelectedBook(null);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -19,7 +19,7 @@ import type { Book } from "@/types/book";
 export const useBookPostForm = (selectedBook: Book | null) => {
   const router = useRouter();
   const { data: me } = useMe(true);
-  const [tagFilter, setTagFilter] = useState("");
+  const [tagFilterInput, setTagFilter] = useState("");
 
   const {
     register,
@@ -27,8 +27,8 @@ export const useBookPostForm = (selectedBook: Book | null) => {
     formState: { errors, isSubmitting },
     setValue,
     getValues,
-    watch,
     reset,
+    control,
   } = useForm<BookPostFormData>({
     resolver: zodResolver(bookPostSchema),
     defaultValues: { content: "", tags: [] },
@@ -38,19 +38,25 @@ export const useBookPostForm = (selectedBook: Book | null) => {
   useEffect(() => {
     if (!selectedBook) {
       reset();
-      setTagFilter("");
     }
   }, [selectedBook, reset]);
 
-  const content = watch("content");
-  const selectedTags = watch("tags");
+  // selectedBookがない場合はtagFilterを空文字として扱う（effectでsetStateを呼ばない）
+  const tagFilter = selectedBook ? tagFilterInput : "";
+
+  const content = useWatch({ control, name: "content" });
+  const selectedTags = useWatch({ control, name: "tags" });
 
   const toggleTag = (tagName: string) => {
     const current = getValues("tags");
     if (current.includes(tagName)) {
-      setValue("tags", current.filter((t) => t !== tagName), {
-        shouldValidate: true,
-      });
+      setValue(
+        "tags",
+        current.filter((t) => t !== tagName),
+        {
+          shouldValidate: true,
+        },
+      );
     } else {
       setValue("tags", [...current, tagName], { shouldValidate: true });
     }
