@@ -24,9 +24,6 @@ export function BookCard({ book, username }: Props) {
         ) : null}
       </div>
       <p className={styles.title}>{book.title}</p>
-      {book.authors.length > 0 && (
-        <p className={styles.author}>{book.authors.join(", ")}</p>
-      )}
     </Link>
   );
 }
