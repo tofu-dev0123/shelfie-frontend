@@ -35,7 +35,7 @@ export type BookPostsResponse = {
 
 // GET /v1/tags レスポンス
 export type TagsResponse = {
-  tags: string[];
+  tags: { name: string }[];
 };
 
 // POST /v1/me/books リクエスト

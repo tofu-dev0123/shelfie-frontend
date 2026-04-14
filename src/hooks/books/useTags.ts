@@ -18,5 +18,5 @@ export const useTags = () => {
     shouldRetryOnError: false,
   });
 
-  return { tags: data?.tags ?? [], isLoading };
+  return { tags: data?.tags.map((t) => t.name) ?? [], isLoading };
 };
