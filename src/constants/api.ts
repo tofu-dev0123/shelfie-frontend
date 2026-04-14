@@ -20,4 +20,8 @@ export const API_ENDPOINTS = {
   BOOK: (id: number) => `/v1/books/${id}`,
   BOOKS_SEARCH: "/v1/books/search",
   USER_BOOKS: (username: string) => `/v1/users/${username}/books`,
+  ME_BOOKS: "/v1/me/books",
+
+  // タグ
+  TAGS: "/v1/tags",
 } as const;

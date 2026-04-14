@@ -32,3 +32,15 @@ export type BookPostsResponse = {
   items: BookPost[];
   pagination: Pagination;
 };
+
+// GET /v1/tags レスポンス
+export type TagsResponse = {
+  tags: { name: string }[];
+};
+
+// POST /v1/me/books リクエスト
+export type CreateBookInput = {
+  isbn: string;
+  content?: string;
+  tags?: string[];
+};

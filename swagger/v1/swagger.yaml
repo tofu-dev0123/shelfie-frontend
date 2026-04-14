@@ -448,6 +448,288 @@ paths:
                         example: INTERNAL_SERVER_ERROR
                       message:
                         type: string
+  "/v1/me/books":
+    post:
+      summary: 本棚に書籍を追加する
+      tags:
+        - マイページ系
+      security:
+        - Bearer: []
+      parameters: []
+      responses:
+        "201":
+          description: 登録成功（DBに書籍あり→楽天API不要）
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 登録が完了しました
+                required:
+                  - message
+        "401":
+          description: アクセストークンなし
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: UNAUTHORIZED
+                      message:
+                        type: string
+        "404":
+          description: 楽天書籍APIに書籍が存在しない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND
+                      message:
+                        type: string
+        "409":
+          description: すでに同じ書籍を登録済み
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: CONFLICT
+                      message:
+                        type: string
+        "422":
+          description: 存在しないタグが含まれている
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: VALIDATION_ERROR
+                      message:
+                        type: string
+        "503":
+          description: 楽天書籍APIがエラーを返した
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: EXTERNAL_API_ERROR
+                      message:
+                        type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isbn:
+                  type: string
+                  example: "9784873116068"
+                content:
+                  type: string
+                  example: とても良い本でした
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Go
+                    - アーキテクチャ
+                purchase_links:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - https://www.amazon.co.jp/...
+              required:
+                - isbn
+        required: true
+  "/v1/me/books/{isbn}":
+    put:
+      summary: 本棚投稿更新API
+      tags:
+        - 本棚系
+      security:
+        - Bearer: []
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          description: 書籍の ISBN-13
+          schema:
+            type: string
+      responses:
+        "200":
+          description: tags / purchase_links を空配列で全削除
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 更新が完了しました
+                required:
+                  - message
+        "401":
+          description: アクセストークンなし
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: UNAUTHORIZED
+                      message:
+                        type: string
+        "404":
+          description: 書籍または投稿が存在しない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_FOUND
+                      message:
+                        type: string
+        "422":
+          description: purchase_links の URL 形式が不正
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: VALIDATION_ERROR
+                      message:
+                        type: string
+                      field:
+                        type: string
+                        example: purchase_links
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: 改めて読み直したら更に良かったです
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Go
+                    - Architecture
+                purchase_links:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - https://www.amazon.co.jp/...
+              required:
+                - content
+                - tags
+                - purchase_links
+        required: true
+    delete:
+      summary: 本棚投稿削除API
+      tags:
+        - 本棚系
+      security:
+        - Bearer: []
+      parameters:
+        - name: isbn
+          in: path
+          required: true
+          description: 書籍の ISBN-13
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 冪等性：book 自体が存在しない isbn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 削除が完了しました
+                required:
+                  - message
+        "401":
+          description: アクセストークンなし
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: UNAUTHORIZED
+                      message:
+                        type: string
+        "422":
+          description: isbn が13桁の数字でない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: VALIDATION_ERROR
+                      message:
+                        type: string
   "/v1/me":
     get:
       summary: マイプロフィール取得API
@@ -625,6 +907,32 @@ paths:
                   example:
                     - https://github.com/komusan
         required: true
+  "/v1/tags":
+    get:
+      summary: タグ一覧取得API
+      tags:
+        - タグ系
+      responses:
+        "200":
+          description: タグが0件
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: Go
+                      required:
+                        - name
+                    example: []
+                required:
+                  - tags
   "/v1/users/{username}/books":
     get:
       summary: 本棚一覧取得API
