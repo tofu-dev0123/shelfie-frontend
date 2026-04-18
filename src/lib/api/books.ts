@@ -1,20 +1,62 @@
-import { apiGet } from "./client";
+import { apiGet, apiPost } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
-import type { UserBooksResponse } from "@/types/book";
+import type {
+  SearchBooksResponse,
+  BookPostsResponse,
+  TagsResponse,
+  CreateBookInput,
+} from "@/types/book";
 
 /**
  * ユーザーの本棚を取得する。
  * @param username - ユーザー名
  * @param status - 本のステータス（done: 読了 / want: 読みたい）
- * @param page - ページ番号（1始まり）
- * @returns 本棚レスポンス（books・has_next・page）
+ * @param cursor - ページネーションカーソル（省略時は先頭から取得）
+ * @returns 本棚レスポンス（items・pagination）
  * @throws 取得失敗時にエラー
  */
 export const getUserBooks = (
   username: string,
   status: "done" | "want",
-  page: number,
-): Promise<UserBooksResponse> =>
-  apiGet<UserBooksResponse>(
-    `${API_ENDPOINTS.USER_BOOKS(username)}?status=${status}&page=${page}`,
+  cursor?: string | null,
+): Promise<BookPostsResponse> => {
+  const params = new URLSearchParams({ status });
+  if (cursor) params.set("cursor", cursor);
+  return apiGet<BookPostsResponse>(
+    `${API_ENDPOINTS.USER_BOOKS(username)}?${params.toString()}`,
   );
+};
+
+/**
+ * 書籍をキーワードで検索する。
+ * @param q - 検索キーワード
+ * @param cursor - ページネーションカーソル（省略時は先頭から取得）
+ * @returns 検索結果レスポンス（items・pagination）
+ * @throws 検索失敗時にエラー
+ */
+export const searchBooks = (
+  q: string,
+  cursor?: string | null,
+): Promise<SearchBooksResponse> => {
+  const params = new URLSearchParams({ q });
+  if (cursor) params.set("cursor", cursor);
+  return apiGet<SearchBooksResponse>(
+    `${API_ENDPOINTS.BOOKS_SEARCH}?${params.toString()}`,
+  );
+};
+
+/**
+ * タグ一覧を取得する。
+ * @returns タグ名の配列
+ * @throws 取得失敗時にエラー
+ */
+export const getTags = (): Promise<TagsResponse> =>
+  apiGet<TagsResponse>(API_ENDPOINTS.TAGS);
+
+/**
+ * 本棚に書籍を投稿する。
+ * @param data - 投稿データ（isbn・content・tags）
+ * @throws 投稿失敗時にエラー
+ */
+export const createBook = (data: CreateBookInput): Promise<void> =>
+  apiPost<void>(API_ENDPOINTS.ME_BOOKS, data);

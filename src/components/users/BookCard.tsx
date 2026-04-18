@@ -1,16 +1,16 @@
 import Link from "next/link";
-import type { UserBook } from "@/types/book";
+import type { Book } from "@/types/book";
 import styles from "./styles/BookCard.module.css";
 
 type Props = {
-  book: UserBook;
+  book: Book;
   username: string;
 };
 
 export function BookCard({ book, username }: Props) {
   return (
     <Link
-      href={`/users/${username}/books/${book.google_books_id}`}
+      href={`/users/${username}/books/${book.isbn}`}
       className={styles.card}
     >
       <div className={styles.cover}>
@@ -24,7 +24,6 @@ export function BookCard({ book, username }: Props) {
         ) : null}
       </div>
       <p className={styles.title}>{book.title}</p>
-      <p className={styles.author}>{book.author}</p>
     </Link>
   );
 }
