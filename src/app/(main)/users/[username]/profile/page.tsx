@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import axios from "axios";
 import { getUser } from "@/lib/api/users";
-import { UserShelf } from "@/components/users/UserShelf";
+import { UserProfile } from "@/components/users/UserProfile";
 
 type Props = {
   params: Promise<{ username: string }>;
 };
 
-export default async function UserPage({ params }: Props) {
+export default async function UserProfilePage({ params }: Props) {
   const { username } = await params;
 
   let user;
@@ -21,5 +21,5 @@ export default async function UserPage({ params }: Props) {
   }
 
   // SWRのfallbackDataとして渡すことで、クライアント側の初回フェッチを省略する
-  return <UserShelf username={username} fallbackUser={user} />;
+  return <UserProfile username={username} fallbackUser={user} />;
 }
