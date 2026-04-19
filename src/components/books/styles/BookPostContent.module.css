@@ -254,99 +254,24 @@
   color: var(--color-error);
 }
 
-/* ── タグ ── */
+/* ── タグカウンタ・ヒント ── */
 
-.selectedTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.tagBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-  border: 1px solid var(--color-primary-200);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-}
-
-.tagBadgeRemove {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-primary-600);
+.tagCount {
   font-size: var(--text-xs);
-  padding: 0;
-  line-height: 1;
-  font-family: var(--font-sans);
-}
-
-.tagBadgeRemove:hover {
-  color: var(--color-primary-700);
-}
-
-.warning {
-  font-size: var(--text-sm);
-  color: var(--color-warning);
-}
-
-.tagFilterInput {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-family: var(--font-sans);
-  color: var(--color-gray-900);
-  outline: none;
-  background: white;
-}
-
-.tagFilterInput::placeholder {
   color: var(--color-gray-400);
 }
 
-.tagFilterInput:focus {
-  border-color: var(--color-primary-600);
+.tagCountWarn {
+  color: var(--color-warning);
 }
 
-.tagList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  max-height: 200px;
-  overflow-y: auto;
-  padding: var(--space-2) 0;
+.tagCountError {
+  color: var(--color-error);
 }
 
-.tagItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) 0;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  color: var(--color-gray-700);
-}
-
-.tagCheckbox {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--color-primary-600);
-  cursor: pointer;
-}
-
-.tagItem:has(.tagCheckbox:disabled) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.tagName {
-  line-height: var(--leading-normal);
+.tagHint {
+  font-size: var(--text-xs);
+  color: var(--color-gray-500);
 }
 
 /* ── 投稿ボタン ── */

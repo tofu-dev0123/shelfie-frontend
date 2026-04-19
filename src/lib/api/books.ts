@@ -46,12 +46,16 @@ export const searchBooks = (
 };
 
 /**
- * タグ一覧を取得する。
- * @returns タグ名の配列
+ * タグをサジェスト用に検索する。
+ * q は必須（最大50文字）。バックエンドは最大10件返す。
+ * @param q - 検索クエリ（URLエンコードせずに渡す）
+ * @returns マッチしたタグのレスポンス
  * @throws 取得失敗時にエラー
  */
-export const getTags = (): Promise<TagsResponse> =>
-  apiGet<TagsResponse>(API_ENDPOINTS.TAGS);
+export const getTags = (q: string): Promise<TagsResponse> => {
+  const params = new URLSearchParams({ q });
+  return apiGet<TagsResponse>(`${API_ENDPOINTS.TAGS}?${params.toString()}`);
+};
 
 /**
  * 本棚に書籍を投稿する。

@@ -2,8 +2,10 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
-import { useTags } from "@/hooks/books/useTags";
 import { useBookPostForm } from "@/hooks/books/useBookPostForm";
+import { useHashtagComposer } from "@/hooks/books/useHashtagComposer";
+import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
+import { TagSuggestList } from "./TagSuggestList";
 import styles from "./styles/BookPostContent.module.css";
 
 export function BookPostContent() {
@@ -22,21 +24,37 @@ export function BookPostContent() {
     clearBook,
   } = useBookPostSearch(isAuthenticated);
 
-  const { tags } = useTags();
-
   const {
     register,
+    control,
+    setValue,
     onSubmit,
     errors,
     isSubmitting,
     content,
-    selectedTags,
-    toggleTag,
-    tagFilter,
-    setTagFilter,
   } = useBookPostForm(selectedBook);
 
-  const filteredTags = tags.filter((tag) => tag.includes(tagFilter));
+  const {
+    textareaRef,
+    textareaProps,
+    isOpen,
+    query,
+    suggestions,
+    isLoading: isSuggestLoading,
+    activeIndex,
+    setActiveIndex,
+    selectSuggestion,
+  } = useHashtagComposer(control, setValue);
+
+  const tagCount = extractHashtags(content ?? "").length;
+  const tagCountClass =
+    tagCount > MAX_HASHTAGS
+      ? styles.tagCountError
+      : tagCount === MAX_HASHTAGS
+        ? styles.tagCountWarn
+        : "";
+
+  const { ref: contentRef, ...contentRest } = register("content");
 
   return (
     <div className={styles.container}>
@@ -139,77 +157,41 @@ export function BookPostContent() {
                   <span className={styles.required}>必須</span>
                 </label>
                 <span className={styles.charCount}>
+                  <span className={tagCountClass}>
+                    タグ {tagCount}/{MAX_HASHTAGS}
+                  </span>
+                  {" ・ "}
                   {content?.length ?? 0}/1000
                 </span>
               </div>
               <textarea
                 id="content"
-                {...register("content")}
+                {...contentRest}
+                ref={(node) => {
+                  contentRef(node);
+                  textareaRef.current = node;
+                }}
                 className={styles.textarea}
-                placeholder="読んだ感想を書いてください"
+                placeholder="読んだ感想を書いてください（#でタグ付け）"
                 rows={5}
+                {...textareaProps}
               />
+              {isOpen && (
+                <TagSuggestList
+                  query={query}
+                  suggestions={suggestions}
+                  isLoading={isSuggestLoading}
+                  activeIndex={activeIndex}
+                  onHover={setActiveIndex}
+                  onSelect={selectSuggestion}
+                />
+              )}
+              <p className={styles.tagHint}>
+                本文中に「#タグ名」と書くとタグ付けされます（最大{MAX_HASHTAGS}
+                個）
+              </p>
               {errors.content && (
                 <p className={styles.error}>{errors.content.message}</p>
-              )}
-            </div>
-
-            {/* タグ */}
-            <div className={styles.field}>
-              <label className={styles.label}>タグ</label>
-
-              {/* 選択済みタグバッジ */}
-              {selectedTags.length > 0 && (
-                <div className={styles.selectedTags}>
-                  {selectedTags.map((tag) => (
-                    <span key={tag} className={styles.tagBadge}>
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => toggleTag(tag)}
-                        className={styles.tagBadgeRemove}
-                        aria-label={`${tag}を外す`}
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {selectedTags.length >= 5 && (
-                <p className={styles.warning}>タグは5個までです</p>
-              )}
-
-              {/* タグ絞り込み */}
-              <input
-                type="text"
-                value={tagFilter}
-                onChange={(e) => setTagFilter(e.target.value)}
-                placeholder="タグを絞り込む..."
-                className={styles.tagFilterInput}
-              />
-
-              {/* タグチェックボックスリスト */}
-              <div className={styles.tagList}>
-                {filteredTags.map((tag) => (
-                  <label key={tag} className={styles.tagItem}>
-                    <input
-                      type="checkbox"
-                      checked={selectedTags.includes(tag)}
-                      onChange={() => toggleTag(tag)}
-                      disabled={
-                        !selectedTags.includes(tag) && selectedTags.length >= 5
-                      }
-                      className={styles.tagCheckbox}
-                    />
-                    <span className={styles.tagName}>{tag}</span>
-                  </label>
-                ))}
-              </div>
-
-              {errors.tags && (
-                <p className={styles.error}>{errors.tags.message}</p>
               )}
             </div>
 
