@@ -39,8 +39,9 @@ export type TagsResponse = {
 };
 
 // POST /v1/me/books リクエスト
+// tags はバックエンドで content 内の #ハッシュタグから自動抽出されるため、
+// フロント側からは送信しない。
 export type CreateBookInput = {
   isbn: string;
   content?: string;
-  tags?: string[];
 };

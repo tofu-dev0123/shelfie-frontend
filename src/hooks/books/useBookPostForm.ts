@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -13,25 +13,24 @@ import type { Book } from "@/types/book";
 
 /**
  * 書籍投稿フォームのフック。
+ * タグは本文中のハッシュタグから派生するため、フォーム値としては content のみを管理する。
  * @param selectedBook - 選択済みの本（nullになったらフォームをリセットする）
- * @returns register, onSubmit, errors, isSubmitting, content, selectedTags, toggleTag, tagFilter, setTagFilter
+ * @returns register, handleSubmit, control, setValue, onSubmit, errors, isSubmitting, content
  */
 export const useBookPostForm = (selectedBook: Book | null) => {
   const router = useRouter();
   const { data: me } = useMe(true);
-  const [tagFilterInput, setTagFilter] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-    getValues,
     reset,
     control,
   } = useForm<BookPostFormData>({
     resolver: zodResolver(bookPostSchema),
-    defaultValues: { content: "", tags: [] },
+    defaultValues: { content: "" },
   });
 
   // 本の選択が解除されたらフォームをリセットする
@@ -41,26 +40,7 @@ export const useBookPostForm = (selectedBook: Book | null) => {
     }
   }, [selectedBook, reset]);
 
-  // selectedBookがない場合はtagFilterを空文字として扱う（effectでsetStateを呼ばない）
-  const tagFilter = selectedBook ? tagFilterInput : "";
-
   const content = useWatch({ control, name: "content" });
-  const selectedTags = useWatch({ control, name: "tags" });
-
-  const toggleTag = (tagName: string) => {
-    const current = getValues("tags");
-    if (current.includes(tagName)) {
-      setValue(
-        "tags",
-        current.filter((t) => t !== tagName),
-        {
-          shouldValidate: true,
-        },
-      );
-    } else {
-      setValue("tags", [...current, tagName], { shouldValidate: true });
-    }
-  };
 
   const onSubmit = handleSubmit(async (data) => {
     if (!selectedBook || !me?.username) return;
@@ -68,7 +48,6 @@ export const useBookPostForm = (selectedBook: Book | null) => {
       await createBook({
         isbn: selectedBook.isbn,
         content: data.content,
-        tags: data.tags,
       });
       toast.success(MESSAGES.BOOK.CREATE_SUCCESS);
       router.push(`/users/${me.username}`);
@@ -80,13 +59,11 @@ export const useBookPostForm = (selectedBook: Book | null) => {
 
   return {
     register,
+    control,
+    setValue,
     onSubmit,
     errors,
     isSubmitting,
     content,
-    selectedTags,
-    toggleTag,
-    tagFilter,
-    setTagFilter,
   };
 };

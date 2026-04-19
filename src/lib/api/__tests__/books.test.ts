@@ -5,7 +5,7 @@ vi.mock("../client", () => ({
 }));
 
 import { apiGet } from "../client";
-import { getUserBooks, searchBooks } from "../books";
+import { getUserBooks, searchBooks, getTags } from "../books";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
@@ -75,5 +75,26 @@ describe("searchBooks", () => {
     expect(apiGet).toHaveBeenCalledWith(
       "/v1/books/search?q=%E6%9D%91%E4%B8%8A%E6%98%A5%E6%A8%B9&cursor=cursor_abc",
     );
+  });
+});
+
+describe("getTags", () => {
+  it("クエリを q パラメータに付けて GET する（英数字）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce({ tags: [] });
+    await getTags("Ru");
+    expect(apiGet).toHaveBeenCalledWith("/v1/tags?q=Ru");
+  });
+
+  it("クエリを q パラメータに付けて GET する（日本語・URLエンコード）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce({ tags: [] });
+    await getTags("日本");
+    expect(apiGet).toHaveBeenCalledWith("/v1/tags?q=%E6%97%A5%E6%9C%AC");
+  });
+
+  it("レスポンスをそのまま返す", async () => {
+    const mock = { tags: [{ name: "Ruby" }, { name: "Rails" }] };
+    vi.mocked(apiGet).mockResolvedValueOnce(mock);
+    const result = await getTags("R");
+    expect(result).toEqual(mock);
   });
 });
