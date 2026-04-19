@@ -3,9 +3,8 @@
 import { useAuthStore } from "@/store/authStore";
 import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
 import { useBookPostForm } from "@/hooks/books/useBookPostForm";
-import { useHashtagComposer } from "@/hooks/books/useHashtagComposer";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
-import { TagSuggestList } from "./TagSuggestList";
+import { HashtagEditor } from "./HashtagEditor";
 import styles from "./styles/BookPostContent.module.css";
 
 export function BookPostContent() {
@@ -34,18 +33,6 @@ export function BookPostContent() {
     content,
   } = useBookPostForm(selectedBook);
 
-  const {
-    textareaRef,
-    textareaProps,
-    isOpen,
-    query,
-    suggestions,
-    isLoading: isSuggestLoading,
-    activeIndex,
-    setActiveIndex,
-    selectSuggestion,
-  } = useHashtagComposer(control, setValue);
-
   const tagCount = extractHashtags(content ?? "").length;
   const tagCountClass =
     tagCount > MAX_HASHTAGS
@@ -53,8 +40,6 @@ export function BookPostContent() {
       : tagCount === MAX_HASHTAGS
         ? styles.tagCountWarn
         : "";
-
-  const { ref: contentRef, ...contentRest } = register("content");
 
   return (
     <div className={styles.container}>
@@ -164,28 +149,14 @@ export function BookPostContent() {
                   {content?.length ?? 0}/1000
                 </span>
               </div>
-              <textarea
+              <HashtagEditor
                 id="content"
-                {...contentRest}
-                ref={(node) => {
-                  contentRef(node);
-                  textareaRef.current = node;
-                }}
-                className={styles.textarea}
-                placeholder="読んだ感想を書いてください（#でタグ付け）"
+                register={register}
+                control={control}
+                setValue={setValue}
                 rows={5}
-                {...textareaProps}
+                placeholder="読んだ感想を書いてください（#でタグ付け）"
               />
-              {isOpen && (
-                <TagSuggestList
-                  query={query}
-                  suggestions={suggestions}
-                  isLoading={isSuggestLoading}
-                  activeIndex={activeIndex}
-                  onHover={setActiveIndex}
-                  onSelect={selectSuggestion}
-                />
-              )}
               <p className={styles.tagHint}>
                 本文中に「#タグ名」と書くとタグ付けされます（最大{MAX_HASHTAGS}
                 個）

@@ -7,6 +7,7 @@ import {
   type MouseEvent,
   type CompositionEvent,
   type SyntheticEvent,
+  type UIEvent,
 } from "react";
 import type { Control, UseFormSetValue } from "react-hook-form";
 import { useWatch } from "react-hook-form";
@@ -15,13 +16,17 @@ import {
   replaceHashtagToken,
   type HashtagTrigger,
 } from "@/lib/hashtag";
+import { getCaretCoordinates } from "@/lib/textareaCaret";
 import { useHashtagSuggest } from "./useHashtagSuggest";
 import type { BookPostFormData } from "@/schemas/book";
 
+type CaretPoint = { top: number; left: number };
+
 /**
  * 本文 textarea とハッシュタグサジェストを連動させるフック。
- * キャレット位置・IME 状態・キーボード操作を監視し、トリガー検出時に
- * サジェスト API を呼ぶ。選択されたタグで本文中のトークンを置換する。
+ * キャレット位置・IME 状態・キーボード操作・スクロール位置を監視し、
+ * トリガー検出時にサジェスト API を呼んで、キャレット直下に浮かせるための
+ * 座標も算出する。
  * @param control - react-hook-form の Control
  * @param setValue - react-hook-form の setValue
  * @returns textareaRef, textareaProps, サジェスト表示用の状態とハンドラ群
@@ -32,6 +37,8 @@ export const useHashtagComposer = (
 ) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [caret, setCaret] = useState(0);
+  const [caretCoords, setCaretCoords] = useState<CaretPoint | null>(null);
+  const [scrollOffset, setScrollOffset] = useState({ top: 0, left: 0 });
   const [isComposing, setIsComposing] = useState(false);
   // Esc でユーザーが閉じたトリガー位置。同じトークンの間は panel を再オープンしない。
   const [closedAt, setClosedAt] = useState<number | null>(null);
@@ -60,13 +67,32 @@ export const useHashtagComposer = (
     setActiveIndex(0);
   }
 
-  // query が 1 文字以上入力されていれば、読込中・結果なしでもパネルを開き
-  // 「検索中...」や「該当なし → 新規タグ作成」ヒントを出す。
-  const isOpen = trigger !== null && trigger.query.length > 0;
+  // 候補が 0 件の間はパネルを開かない（キャレット直下に空パネルを出さない方針）
+  const isOpen = trigger !== null && suggestions.length > 0;
 
-  const syncCaret = useCallback((e: SyntheticEvent<HTMLTextAreaElement>) => {
-    setCaret(e.currentTarget.selectionStart);
-  }, []);
+  // 現在の textarea 要素とキャレット位置・値から、パネル位置用の座標を取得する。
+  // 呼び出し側の event handler 内で使用するため、ref アクセスを避けられる。
+  const measureCaret = useCallback(
+    (el: HTMLTextAreaElement, pos: number): void => {
+      const coords = getCaretCoordinates(el, pos, el.value);
+      if (!coords) return;
+      setCaretCoords({
+        top: coords.top + coords.height - el.scrollTop,
+        left: coords.left - el.scrollLeft,
+      });
+    },
+    [],
+  );
+
+  const syncCaret = useCallback(
+    (e: SyntheticEvent<HTMLTextAreaElement>) => {
+      const el = e.currentTarget;
+      const pos = el.selectionStart;
+      setCaret(pos);
+      measureCaret(el, pos);
+    },
+    [measureCaret],
+  );
 
   const handleCompositionStart = useCallback(() => {
     setIsComposing(true);
@@ -74,11 +100,26 @@ export const useHashtagComposer = (
 
   const handleCompositionEnd = useCallback(
     (e: CompositionEvent<HTMLTextAreaElement>) => {
+      const el = e.currentTarget;
+      const pos = el.selectionStart;
       setIsComposing(false);
-      setCaret(e.currentTarget.selectionStart);
+      setCaret(pos);
+      measureCaret(el, pos);
     },
-    [],
+    [measureCaret],
   );
+
+  const handleScroll = useCallback((e: UIEvent<HTMLTextAreaElement>) => {
+    const el = e.currentTarget;
+    setScrollOffset({ top: el.scrollTop, left: el.scrollLeft });
+    // スクロール中もキャレット座標を追従させる
+    const coords = getCaretCoordinates(el, el.selectionStart, el.value);
+    if (!coords) return;
+    setCaretCoords({
+      top: coords.top + coords.height - el.scrollTop,
+      left: coords.left - el.scrollLeft,
+    });
+  }, []);
 
   const closePanel = useCallback(() => {
     if (trigger) setClosedAt(trigger.start);
@@ -110,23 +151,18 @@ export const useHashtagComposer = (
       if (!isOpen) return;
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setActiveIndex((i) =>
-          suggestions.length === 0 ? 0 : (i + 1) % suggestions.length,
-        );
+        setActiveIndex((i) => (i + 1) % suggestions.length);
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        setActiveIndex((i) =>
-          suggestions.length === 0
-            ? 0
-            : (i - 1 + suggestions.length) % suggestions.length,
+        setActiveIndex(
+          (i) => (i - 1 + suggestions.length) % suggestions.length,
         );
         return;
       }
       if (e.key === "Enter" || e.key === "Tab") {
-        const target =
-          suggestions[activeIndex] ?? (trigger ? trigger.query : undefined);
+        const target = suggestions[activeIndex];
         if (!target) return;
         e.preventDefault();
         selectSuggestion(target);
@@ -137,7 +173,7 @@ export const useHashtagComposer = (
         closePanel();
       }
     },
-    [isOpen, suggestions, activeIndex, trigger, selectSuggestion, closePanel],
+    [isOpen, suggestions, activeIndex, selectSuggestion, closePanel],
   );
 
   const handleClick = useCallback(
@@ -147,10 +183,21 @@ export const useHashtagComposer = (
     [syncCaret],
   );
 
+  // onInput は入力（paste/IME 含む）のたびに発火し、rhf の onChange とも共存する。
+  // キャレット座標はここでも再計算して追従させる。
+  const handleInput = useCallback(
+    (e: SyntheticEvent<HTMLTextAreaElement>) => {
+      syncCaret(e);
+    },
+    [syncCaret],
+  );
+
   const textareaProps = {
     onSelect: syncCaret,
     onKeyUp: syncCaret,
     onClick: handleClick,
+    onInput: handleInput,
+    onScroll: handleScroll,
     onCompositionStart: handleCompositionStart,
     onCompositionEnd: handleCompositionEnd,
     onKeyDown: handleKeyDown,
@@ -160,12 +207,13 @@ export const useHashtagComposer = (
     textareaRef,
     textareaProps,
     isOpen,
-    query: trigger?.query ?? "",
+    caretCoords,
     suggestions,
     isLoading,
     activeIndex,
     setActiveIndex,
     selectSuggestion,
     closePanel,
+    scrollOffset,
   };
 };

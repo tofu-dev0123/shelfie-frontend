@@ -1,0 +1,63 @@
+.wrapper {
+  position: relative;
+}
+
+/*
+ * textarea と backdrop は同じフォント・パディング・ボーダー・折返し設定にする必要がある。
+ * 片方を変えたらもう片方も必ず揃える。
+ */
+
+.textarea,
+.backdrop {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  line-height: var(--leading-relaxed);
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.textarea {
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-color: var(--color-gray-300);
+  resize: vertical;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--color-gray-900);
+}
+
+.textarea::placeholder {
+  color: var(--color-gray-400);
+}
+
+.textarea::selection {
+  background: var(--color-primary-200);
+}
+
+.textarea:focus {
+  border-color: var(--color-primary-600);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  color: var(--color-gray-900);
+  background: white;
+  overflow: hidden;
+}
+
+.hashtag {
+  color: var(--color-primary-600);
+  font-weight: var(--font-medium);
+}

@@ -29,6 +29,22 @@ export type HashtagTrigger = {
   end: number;
 };
 
+export type HashtagRange = { start: number; end: number };
+
+/**
+ * 本文中のハッシュタグの位置範囲を返す。ハイライト表示などで使用する。
+ * @param content - 本文
+ * @returns マッチした各ハッシュタグの [start, end)（end は先頭からの index で半開区間）
+ */
+export const getHashtagRanges = (content: string): HashtagRange[] => {
+  const ranges: HashtagRange[] = [];
+  for (const m of content.matchAll(HASHTAG_REGEX)) {
+    if (m.index === undefined) continue;
+    ranges.push({ start: m.index, end: m.index + m[0].length });
+  }
+  return ranges;
+};
+
 /**
  * 本文からハッシュタグを抽出する。
  * バックエンドの HashtagParser.extract と同じ抽出結果を返すよう、

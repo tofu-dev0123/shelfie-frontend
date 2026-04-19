@@ -1,34 +1,27 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import styles from "./styles/TagSuggestList.module.css";
 
 type Props = {
-  query: string;
   suggestions: string[];
   isLoading: boolean;
   activeIndex: number;
   onHover: (index: number) => void;
   onSelect: (name: string) => void;
+  style?: CSSProperties;
 };
 
 export function TagSuggestList({
-  query,
   suggestions,
-  isLoading,
   activeIndex,
   onHover,
   onSelect,
+  style,
 }: Props) {
+  if (suggestions.length === 0) return null;
   return (
-    <div className={styles.panel} role="listbox">
-      {isLoading && suggestions.length === 0 && (
-        <div className={styles.hint}>検索中...</div>
-      )}
-      {!isLoading && suggestions.length === 0 && query.length > 0 && (
-        <div className={styles.hint}>
-          該当するタグがありません。Enterで「#{query}」を新規タグとして追加
-        </div>
-      )}
+    <div className={styles.panel} role="listbox" style={style}>
       {suggestions.map((name, i) => (
         <button
           key={name}
