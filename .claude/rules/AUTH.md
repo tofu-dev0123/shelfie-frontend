@@ -146,7 +146,7 @@ export function LogoutButton() {
 
 1. Rails logout（`/v1/auth/logout`）— リフレッシュトークン Cookie を削除し `authStore` の status を `"unauthenticated"` に
 2. Clerk `signOut()` — Clerk セッション Cookie を削除
-3. `/login` へリダイレクト
+3. `/`（ホーム画面）へリダイレクト
 
 Clerk セッションを残したままにすると、次回ログイン時に `/sso-callback` の `signIn.status === "complete"` 分岐が誤動作するため、`signOut()` は必ず呼ぶこと。
 

@@ -8,7 +8,7 @@ import { logger } from "@/lib/logger";
 
 /**
  * ログアウト処理を提供するフック。
- * Rails のログアウト、Clerk セッション削除、ログイン画面への遷移を一括で行う。
+ * Rails のログアウト、Clerk セッション削除、ホーム画面への遷移を一括で行う。
  * Clerk 依存を認証処理以外の箇所に広げないため、signOut 呼び出しはこのフックに閉じ込める。
  * @returns ログアウトを実行する関数
  */
@@ -20,7 +20,7 @@ export const useLogout = () => {
     try {
       await logout();
       await signOut();
-      router.push("/login");
+      router.push("/");
     } catch {
       logger.error("ログアウト失敗");
       toast.error(MESSAGES.AUTH.LOGOUT_ERROR);
