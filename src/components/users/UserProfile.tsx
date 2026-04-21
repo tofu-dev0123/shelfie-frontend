@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useMe } from "@/hooks/useMe";
 import { useUser } from "@/hooks/users/useUser";
 import type { User } from "@/types/user";
@@ -13,8 +13,7 @@ type Props = {
 };
 
 export function UserProfile({ username, fallbackUser }: Props) {
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const isSignedIn = !!accessToken;
+  const { isSignedIn } = useAuth();
   const { data: user } = useUser(username, fallbackUser);
   const { data: me } = useMe(isSignedIn);
 

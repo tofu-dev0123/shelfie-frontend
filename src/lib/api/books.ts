@@ -3,27 +3,38 @@ import { API_ENDPOINTS } from "@/constants/api";
 import type {
   SearchBooksResponse,
   BookPostsResponse,
+  WantToReadsResponse,
   TagsResponse,
   CreateBookInput,
 } from "@/types/book";
 
 /**
- * ユーザーの本棚を取得する。
+ * ユーザーの本棚（読了した本の投稿一覧）を取得する。
  * @param username - ユーザー名
- * @param status - 本のステータス（done: 読了 / want: 読みたい）
  * @param cursor - ページネーションカーソル（省略時は先頭から取得）
  * @returns 本棚レスポンス（items・pagination）
  * @throws 取得失敗時にエラー
  */
 export const getUserBooks = (
   username: string,
-  status: "done" | "want",
   cursor?: string | null,
 ): Promise<BookPostsResponse> => {
-  const params = new URLSearchParams({ status });
-  if (cursor) params.set("cursor", cursor);
-  return apiGet<BookPostsResponse>(
-    `${API_ENDPOINTS.USER_BOOKS(username)}?${params.toString()}`,
+  const path = API_ENDPOINTS.USER_BOOKS(username);
+  return apiGet<BookPostsResponse>(cursor ? `${path}?cursor=${cursor}` : path);
+};
+
+/**
+ * 自分の読みたいリストを取得する。Bearer 認証必須。
+ * @param cursor - ページネーションカーソル（省略時は先頭から取得）
+ * @returns 読みたいリストレスポンス（items・pagination）
+ * @throws 取得失敗時にエラー
+ */
+export const getMyWantToReads = (
+  cursor?: string | null,
+): Promise<WantToReadsResponse> => {
+  const path = API_ENDPOINTS.ME_WANT_TO_READS;
+  return apiGet<WantToReadsResponse>(
+    cursor ? `${path}?cursor=${cursor}` : path,
   );
 };
 

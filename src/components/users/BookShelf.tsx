@@ -16,7 +16,7 @@ const TABS = [
 ];
 
 export function BookShelf({ username, isMe }: Props) {
-  const { activeTab, setActiveTab, sentinelRef, books, isEmpty, isLoading } =
+  const { activeTab, setActiveTab, sentinelRef, items, isEmpty, isLoading } =
     useBookShelf(username);
 
   const visibleTabs = isMe ? TABS : TABS.filter((t) => t.key === "done");
@@ -52,8 +52,8 @@ export function BookShelf({ username, isMe }: Props) {
         ) : (
           <>
             <div className={styles.grid}>
-              {books.map((post) => (
-                <BookCard key={post.id} book={post.book} username={username} />
+              {items.map((item) => (
+                <BookCard key={item.key} book={item.book} username={username} />
               ))}
             </div>
 

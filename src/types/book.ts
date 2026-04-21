@@ -33,6 +33,12 @@ export type BookPostsResponse = {
   pagination: Pagination;
 };
 
+// GET /v1/me/want_to_reads レスポンス
+export type WantToReadsResponse = {
+  items: Book[];
+  pagination: Pagination;
+};
+
 // GET /v1/tags レスポンス
 export type TagsResponse = {
   tags: { name: string }[];

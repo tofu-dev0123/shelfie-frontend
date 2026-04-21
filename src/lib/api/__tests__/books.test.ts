@@ -5,7 +5,7 @@ vi.mock("../client", () => ({
 }));
 
 import { apiGet } from "../client";
-import { getUserBooks, searchBooks, getTags } from "../books";
+import { getUserBooks, getMyWantToReads, searchBooks, getTags } from "../books";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
@@ -17,17 +17,17 @@ const emptyResponse = {
 };
 
 describe("getUserBooks", () => {
-  it("正しいエンドポイントにGETリクエストを送る（done・カーソルなし）", async () => {
+  it("正しいエンドポイントにGETリクエストを送る（カーソルなし）", async () => {
     vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
-    await getUserBooks("testuser", "done");
-    expect(apiGet).toHaveBeenCalledWith("/v1/users/testuser/books?status=done");
+    await getUserBooks("testuser");
+    expect(apiGet).toHaveBeenCalledWith("/v1/users/testuser/books");
   });
 
-  it("正しいエンドポイントにGETリクエストを送る（want・カーソルあり）", async () => {
+  it("正しいエンドポイントにGETリクエストを送る（カーソルあり）", async () => {
     vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
-    await getUserBooks("testuser", "want", "cursor_abc");
+    await getUserBooks("testuser", "cursor_abc");
     expect(apiGet).toHaveBeenCalledWith(
-      "/v1/users/testuser/books?status=want&cursor=cursor_abc",
+      "/v1/users/testuser/books?cursor=cursor_abc",
     );
   });
 
@@ -50,7 +50,40 @@ describe("getUserBooks", () => {
       pagination: { next_cursor: null, has_next: false },
     };
     vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
-    const result = await getUserBooks("testuser", "done");
+    const result = await getUserBooks("testuser");
+    expect(result).toEqual(mockResponse);
+  });
+});
+
+describe("getMyWantToReads", () => {
+  it("正しいエンドポイントにGETリクエストを送る（カーソルなし）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
+    await getMyWantToReads();
+    expect(apiGet).toHaveBeenCalledWith("/v1/me/want_to_reads");
+  });
+
+  it("正しいエンドポイントにGETリクエストを送る（カーソルあり）", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
+    await getMyWantToReads("cursor_xyz");
+    expect(apiGet).toHaveBeenCalledWith(
+      "/v1/me/want_to_reads?cursor=cursor_xyz",
+    );
+  });
+
+  it("レスポンスをそのまま返す", async () => {
+    const mockResponse = {
+      items: [
+        {
+          isbn: "9784001234567",
+          title: "ノルウェイの森",
+          authors: ["村上春樹"],
+          thumbnail_url: null,
+        },
+      ],
+      pagination: { next_cursor: null, has_next: false },
+    };
+    vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
+    const result = await getMyWantToReads();
     expect(result).toEqual(mockResponse);
   });
 });

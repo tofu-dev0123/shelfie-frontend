@@ -1,35 +1,34 @@
 import { useCallback } from "react";
 import useSWRInfinite from "swr/infinite";
-import { getUserBooks } from "@/lib/api/books";
-import type { BookPostsResponse } from "@/types/book";
+import { getMyWantToReads } from "@/lib/api/books";
+import type { WantToReadsResponse } from "@/types/book";
 
-type BookKey = {
-  type: "user-books";
-  username: string;
+type WantKey = {
+  type: "my-want-to-reads";
   cursor: string | null;
 };
 
 /**
- * ユーザーの本棚（読了した本の投稿一覧）を無限スクロールで取得するSWRフック。
- * @param username - ユーザー名
+ * 自分の読みたいリストを無限スクロールで取得するSWRフック。
+ * Bearer 認証必須のため、ログイン済みのコンポーネントからのみ呼び出す。
  * @returns books, hasMore, isEmpty, isLoading, loadMore
  */
-export const useUserBooks = (username: string) => {
+export const useMyWantToReads = () => {
   const getKey = (
     pageIndex: number,
-    previousPageData: BookPostsResponse | null,
-  ): BookKey | null => {
+    previousPageData: WantToReadsResponse | null,
+  ): WantKey | null => {
     if (previousPageData && !previousPageData.pagination.has_next) return null;
     const cursor =
       pageIndex === 0
         ? null
         : (previousPageData?.pagination.next_cursor ?? null);
-    return { type: "user-books", username, cursor };
+    return { type: "my-want-to-reads", cursor };
   };
 
-  const { data, setSize, isLoading } = useSWRInfinite<BookPostsResponse>(
+  const { data, setSize, isLoading } = useSWRInfinite<WantToReadsResponse>(
     getKey,
-    ({ username, cursor }: BookKey) => getUserBooks(username, cursor),
+    ({ cursor }: WantKey) => getMyWantToReads(cursor),
   );
 
   const books = data ? data.flatMap((d) => d?.items ?? []) : [];
