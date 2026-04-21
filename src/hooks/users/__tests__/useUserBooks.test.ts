@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 
 vi.mock("@/lib/api/books", () => ({
   getUserBooks: vi.fn().mockResolvedValue({
@@ -22,26 +22,19 @@ beforeEach(() => {
   vi.mocked(getUserBooks).mockResolvedValue(emptyResponse);
 });
 
+// SWR のグローバルキャッシュがテスト間で共有されるため、
+// テストごとに異なる username を使ってキャッシュ干渉を避ける
 describe("useUserBooks", () => {
   it("初期状態では books が空配列", async () => {
-    const { result } = renderHook(() => useUserBooks("testuser", "done"));
+    const { result } = renderHook(() => useUserBooks("init_user"));
     expect(result.current.books).toEqual([]);
   });
 
-  it("status が変わったとき size が 1 にリセットされる", async () => {
-    const { result, rerender } = renderHook(
-      ({ status }: { status: "done" | "want" }) =>
-        useUserBooks("testuser", status),
-      { initialProps: { status: "done" as "done" | "want" } },
-    );
-
-    act(() => {
-      result.current.loadMore();
+  it("getUserBooks が username を渡して呼ばれる", async () => {
+    renderHook(() => useUserBooks("called_user"));
+    await waitFor(() => {
+      expect(getUserBooks).toHaveBeenCalledWith("called_user", null);
     });
-
-    rerender({ status: "want" });
-
-    expect(result.current.books).toEqual([]);
   });
 
   it("APIレスポンスに has_next: false が含まれるとき hasMore が false", async () => {
@@ -63,10 +56,11 @@ describe("useUserBooks", () => {
       pagination: { next_cursor: null, has_next: false },
     });
 
-    const { result } = renderHook(() => useUserBooks("testuser", "done"));
+    const { result } = renderHook(() => useUserBooks("false_user"));
 
-    await act(async () => {});
-
+    await waitFor(() => {
+      expect(result.current.books.length).toBe(1);
+    });
     expect(result.current.hasMore).toBe(false);
   });
 
@@ -89,10 +83,10 @@ describe("useUserBooks", () => {
       pagination: { next_cursor: "next_abc", has_next: true },
     });
 
-    const { result } = renderHook(() => useUserBooks("testuser", "done"));
+    const { result } = renderHook(() => useUserBooks("true_user"));
 
-    await act(async () => {});
-
-    expect(result.current.hasMore).toBe(true);
+    await waitFor(() => {
+      expect(result.current.hasMore).toBe(true);
+    });
   });
 });

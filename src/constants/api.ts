@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   BOOKS_SEARCH: "/v1/books/search",
   USER_BOOKS: (username: string) => `/v1/users/${username}/books`,
   ME_BOOKS: "/v1/me/books",
+  ME_WANT_TO_READS: "/v1/me/want_to_reads",
 
   // タグ
   TAGS: "/v1/tags",
