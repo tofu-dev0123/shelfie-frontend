@@ -75,3 +75,11 @@ export const getTags = (q: string): Promise<TagsResponse> => {
  */
 export const createBook = (data: CreateBookInput): Promise<void> =>
   apiPost<void>(API_ENDPOINTS.ME_BOOKS, data);
+
+/**
+ * 読みたいリストに書籍を追加する。Bearer 認証必須。
+ * @param isbn - ISBN-13（13桁の数字）
+ * @throws 追加失敗時にエラー（401はclient.tsで自動処理、404は楽天APIに書籍が存在しない場合）
+ */
+export const addWantToRead = (isbn: string): Promise<void> =>
+  apiPost<void>(API_ENDPOINTS.ME_WANT_TO_READ(isbn));
