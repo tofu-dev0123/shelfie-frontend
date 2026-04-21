@@ -85,7 +85,7 @@
   }
 
   .avatarIcon {
-    font-size: 18px;
+    font-size: var(--text-lg);
   }
 
   .nickname {

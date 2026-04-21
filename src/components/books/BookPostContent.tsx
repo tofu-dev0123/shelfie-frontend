@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
 import { useBookPostForm } from "@/hooks/books/useBookPostForm";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
@@ -8,8 +8,7 @@ import { HashtagEditor } from "./HashtagEditor";
 import styles from "./styles/BookPostContent.module.css";
 
 export function BookPostContent() {
-  const accessToken = useAuthStore((s) => s.accessToken);
-  const isAuthenticated = !!accessToken;
+  const { isSignedIn } = useAuth();
 
   const {
     keyword,
@@ -21,7 +20,7 @@ export function BookPostContent() {
     selectedBook,
     selectBook,
     clearBook,
-  } = useBookPostSearch(isAuthenticated);
+  } = useBookPostSearch(isSignedIn);
 
   const {
     register,

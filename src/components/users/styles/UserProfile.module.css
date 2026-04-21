@@ -153,7 +153,7 @@
 }
 
 .mainEmptyIcon {
-  font-size: 32px;
+  font-size: var(--text-2xl);
   color: var(--color-gray-300);
   margin-bottom: var(--space-3);
   display: block;
