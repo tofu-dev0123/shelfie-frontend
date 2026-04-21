@@ -3,17 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@/hooks/auth/useAuth";
+import { useLogout } from "@/hooks/auth/useLogout";
 import { useHeader } from "@/hooks/layout/useHeader";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/Header.module.css";
 
 export function Header() {
   const pathname = usePathname();
-  const { isSignedIn, isLoaded } = useAuth();
-  const { dropdownOpen, dropdownRef, toggleDropdown, handleLogout } =
-    useHeader();
-  const { data: me } = useMe(!!isSignedIn);
+  const { isSignedIn, isInitializing } = useAuth();
+  const { dropdownOpen, dropdownRef, toggleDropdown } = useHeader();
+  const handleLogout = useLogout();
+  const { data: me } = useMe(isSignedIn);
 
   return (
     <header className={styles.header}>
@@ -45,7 +46,7 @@ export function Header() {
           <i className="fa-solid fa-plus" />
           投稿
         </Link>
-        {isLoaded &&
+        {!isInitializing &&
           (isSignedIn ? (
             <div ref={dropdownRef} className={styles.avatarWrapper}>
               <button

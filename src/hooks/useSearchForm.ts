@@ -1,21 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { MESSAGES } from "@/constants/messages";
 
 /**
  * 検索フォームの状態とURLクエリパラメータの同期を管理するフック。
- * フォーム送信時にRailsトークンの有無を確認し、未認証ならログイン画面へ誘導する。
- * Zustandのトークンが未ロードでもClerkセッションがあれば検索を続行する（サイレントリフレッシュに委ねる）。
+ * フォーム送信時に認証状態を確認し、未認証ならログイン画面へ誘導する。
  * @returns keyword, setKeyword, handleSubmit, q
  */
 export const useSearchForm = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isSignedIn } = useAuth();
-  const accessToken = useAuthStore((s) => s.accessToken);
 
   const q = searchParams.get("q") ?? "";
   const [keyword, setKeyword] = useState(q);
@@ -29,9 +26,7 @@ export const useSearchForm = () => {
     (e: React.FormEvent) => {
       e.preventDefault();
 
-      // RailsトークンなしかつClerkセッションもない場合は未認証と判断してログインへ誘導する
-      // Zustandトークンが未ロードでもClerkがサインイン済みならサイレントリフレッシュで対応できるため続行する
-      if (!accessToken && !isSignedIn) {
+      if (!isSignedIn) {
         toast(MESSAGES.BOOK.SEARCH_LOGIN_REQUIRED);
         router.push("/login");
         return;
@@ -44,7 +39,7 @@ export const useSearchForm = () => {
       }
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     },
-    [keyword, router, accessToken, isSignedIn],
+    [keyword, router, isSignedIn],
   );
 
   return { keyword, setKeyword, handleSubmit, q };

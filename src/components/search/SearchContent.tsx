@@ -1,25 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
-import { useAuthStore } from "@/store/authStore";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useBookSearch } from "@/hooks/useBookSearch";
 import { useSearchForm } from "@/hooks/useSearchForm";
 import { SearchBookCard } from "./SearchBookCard";
 import styles from "./styles/SearchContent.module.css";
 
 export function SearchContent() {
-  const { isSignedIn, isLoaded } = useAuth();
-  const accessToken = useAuthStore((s) => s.accessToken);
-
-  // SWRのキー条件: Railsトークンが揃うまでフェッチしない
-  // （AuthInitializerがリロード時にトークンを復元するまで待機する）
-  const isAuthenticated = !!accessToken;
+  const { isSignedIn, isInitializing } = useAuth();
 
   const { keyword, setKeyword, handleSubmit, q } = useSearchForm();
   const { books, isEmpty, isLoading, sentinelRef } = useBookSearch(
     q,
-    isAuthenticated,
+    isSignedIn,
   );
 
   const hasSearched = q !== "";
@@ -55,8 +49,8 @@ export function SearchContent() {
         </div>
       )}
 
-      {/* qパラメータあり・未ログイン（Clerkロード完了後のみ表示してフラッシュを防ぐ） */}
-      {hasSearched && isLoaded && !isSignedIn && (
+      {/* qパラメータあり・未ログイン（初期化完了後のみ表示してフラッシュを防ぐ） */}
+      {hasSearched && !isInitializing && !isSignedIn && (
         <div className={styles.loginRequired}>
           <i className={`fa-solid fa-lock ${styles.loginRequiredIcon}`} />
           <p className={styles.loginRequiredText}>

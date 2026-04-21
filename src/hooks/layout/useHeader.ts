@@ -1,16 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
-import { toast } from "sonner";
-import { logout } from "@/lib/api/auth";
-import { MESSAGES } from "@/constants/messages";
-import { logger } from "@/lib/logger";
 
+/**
+ * ヘッダーのドロップダウンメニュー開閉を制御するフック。
+ * @returns ドロップダウンの開閉状態・ref・トグル関数
+ */
 export const useHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const { signOut } = useClerk();
 
   useEffect(() => {
     if (!dropdownOpen) return;
@@ -28,16 +24,5 @@ export const useHeader = () => {
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      await signOut();
-      router.push("/login");
-    } catch {
-      logger.error("ログアウト失敗");
-      toast.error(MESSAGES.AUTH.LOGOUT_ERROR);
-    }
-  };
-
-  return { dropdownOpen, dropdownRef, toggleDropdown, handleLogout };
+  return { dropdownOpen, dropdownRef, toggleDropdown };
 };

@@ -1,20 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
-import { toast } from "sonner";
-import { logout } from "@/lib/api/auth";
-import { MESSAGES } from "@/constants/messages";
-import { logger } from "@/lib/logger";
 
 /**
- * ボトムナビゲーションのアカウントメニュー制御とログアウト処理を提供するフック。
- * @returns アカウントメニューの開閉状態・ref・トグル関数・ログアウトハンドラ
+ * ボトムナビゲーションのアカウントメニュー開閉を制御するフック。
+ * @returns アカウントメニューの開閉状態・ref・トグル関数
  */
 export const useBottomNav = () => {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const { signOut } = useClerk();
 
   useEffect(() => {
     if (!accountMenuOpen) return;
@@ -32,16 +24,5 @@ export const useBottomNav = () => {
 
   const toggleAccountMenu = () => setAccountMenuOpen((prev) => !prev);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      await signOut();
-      router.push("/login");
-    } catch {
-      logger.error("ログアウト失敗");
-      toast.error(MESSAGES.AUTH.LOGOUT_ERROR);
-    }
-  };
-
-  return { accountMenuOpen, accountMenuRef, toggleAccountMenu, handleLogout };
+  return { accountMenuOpen, accountMenuRef, toggleAccountMenu };
 };
