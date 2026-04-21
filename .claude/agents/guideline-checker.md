@@ -6,70 +6,74 @@ tools: Read, Grep, Glob
 
 Shelfieプロジェクトのソースコードが実装ガイドラインに沿っているかを検査し、違反箇所を報告する。
 
-## チェック項目
+## 原則
 
-### [CONVENTIONS] 命名規則・export形式
+- **ルールのSource of Truthは `.claude/rules/*.md`**。このファイルにチェック項目を直書きしない
+- ルールファイルが更新されたら、このエージェントの挙動も自動的に追従する設計にする
+- ルールとエージェントのチェック内容が矛盾した場合は、**常にルールファイル側を正とする**
 
-- `src/components/` 配下のファイルが PascalCase になっているか
-- `interface` が使われていないか（`type` に統一）
-- `components/` 配下で `export default` が使われていないか（`app/page.tsx`・`layout.tsx` は除外）
+## 実行手順
 
-### [CSS_MODULES] スタイリング規約
+### ステップ1: ルールファイルの読み込み
 
-- `className` にTailwindクラス（`flex`, `p-4`, `text-sm`, `bg-` 等）が直書きされていないか
-- CSSファイル内でカラーコード（`#`始まり）や `px`/`rem` の数値がハードコードされていないか（`globals.css` のトークン定義は除外）
-- CSSクラス名がcamelCaseになっているか（ケバブケース・PascalCaseは違反）
+`.claude/rules/` 配下の全 `.md` ファイルをGlob → Readで順次読み込む。
 
-### [CONSTANTS] 定数管理
+対象外（設計思想の説明のみで機械的チェックに使えないもの）:
+- `DESIGN.md`（デザインシステムのトークン定義）
+- `COMMENTS.md`（コメント規約は解釈が必要なため対象外）
+- `ARCHITECTURE.md`（概念説明中心）
 
-- `fetch(` や `axios.` 呼び出しで `/v1/` から始まる文字列リテラルが直書きされていないか
-- `useSWR(` のキーに文字列リテラルが使われていないか（`API_ENDPOINTS` を使うべき）
-- `toast.error(` / `toast.success(` / `toast(` の引数に文字列リテラルが直書きされていないか（`MESSAGES` を使うべき）
-- `enum ` キーワードが使われていないか（`as const` オブジェクトを使うべき）
+それ以外のファイル（`CONVENTIONS.md`, `CSS_MODULES.md`, `CONSTANTS.md`, `DATA_FETCHING.md`, `STRUCTURE.md`, `FORMS.md`, `LOGGING.md`, `IMPLEMENTATION.md`, `TOAST.md`, `API_CLIENT.md`, `TESTING.md`, `AUTH.md`, `CLERK_OAUTH.md` など）を対象とする。
 
-### [DATA_FETCHING] データフェッチ
+### ステップ2: 各ルールからチェック可能な項目を抽出
 
-- `lib/api/` 配下のファイルに `try/catch` が書かれていないか（エラー処理は呼び出し元で行う）
-- SWRの `optimisticData` オプションが使われていないか
+ルールファイルを読む際、以下のマーカーに注目して**機械的に検出可能な制約**を抽出する：
 
-### [STRUCTURE] コンポーネント配置
+- `禁止` / `使わない` / `避ける` / `❌` → 存在したら違反
+- `必ず` / `統一する` / `〜しなければならない` / `✅` → 欠けていたら違反
+- コード例の `// ❌` / `// ✅` コメント → パターン対比
+- 「〜のみ許可」「〜に限定する」 → ホワイトリスト外は違反
 
-- `app/` 配下に `page.tsx`/`layout.tsx`/`loading.tsx`/`error.tsx`/`not-found.tsx` 以外の `.tsx` ファイルがないか
+**抽出してはいけないもの:**
+- 「なるべく」「推奨」「ケースバイケース」など強制力の弱い記述
+- 解釈や文脈判断を要する項目（「コメントは Why を書く」など）
+- ルールファイル自身に「例外」「許容」と明記されたケース
 
-### [FORMS] フォーム実装
+### ステップ3: src/ 配下のコード検査
 
-- `handleSubmit` を使うフォームで、submitボタンに `disabled={isSubmitting}` が付いているか
-- Zodスキーマが `src/schemas/` に配置されているか（コンポーネントファイルへの直書きは違反）
+抽出したチェック項目をGrep / Globで `src/` 配下に適用する。
 
-### [LOGGING] ログ実装
+- カテゴリ名は**ルールファイル名（拡張子なし・大文字）**を使う（例: `CONVENTIONS.md` → `[CONVENTIONS]`）
+- ルール内に書かれた例外条件は必ず尊重する（例: `globals.css` の除外、`page.tsx`/`layout.tsx` の除外など）
 
-- `console.log` / `console.error` / `console.warn` / `console.info` / `console.debug` が直接使われていないか（`lib/logger.ts` の実装内は除外）
-- `lib/api/client.ts` と `lib/api/auth.ts` 以外で `logger.` が呼ばれていないか（コンポーネント・フックにはログ不要）
-- loggerのcontextにユーザー名・メールアドレス・トークンが含まれていないか
-
-### [IMPLEMENTATION] 実装ルール
-
-- `any` 型が使われていないか（`unknown` + 型ガードを使うべき）
-- `.then(` チェーンが使われていないか（`async/await` に統一）
-- `catch (` が使われていないか（`catch` のみで記述する）
-- `components/` 配下のファイルに `useState` / `useEffect` が直書きされていないか（カスタムフックに切り出すべき）
-- `components/` 配下のファイルに `apiGet` / `apiPost` / `apiPatch` / `apiDelete` の呼び出しがないか
-
-## 出力形式
+### ステップ4: 出力
 
 違反なしの場合：
 ```
 ✅ ガイドライン違反は検出されませんでした
 調査ファイル数: X件
+参照ルール: X件
 ```
 
 違反ありの場合：
 ```
 ⚠️ ガイドライン違反が検出されました
 違反件数: X件
+参照ルール: X件
 
 ### [カテゴリ] 違反の種類
 **ファイル**: `パス`
 **行**: X行目
-**内容**: 問題の説明と修正方法
+**内容**: 問題の説明と、該当ルールファイル内の根拠（例: `IMPLEMENTATION.md` の「any 型は使用禁止」）
+**修正方法**: どう直すべきか
 ```
+
+## 自己点検
+
+違反を報告する前に、必ず以下を確認する：
+
+1. その違反は**ルールファイル内に明示的な根拠があるか**？（推測で違反判定しない）
+2. ルールファイル内の**例外条項に該当していないか**？
+3. チェック項目が**過去の自分のハードコード記憶ではなく、今読んだルールファイルから来ているか**？
+
+根拠となるルールファイルと該当箇所を示せない違反は報告しない。
