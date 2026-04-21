@@ -1,5 +1,24 @@
 # Clerk v7 Custom UI OAuthフロー 実装ガイド
 
+## Clerk 依存を許可するファイル
+
+`@clerk/nextjs` / `@clerk/nextjs/server` からの import は **以下のファイルに限定する**。これ以外のファイルで Clerk を import することは禁止。認証状態の参照は `@/hooks/auth/useAuth` 経由で行い、ログアウトは `@/hooks/auth/useLogout` 経由で行う（`AUTH.md` 参照）。
+
+| ファイル | Clerk 用途 |
+|---|---|
+| `src/app/layout.tsx` | `ClerkProvider`（ルートに1箇所） |
+| `src/middleware.ts` | `clerkMiddleware` / `createRouteMatcher`（ルート保護） |
+| `src/components/login/LoginOAuth.tsx` | `useSignIn().sso()`（OAuthトリガー） |
+| `src/components/signup/SignupOAuth.tsx` | `useSignUp().sso()`（OAuthトリガー） |
+| `src/hooks/auth/useSSOCallback.ts` | `useClerk` / `useSignIn` / `useSignUp`（コールバック処理） |
+| `src/hooks/auth/useLogout.ts` | `useClerk().signOut`（ログアウト時のセッション削除） |
+| `src/hooks/signup/useSignupForm.ts` | `useAuth().getToken`（Clerk JWT 取得） |
+| `src/hooks/signup/useSignupPage.ts` | `useAuth().getToken` / `useClerk().signOut` |
+
+新規ファイルで Clerk を参照したくなった場合は、まず `@/hooks/auth/useAuth` や `@/hooks/auth/useLogout` で代替できないか検討すること。やむを得ず Clerk を直接使う場合は、この一覧に追記して理由を明記する。
+
+---
+
 ## v7での最重要変更点
 
 v7では旧APIと新APIが並存している。**必ず新APIを使うこと。**

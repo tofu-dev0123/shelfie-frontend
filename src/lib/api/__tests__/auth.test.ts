@@ -32,6 +32,8 @@ beforeEach(() => {
     setAccessToken: vi.fn(),
     clearAccessToken: vi.fn(),
     accessToken: null,
+    status: "idle",
+    setStatus: vi.fn(),
   });
 });
 
@@ -42,6 +44,8 @@ describe("login", () => {
       setAccessToken,
       clearAccessToken: vi.fn(),
       accessToken: null,
+      status: "idle",
+      setStatus: vi.fn(),
     });
     vi.mocked(serverPost).mockResolvedValueOnce({ access_token: "token123" });
 
@@ -76,6 +80,8 @@ describe("signup", () => {
       setAccessToken,
       clearAccessToken: vi.fn(),
       accessToken: null,
+      status: "idle",
+      setStatus: vi.fn(),
     });
     vi.mocked(serverPost).mockResolvedValueOnce({ access_token: "token456" });
 
@@ -98,6 +104,8 @@ describe("logout", () => {
       setAccessToken: vi.fn(),
       clearAccessToken,
       accessToken: null,
+      status: "idle",
+      setStatus: vi.fn(),
     });
     vi.mocked(apiDelete).mockResolvedValueOnce(undefined);
 

@@ -91,6 +91,10 @@ export function SignupOAuth() {
           すでにアカウントをお持ちの方は
           <Link href="/login">こちら</Link>
         </p>
+
+        <p className={styles.homeLink}>
+          <Link href="/">ホームに戻る</Link>
+        </p>
       </div>
       <div id="clerk-captcha" />
     </div>

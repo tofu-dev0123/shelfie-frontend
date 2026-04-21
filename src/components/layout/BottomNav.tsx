@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@/hooks/auth/useAuth";
+import { useLogout } from "@/hooks/auth/useLogout";
 import { useBottomNav } from "@/hooks/layout/useBottomNav";
 import { useMe } from "@/hooks/useMe";
 import styles from "./styles/BottomNav.module.css";
@@ -10,9 +11,9 @@ import styles from "./styles/BottomNav.module.css";
 export function BottomNav() {
   const pathname = usePathname();
   const { isSignedIn } = useAuth();
-  const { accountMenuOpen, accountMenuRef, toggleAccountMenu, handleLogout } =
-    useBottomNav();
-  const { data: me } = useMe(!!isSignedIn);
+  const { accountMenuOpen, accountMenuRef, toggleAccountMenu } = useBottomNav();
+  const handleLogout = useLogout();
+  const { data: me } = useMe(isSignedIn);
 
   return (
     <nav className={styles.nav}>
