@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { Book } from "@/types/book";
+import { useAddWantToRead } from "@/hooks/books/useAddWantToRead";
 import styles from "./styles/SearchBookCard.module.css";
 
 type Props = {
@@ -7,6 +10,8 @@ type Props = {
 };
 
 export function SearchBookCard({ book }: Props) {
+  const { isPending, handleAdd } = useAddWantToRead(book.isbn);
+
   return (
     <div className={styles.card}>
       <Link href={`/books/${book.isbn}`} className={styles.cardLink}>
@@ -28,7 +33,17 @@ export function SearchBookCard({ book }: Props) {
         </div>
       </Link>
       <div className={styles.footer}>
-        <button className={styles.addButton}>+ 本棚に追加</button>
+        <button type="button" className={styles.addButton}>
+          + 本棚に追加
+        </button>
+        <button
+          type="button"
+          className={styles.wantButton}
+          onClick={handleAdd}
+          disabled={isPending}
+        >
+          + 読みたい
+        </button>
       </div>
     </div>
   );

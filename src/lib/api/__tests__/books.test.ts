@@ -2,13 +2,21 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("../client", () => ({
   apiGet: vi.fn(),
+  apiPost: vi.fn(),
 }));
 
-import { apiGet } from "../client";
-import { getUserBooks, getMyWantToReads, searchBooks, getTags } from "../books";
+import { apiGet, apiPost } from "../client";
+import {
+  getUserBooks,
+  getMyWantToReads,
+  searchBooks,
+  getTags,
+  addWantToRead,
+} from "../books";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
+  vi.mocked(apiPost).mockReset();
 });
 
 const emptyResponse = {
@@ -107,6 +115,21 @@ describe("searchBooks", () => {
     await searchBooks("村上春樹", "cursor_abc");
     expect(apiGet).toHaveBeenCalledWith(
       "/v1/books/search?q=%E6%9D%91%E4%B8%8A%E6%98%A5%E6%A8%B9&cursor=cursor_abc",
+    );
+  });
+});
+
+describe("addWantToRead", () => {
+  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
+    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
+    await addWantToRead("9784123456789");
+    expect(apiPost).toHaveBeenCalledWith("/v1/me/want_to_reads/9784123456789");
+  });
+
+  it("エラーが発生した場合は例外を再スローする", async () => {
+    vi.mocked(apiPost).mockRejectedValueOnce(new Error("network error"));
+    await expect(addWantToRead("9784123456789")).rejects.toThrow(
+      "network error",
     );
   });
 });
