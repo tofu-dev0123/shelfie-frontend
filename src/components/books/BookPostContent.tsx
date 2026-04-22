@@ -111,68 +111,70 @@ export function BookPostContent() {
             )}
           </>
         ) : (
-          <form onSubmit={onSubmit} className={styles.formCard}>
-            <button
-              type="button"
-              onClick={clearBook}
-              className={styles.changeLink}
-            >
-              変更する
-            </button>
+          <form onSubmit={onSubmit}>
+            <div className={styles.formCard}>
+              <button
+                type="button"
+                onClick={clearBook}
+                className={styles.changeLink}
+              >
+                変更する
+              </button>
 
-            <div className={styles.bookHero}>
-              <div className={styles.heroCover}>
-                {selectedBook.thumbnail_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={selectedBook.thumbnail_url}
-                    alt={selectedBook.title}
-                    className={styles.heroCoverImage}
-                  />
-                ) : (
-                  <div className={styles.heroCoverPlaceholder} />
-                )}
+              <div className={styles.bookHero}>
+                <div className={styles.heroCover}>
+                  {selectedBook.thumbnail_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={selectedBook.thumbnail_url}
+                      alt={selectedBook.title}
+                      className={styles.heroCoverImage}
+                    />
+                  ) : (
+                    <div className={styles.heroCoverPlaceholder} />
+                  )}
+                </div>
+                <div className={styles.bookMeta}>
+                  <h2 className={styles.bookTitleLg}>{selectedBook.title}</h2>
+                  {selectedBook.authors.length > 0 && (
+                    <p className={styles.bookAuthorLg}>
+                      {selectedBook.authors.join(", ")}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className={styles.bookMeta}>
-                <h2 className={styles.bookTitleLg}>{selectedBook.title}</h2>
-                {selectedBook.authors.length > 0 && (
-                  <p className={styles.bookAuthorLg}>
-                    {selectedBook.authors.join(", ")}
-                  </p>
-                )}
-              </div>
-            </div>
 
-            <div className={styles.commentArea}>
-              <div className={styles.commentHeader}>
-                <label htmlFor="content" className={styles.label}>
-                  コメント
-                  <span className={styles.required}>必須</span>
-                </label>
-                <span className={styles.charCount}>
-                  <span className={tagCountClass}>
-                    タグ {tagCount}/{MAX_HASHTAGS}
+              <div className={styles.commentArea}>
+                <div className={styles.commentHeader}>
+                  <label htmlFor="content" className={styles.label}>
+                    コメント
+                    <span className={styles.required}>必須</span>
+                  </label>
+                  <span className={styles.charCount}>
+                    <span className={tagCountClass}>
+                      タグ {tagCount}/{MAX_HASHTAGS}
+                    </span>
+                    {" ・ "}
+                    {content?.length ?? 0}/1000
                   </span>
-                  {" ・ "}
-                  {content?.length ?? 0}/1000
-                </span>
+                </div>
+                <HashtagEditor
+                  id="content"
+                  register={register}
+                  control={control}
+                  setValue={setValue}
+                  rows={5}
+                  placeholder="読んだ感想を書いてください（#でタグ付け）"
+                />
+                <p className={styles.tagHint}>
+                  <i className="fa-solid fa-hashtag" />
+                  本文中に「#タグ名」と書くとタグ付けされます（最大
+                  {MAX_HASHTAGS}個）
+                </p>
+                {errors.content && (
+                  <p className={styles.error}>{errors.content.message}</p>
+                )}
               </div>
-              <HashtagEditor
-                id="content"
-                register={register}
-                control={control}
-                setValue={setValue}
-                rows={5}
-                placeholder="読んだ感想を書いてください（#でタグ付け）"
-              />
-              <p className={styles.tagHint}>
-                <i className="fa-solid fa-hashtag" />
-                本文中に「#タグ名」と書くとタグ付けされます（最大
-                {MAX_HASHTAGS}個）
-              </p>
-              {errors.content && (
-                <p className={styles.error}>{errors.content.message}</p>
-              )}
             </div>
 
             <div className={styles.submitRow}>

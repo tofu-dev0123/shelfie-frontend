@@ -67,25 +67,6 @@
   font-weight: var(--font-semibold);
 }
 
-.postButton {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
-  color: var(--color-white);
-  background: var(--color-primary-600);
-  padding: var(--space-2) var(--space-5);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  margin-left: var(--space-2);
-  transition: background 0.15s;
-}
-
-.postButton:hover {
-  background: var(--color-primary-700);
-}
-
 .loginButton {
   font-size: var(--text-base);
   font-weight: var(--font-medium);

@@ -256,7 +256,8 @@
 
   .bookMeta {
     padding-top: 0;
-    padding-right: var(--space-6);
+    /* 右上の absolute な .changeLink と重ならないよう右パディングを確保する */
+    padding-right: calc(var(--space-16) + var(--space-4));
   }
 
   .bookTitleLg {
@@ -344,11 +345,12 @@
 .submitRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--space-8);
+  margin-top: var(--space-6);
 }
 
 @media (max-width: 640px) {
   .submitRow {
+    justify-content: center;
     margin-top: var(--space-5);
   }
 }

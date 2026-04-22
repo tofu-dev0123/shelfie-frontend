@@ -29,10 +29,12 @@ export function BottomNav() {
       >
         <i className={`fa-solid fa-magnifying-glass ${styles.icon}`} />
       </Link>
-      <Link href="/books/new" className={styles.item}>
-        <span className={styles.postIcon}>
-          <i className="fa-solid fa-plus" />
-        </span>
+      <Link
+        href="/books/new"
+        className={`${styles.item} ${pathname === "/books/new" ? styles.active : ""}`}
+        aria-current={pathname === "/books/new" ? "page" : undefined}
+      >
+        <i className={`fa-solid fa-plus ${styles.icon}`} />
       </Link>
       <div
         ref={accountMenuRef}
