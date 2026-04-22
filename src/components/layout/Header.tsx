@@ -42,7 +42,11 @@ export function Header() {
           <i className="fa-solid fa-magnifying-glass" />
           探す
         </Link>
-        <Link href="/books/new" className={styles.postButton}>
+        <Link
+          href="/books/new"
+          className={`${styles.navLink} ${pathname === "/books/new" ? styles.active : ""}`}
+          aria-current={pathname === "/books/new" ? "page" : undefined}
+        >
           <i className="fa-solid fa-plus" />
           投稿
         </Link>

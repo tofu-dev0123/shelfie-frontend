@@ -10,7 +10,8 @@
 .textarea,
 .backdrop {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
+  height: 180px;
+  padding: var(--space-3) 0;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   font-size: var(--text-base);
@@ -27,12 +28,12 @@
   display: block;
   position: relative;
   z-index: 1;
-  border-color: var(--color-gray-300);
-  resize: vertical;
+  resize: none;
   outline: none;
   background: transparent;
   color: transparent;
   caret-color: var(--color-gray-900);
+  overflow-y: auto;
 }
 
 .textarea::placeholder {
@@ -41,10 +42,6 @@
 
 .textarea::selection {
   background: var(--color-primary-200);
-}
-
-.textarea:focus {
-  border-color: var(--color-primary-600);
 }
 
 .backdrop {

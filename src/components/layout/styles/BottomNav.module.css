@@ -37,18 +37,6 @@
   line-height: 1;
 }
 
-.postIcon {
-  width: 36px;
-  height: 36px;
-  background: var(--color-primary-600);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-white);
-  font-size: 20px;
-}
-
 /* アカウントタブ */
 .accountWrapper {
   position: relative;
