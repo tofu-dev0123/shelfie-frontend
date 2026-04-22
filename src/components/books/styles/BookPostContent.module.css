@@ -1,36 +1,60 @@
+.page {
+  min-height: 100%;
+}
+
+/* ── メインコンテナ ── */
+
 .container {
   max-width: 680px;
   margin: 0 auto;
-  padding: var(--space-8) var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-10);
 }
 
-.title {
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-6);
+@media (max-width: 640px) {
+  .container {
+    padding: var(--space-3) var(--space-4) var(--space-6);
+  }
 }
 
-/* ── 検索エリア ── */
+/* ── 戻るボタン（カード外・左上） ── */
 
-.searchSection {
-  background: white;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-bottom: var(--space-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-700);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-full);
+  transition: background 0.15s ease;
 }
+
+.backButton:hover {
+  background: var(--color-gray-100);
+}
+
+/* ── 検索フェーズ ── */
 
 .searchInput {
   display: block;
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: none;
-  border-bottom: 1px solid var(--color-gray-200);
-  font-size: var(--text-base);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-lg);
   font-family: var(--font-sans);
   color: var(--color-gray-900);
   outline: none;
   background: white;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .searchInput::placeholder {
@@ -38,44 +62,60 @@
 }
 
 .searchInput:focus {
-  border-bottom-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
 }
 
 .searchLoading {
   display: flex;
   justify-content: center;
-  padding: var(--space-6);
+  padding: var(--space-8) 0;
   color: var(--color-gray-400);
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
 }
 
 .emptyText {
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-8) var(--space-4);
   font-size: var(--text-base);
   color: var(--color-gray-500);
   text-align: center;
 }
 
-.searchResultList {
-  list-style: none;
+.results {
+  margin-top: var(--space-6);
 }
 
-.searchResultItem {
+.resultsLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-500);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-2);
+}
+
+.resultList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.resultItem {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.searchResultItem:last-child {
-  border-bottom: none;
-}
-
-.searchResultItem:hover {
-  background: var(--color-gray-50);
+.resultItem:hover {
+  background: white;
+  box-shadow: var(--shadow-hover);
 }
 
 .bookCover {
@@ -83,6 +123,7 @@
   height: 56px;
   flex-shrink: 0;
   background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
@@ -96,7 +137,7 @@
 .bookCoverPlaceholder {
   width: 100%;
   height: 100%;
-  background: var(--color-gray-200);
+  background: var(--color-gray-100);
 }
 
 .bookInfo {
@@ -120,145 +161,155 @@
   margin-top: var(--space-1);
 }
 
-/* ── 選択済み書籍 ── */
+/* ── 選択済みフェーズ: 統合カード ── */
 
-.selectedBook {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
+.formCard {
+  position: relative;
   background: white;
   border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
 }
 
-.selectedBookCover {
-  width: 48px;
-  height: 68px;
+@media (max-width: 640px) {
+  .formCard {
+    padding: var(--space-5);
+  }
+}
+
+.changeLink {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-primary-600);
+}
+
+.changeLink:hover {
+  text-decoration: underline;
+}
+
+.bookHero {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.heroCover {
+  width: 280px;
+  height: 392px;
   flex-shrink: 0;
   background: var(--color-gray-100);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
-.selectedBookCoverImage {
+.heroCoverImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.selectedBookCoverPlaceholder {
+.heroCoverPlaceholder {
   width: 100%;
   height: 100%;
-  background: var(--color-gray-200);
+  background: var(--color-gray-100);
 }
 
-.selectedBookInfo {
+.bookMeta {
   flex: 1;
   min-width: 0;
+  padding-top: var(--space-8);
+  padding-right: var(--space-10);
 }
 
-.selectedBookTitle {
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
+.bookTitleLg {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
   color: var(--color-gray-900);
   line-height: var(--leading-tight);
+  margin-bottom: var(--space-3);
 }
 
-.selectedBookAuthor {
-  font-size: var(--text-sm);
+.bookAuthorLg {
+  font-size: var(--text-base);
   color: var(--color-gray-500);
-  margin-top: var(--space-1);
 }
 
-.changeButton {
-  font-size: var(--text-sm);
-  color: var(--color-primary-600);
-  background: none;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: var(--font-sans);
-  padding: 0;
+@media (max-width: 640px) {
+  .bookHero {
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .heroCover {
+    width: 80px;
+    height: 112px;
+  }
+
+  .bookMeta {
+    padding-top: 0;
+    padding-right: var(--space-6);
+  }
+
+  .bookTitleLg {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-1);
+  }
+
+  .bookAuthorLg {
+    font-size: var(--text-sm);
+  }
 }
 
-.changeButton:hover {
-  text-decoration: underline;
+/* ── コメントエリア ── */
+
+.commentArea {
+  margin-top: var(--space-8);
 }
 
-/* ── 投稿フォーム ── */
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+@media (max-width: 640px) {
+  .commentArea {
+    margin-top: var(--space-5);
+  }
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.fieldHeader {
+.commentHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: var(--space-3);
 }
 
 .label {
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  color: var(--color-gray-700);
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-700);
 }
 
 .required {
-  font-size: var(--text-xs);
-  font-weight: var(--font-normal);
+  font-size: 10px;
+  font-weight: var(--font-semibold);
   color: var(--color-error);
+  background: #fef2f2;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
 }
 
 .charCount {
   font-size: var(--text-xs);
-  color: var(--color-gray-400);
-}
-
-.textarea {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  font-family: var(--font-sans);
-  color: var(--color-gray-900);
-  line-height: var(--leading-relaxed);
-  resize: vertical;
-  outline: none;
-  background: white;
-}
-
-.textarea::placeholder {
-  color: var(--color-gray-400);
-}
-
-.textarea:focus {
-  border-color: var(--color-primary-600);
-}
-
-.error {
-  font-size: var(--text-sm);
-  color: var(--color-error);
-}
-
-/* ── タグカウンタ・ヒント ── */
-
-.tagCount {
-  font-size: var(--text-xs);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 .tagCountWarn {
@@ -270,23 +321,49 @@
 }
 
 .tagHint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--text-xs);
   color: var(--color-gray-500);
+  margin-top: var(--space-3);
 }
 
-/* ── 投稿ボタン ── */
+.tagHint i {
+  font-size: var(--text-sm);
+}
+
+.error {
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  margin-top: var(--space-2);
+}
+
+/* ── 送信ボタン（カード内・右下） ── */
+
+.submitRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-8);
+}
+
+@media (max-width: 640px) {
+  .submitRow {
+    margin-top: var(--space-5);
+  }
+}
 
 .submitButton {
-  width: 100%;
-  padding: var(--space-3) 0;
   background: var(--color-primary-600);
   color: white;
   border: none;
+  padding: var(--space-3) var(--space-8);
   border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
   cursor: pointer;
   font-family: var(--font-sans);
+  transition: background 0.15s ease;
 }
 
 .submitButton:hover:not(:disabled) {
