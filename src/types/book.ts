@@ -51,3 +51,22 @@ export type CreateBookInput = {
   isbn: string;
   content?: string;
 };
+
+// GET /v1/users/:username/books/:isbn の投稿者情報
+export type BookPostAuthor = {
+  username: string;
+  nickname: string;
+  avatar_url: string | null;
+};
+
+// GET /v1/users/:username/books/:isbn レスポンス
+export type BookPostDetail = {
+  id: number;
+  content: string | null;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+  book: Book;
+  user: BookPostAuthor;
+  purchase_links: string[];
+};

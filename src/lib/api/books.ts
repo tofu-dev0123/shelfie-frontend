@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "@/constants/api";
 import type {
   SearchBooksResponse,
   BookPostsResponse,
+  BookPostDetail,
   WantToReadsResponse,
   TagsResponse,
   CreateBookInput,
@@ -75,6 +76,19 @@ export const getTags = (q: string): Promise<TagsResponse> => {
  */
 export const createBook = (data: CreateBookInput): Promise<void> =>
   apiPost<void>(API_ENDPOINTS.ME_BOOKS, data);
+
+/**
+ * 本棚投稿詳細を取得する。認証不要。
+ * @param username - 投稿したユーザーの username
+ * @param isbn - 書籍のISBN-13
+ * @returns 投稿詳細（書籍・投稿者・本文・タグ・購入リンク）
+ * @throws 投稿が存在しない場合は404エラー
+ */
+export const getBookPostDetail = (
+  username: string,
+  isbn: string,
+): Promise<BookPostDetail> =>
+  apiGet<BookPostDetail>(API_ENDPOINTS.USER_BOOK(username, isbn));
 
 /**
  * 読みたいリストに書籍を追加する。Bearer 認証必須。
