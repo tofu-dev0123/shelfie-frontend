@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
 import { API_ENDPOINTS } from "@/constants/api";
+import { logger } from "@/lib/logger";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,26 +18,45 @@ const _client = axios.create({
 _client.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  logger.info("APIリクエスト送信", { endpoint: config.url });
   return config;
 });
 
 // レスポンスインターセプター: 401時にサイレントリフレッシュ
 _client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    logger.info("APIレスポンス受信", {
+      endpoint: response.config.url,
+      status: response.status,
+    });
+    return response;
+  },
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
-      original._retry = true;
-      const refreshed = await tryRefresh();
-      if (!refreshed) {
-        useAuthStore.getState().clearAccessToken();
-        window.location.href = "/login";
-        return Promise.reject(error);
-      }
-      original.headers.Authorization = `Bearer ${useAuthStore.getState().accessToken}`;
-      return _client(original);
+
+    if (error.response?.status !== 401 || original._retry) {
+      logger.error("APIリクエスト失敗", {
+        endpoint: error.config?.url,
+        status: error.response?.status,
+      });
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
+
+    original._retry = true;
+    logger.warn("アクセストークン期限切れ。リフレッシュを試みます", {
+      endpoint: original.url,
+    });
+
+    const refreshed = await tryRefresh();
+    if (!refreshed) {
+      logger.error("トークンリフレッシュ失敗。ログイン画面へリダイレクト");
+      useAuthStore.getState().clearAccessToken();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
+    original.headers.Authorization = `Bearer ${useAuthStore.getState().accessToken}`;
+    return _client(original);
   },
 );
 

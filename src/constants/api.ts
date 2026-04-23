@@ -3,16 +3,27 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 export const API_ENDPOINTS = {
   // 認証
   AUTH_LOGIN: "/v1/auth/login",
-  AUTH_SIGNUP: "/v1/auth/signup",
   AUTH_LOGOUT: "/v1/auth/logout",
   AUTH_REFRESH: "/v1/auth/refresh",
 
+  // 自分のプロフィール
+  ME: "/v1/me",
+
   // ユーザー
   USERS: "/v1/users",
+  USERNAME_CHECK: "/v1/users/username/check",
   USER: (username: string) => `/v1/users/${username}`,
   USER_FOLLOW: (username: string) => `/v1/users/${username}/follow`,
 
   // 本
   BOOKS: "/v1/books",
   BOOK: (id: number) => `/v1/books/${id}`,
+  BOOKS_SEARCH: "/v1/books/search",
+  USER_BOOKS: (username: string) => `/v1/users/${username}/books`,
+  ME_BOOKS: "/v1/me/books",
+  ME_WANT_TO_READS: "/v1/me/want_to_reads",
+  ME_WANT_TO_READ: (isbn: string) => `/v1/me/want_to_reads/${isbn}`,
+
+  // タグ
+  TAGS: "/v1/tags",
 } as const;

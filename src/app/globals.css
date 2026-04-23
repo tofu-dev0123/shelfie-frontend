@@ -1,3 +1,5 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 :root {
   /* カラー */
   --color-primary-50: #eef3f9;
@@ -6,6 +8,8 @@
   --color-primary-600: #1e3a5f;
   --color-primary-700: #172d4a;
   --color-primary-900: #0d1b2e;
+
+  --color-white: #ffffff;
 
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -20,6 +24,7 @@
   --color-success: #059669;
   --color-warning: #d97706;
   --color-error: #dc2626;
+  --color-error-50: #fef2f2;
 
   /* タイポグラフィ */
   --font-sans: "Inter", sans-serif;
@@ -75,6 +80,6 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   color: var(--color-gray-700);
-  background-color: var(--color-gray-50);
+  background-color: var(--color-white);
   line-height: var(--leading-normal);
 }
