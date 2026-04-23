@@ -10,7 +10,7 @@
 | ログイン                         | `/login`                                  | 不要           | Google / GitHub ログイン                                                              |
 | サインアップ（プロフィール設定） | `/signup`                                 | Clerk 認証済み | 初回登録時の nickname / username 設定                                                 |
 | ユーザープロフィール             | `/users/:username`                        | 任意           | ユーザーの公開プロフィールと本棚一覧（読了・読みたい）                                |
-| 本棚投稿詳細                     | `/users/:username/books/:google_books_id` | 任意           | 特定ユーザーの本棚投稿詳細                                                            |
+| 本棚投稿詳細                     | `/users/:username/books/:isbn`            | 任意           | 特定ユーザーの本棚投稿詳細                                                            |
 | 本棚投稿フォーム                 | `/books/new`                              | 必須           | 書籍検索 → 投稿作成                                                                   |
 | 本棚編集フォーム                 | `/books/:google_books_id/edit`            | 必須           | 投稿内容の編集                                                                        |
 | 書籍詳細                         | `/books/:google_books_id`                 | 任意           | 書籍情報とその書籍を読んだユーザー一覧                                                |
