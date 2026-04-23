@@ -27,8 +27,15 @@ export const resolveUsernameByRefreshToken = async (
       },
     );
     return meRes.data.username;
-  } catch {
-    logger.warn("SSRでのユーザー解決に失敗");
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      logger.warn("SSRでのユーザー解決に失敗", {
+        endpoint: error.config?.url,
+        status: error.response?.status,
+      });
+    } else {
+      logger.warn("SSRでのユーザー解決に失敗（非Axiosエラー）");
+    }
     return null;
   }
 };
