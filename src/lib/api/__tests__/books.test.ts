@@ -12,6 +12,7 @@ import {
   searchBooks,
   getTags,
   addWantToRead,
+  getBookPostDetail,
 } from "../books";
 
 beforeEach(() => {
@@ -131,6 +132,41 @@ describe("addWantToRead", () => {
     await expect(addWantToRead("9784123456789")).rejects.toThrow(
       "network error",
     );
+  });
+});
+
+describe("getBookPostDetail", () => {
+  it("正しいエンドポイントにGETリクエストを送る", async () => {
+    vi.mocked(apiGet).mockResolvedValueOnce({});
+    await getBookPostDetail("testuser", "9784873115658");
+    expect(apiGet).toHaveBeenCalledWith(
+      "/v1/users/testuser/books/9784873115658",
+    );
+  });
+
+  it("レスポンスをそのまま返す", async () => {
+    const mockResponse = {
+      id: 1,
+      content: "よかった",
+      tags: ["技術書"],
+      created_at: "2026-03-05T00:00:00Z",
+      updated_at: "2026-03-05T00:00:00Z",
+      book: {
+        isbn: "9784873115658",
+        title: "リーダブルコード",
+        authors: ["Dustin Boswell"],
+        thumbnail_url: null,
+      },
+      user: {
+        username: "haruki_m",
+        nickname: "村上春樹",
+        avatar_url: null,
+      },
+      purchase_links: [],
+    };
+    vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
+    const result = await getBookPostDetail("haruki_m", "9784873115658");
+    expect(result).toEqual(mockResponse);
   });
 });
 

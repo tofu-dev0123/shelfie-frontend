@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
   BOOK: (id: number) => `/v1/books/${id}`,
   BOOKS_SEARCH: "/v1/books/search",
   USER_BOOKS: (username: string) => `/v1/users/${username}/books`,
+  USER_BOOK: (username: string, isbn: string) =>
+    `/v1/users/${username}/books/${isbn}`,
   ME_BOOKS: "/v1/me/books",
   ME_WANT_TO_READS: "/v1/me/want_to_reads",
   ME_WANT_TO_READ: (isbn: string) => `/v1/me/want_to_reads/${isbn}`,

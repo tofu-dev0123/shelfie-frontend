@@ -30,6 +30,12 @@ export const MESSAGES = {
     WANT_TO_READ_SUCCESS: "読みたいリストに追加しました",
     WANT_TO_READ_ERROR: "読みたいリストへの追加に失敗しました",
     WANT_TO_READ_ALREADY_ADDED: "すでに読みたいリストに追加済みです",
+    WANT_TO_READ_LOGIN_REQUIRED:
+      "読みたいリストに追加するにはログインが必要です",
+  },
+  SHARE: {
+    COPY_SUCCESS: "URLをコピーしました",
+    COPY_ERROR: "URLのコピーに失敗しました",
   },
   COMMON: {
     ERROR: "操作に失敗しました",
