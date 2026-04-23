@@ -34,6 +34,12 @@
   --color-book-yellow: #c9a227;
   --color-book-violet: #3d4d7a;
 
+  /* 外部サービスブランドカラー（購入リンクバッジ用） */
+  --color-amazon-bg: #fef3c7;
+  --color-amazon-text: #92400e;
+  --color-rakuten-bg: #fee2e2;
+  --color-rakuten-text: #991b1b;
+
   /* タイポグラフィ */
   --font-sans: "Inter", sans-serif;
   --text-xs: 11px;
