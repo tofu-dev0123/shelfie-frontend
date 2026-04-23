@@ -26,4 +26,7 @@ export const API_ENDPOINTS = {
 
   // タグ
   TAGS: "/v1/tags",
+
+  // フィード
+  FEED: "/v1/feed",
 } as const;

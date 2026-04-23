@@ -26,6 +26,14 @@
   --color-error: #dc2626;
   --color-error-50: #fef2f2;
 
+  /* 書影カラー（ランディングの本棚ビジュアル用） */
+  --color-book-light: #5d7fa5;
+  --color-book-cool: #8aa3c2;
+  --color-book-red: #b94e48;
+  --color-book-green: #3d6b5c;
+  --color-book-yellow: #c9a227;
+  --color-book-violet: #3d4d7a;
+
   /* タイポグラフィ */
   --font-sans: "Inter", sans-serif;
   --text-xs: 11px;

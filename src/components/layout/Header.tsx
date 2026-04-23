@@ -16,6 +16,10 @@ export function Header() {
   const handleLogout = useLogout();
   const { data: me } = useMe(isSignedIn);
 
+  // 未ログイン時は /login、ログイン済みで me 未解決時は / に飛ばし SSR リダイレクトに委ねる
+  const shelfHref = !isSignedIn ? "/login" : me ? `/users/${me.username}` : "/";
+  const isShelfActive = !!me && pathname.startsWith(`/users/${me.username}`);
+
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.logoLink}>
@@ -29,11 +33,18 @@ export function Header() {
       </Link>
       <nav className={styles.nav}>
         <Link
-          href="/"
-          className={`${styles.navLink} ${pathname === "/" ? styles.active : ""}`}
+          href={shelfHref}
+          className={`${styles.navLink} ${isShelfActive ? styles.active : ""}`}
         >
-          <i className="fa-solid fa-house" />
-          ホーム
+          <i className="fa-solid fa-book-open" />
+          本棚
+        </Link>
+        <Link
+          href="/feed"
+          className={`${styles.navLink} ${pathname.startsWith("/feed") ? styles.active : ""}`}
+        >
+          <i className="fa-solid fa-rss" />
+          フィード
         </Link>
         <Link
           href="/search"
@@ -63,22 +74,14 @@ export function Header() {
               {dropdownOpen && (
                 <div className={styles.dropdown}>
                   {me && (
-                    <>
-                      <div className={styles.dropdownUser}>
-                        <span className={styles.dropdownNickname}>
-                          {me.nickname}
-                        </span>
-                        <span className={styles.dropdownUsername}>
-                          @{me.username}
-                        </span>
-                      </div>
-                      <Link
-                        href={`/users/${me.username}`}
-                        className={styles.dropdownItem}
-                      >
-                        本棚
-                      </Link>
-                    </>
+                    <div className={styles.dropdownUser}>
+                      <span className={styles.dropdownNickname}>
+                        {me.nickname}
+                      </span>
+                      <span className={styles.dropdownUsername}>
+                        @{me.username}
+                      </span>
+                    </div>
                   )}
                   <button
                     className={styles.dropdownItem}
