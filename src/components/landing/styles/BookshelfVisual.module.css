@@ -64,22 +64,22 @@
   background: var(--color-primary-600);
 }
 .light {
-  background: #5d7fa5;
+  background: var(--color-book-light);
 }
 .cool {
-  background: #8aa3c2;
+  background: var(--color-book-cool);
 }
 .red {
-  background: #b94e48;
+  background: var(--color-book-red);
 }
 .green {
-  background: #3d6b5c;
+  background: var(--color-book-green);
 }
 .yellow {
-  background: #c9a227;
+  background: var(--color-book-yellow);
 }
 .violet {
-  background: #3d4d7a;
+  background: var(--color-book-violet);
 }
 
 @media (max-width: 640px) {
