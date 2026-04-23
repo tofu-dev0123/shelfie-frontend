@@ -65,7 +65,17 @@ git rev-parse --verify feature/swagger 2>/dev/null \
 cp ../shelfie-backend/swagger/v1/swagger.yaml swagger/v1/swagger.yaml
 ```
 
-### ステップ4: 差分チェック
+### ステップ4: フォーマット整形
+
+Prettier でコピー後のファイルを整形する。pre-commit フックでフォーマット差分が出てコミットに失敗するのを防ぐため、コミット前に必ず実行する。
+
+```bash
+npx prettier --write swagger/v1/swagger.yaml
+```
+
+`package.json` に `format` スクリプトがあるが、対象を限定するため `npx prettier --write` を直接呼ぶ。
+
+### ステップ5: 差分チェック
 
 ```bash
 git status --porcelain swagger/v1/swagger.yaml
@@ -76,7 +86,7 @@ git status --porcelain swagger/v1/swagger.yaml
 - ユーザーに「swaggerに変更はありませんでした。コミット・PRはスキップします」と伝える
 - コミット・PR作成は行わない
 
-### ステップ5: コミット
+### ステップ6: コミット
 
 差分がある場合はステージしてコミットする。コミットメッセージは日本語。
 
@@ -85,13 +95,13 @@ git add swagger/v1/swagger.yaml
 git commit -m "chore: swagger.yamlをバックエンドから同期"
 ```
 
-### ステップ6: リモートへpush
+### ステップ7: リモートへpush
 
 ```bash
 git push -u origin feature/swagger
 ```
 
-### ステップ7: PRの作成 or 更新
+### ステップ8: PRの作成 or 更新
 
 既存のオープンPR（ベース `develop`、ヘッド `feature/swagger`）があるか確認する。
 
@@ -117,7 +127,7 @@ gh pr list --base develop --head feature/swagger --state open --json number,url
   )"
   ```
 
-### ステップ8: 結果報告
+### ステップ9: 結果報告
 
 以下を1メッセージでユーザーに報告する。
 
