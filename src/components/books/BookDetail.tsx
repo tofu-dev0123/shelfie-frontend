@@ -1,4 +1,5 @@
 import type { BookPostDetail } from "@/types/book";
+import { BookDetailBackButton } from "./BookDetailBackButton";
 import { BookDetailInfo } from "./BookDetailInfo";
 import { BookDetailAuthor } from "./BookDetailAuthor";
 import { BookDetailTags } from "./BookDetailTags";
@@ -14,6 +15,7 @@ type Props = {
 export function BookDetail({ post }: Props) {
   return (
     <div className={styles.page}>
+      <BookDetailBackButton />
       <BookDetailInfo book={post.book} />
       <BookDetailAuthor
         author={post.user}

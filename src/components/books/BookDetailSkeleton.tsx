@@ -3,6 +3,7 @@ import styles from "./styles/BookDetailSkeleton.module.css";
 export function BookDetailSkeleton() {
   return (
     <div className={styles.page} aria-busy="true" aria-live="polite">
+      <div className={styles.backPlaceholder} aria-hidden="true" />
       <div className={styles.info}>
         <div className={styles.thumb} />
         <div className={styles.meta}>
