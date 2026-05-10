@@ -4,8 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-const description =
-  "読了した本を投稿して本棚を作成・公開できる読書管理アプリ";
+const description = "読了した本を投稿して本棚を作成・公開できる読書管理アプリ";
 const ogImage = "/images/shelfie-text-logo.png";
 
 export const metadata: Metadata = {
