@@ -10,8 +10,8 @@ type Props = {
 export function FeedPostCard({ item }: Props) {
   const postedAt = formatRelativeTime(item.created_at);
   return (
-    <article className={styles.card}>
-      <header className={styles.head}>
+    <article className={styles.post}>
+      <header className={styles.postHead}>
         <Link href={`/users/${item.user.username}`} className={styles.user}>
           <span className={styles.avatar} aria-hidden="true">
             {item.user.avatar_url ? (
@@ -31,7 +31,7 @@ export function FeedPostCard({ item }: Props) {
         </time>
       </header>
 
-      <div className={styles.body}>
+      <div className={styles.bookBlock}>
         <Link
           href={`/users/${item.user.username}/books/${item.book.isbn}`}
           className={styles.cover}
@@ -54,9 +54,6 @@ export function FeedPostCard({ item }: Props) {
             {item.book.title}
           </Link>
           <p className={styles.bookAuthor}>{item.book.authors.join("、")}</p>
-          {item.content ? (
-            <p className={styles.comment}>{item.content}</p>
-          ) : null}
           {item.tags.length > 0 ? (
             <ul className={styles.tags}>
               {item.tags.map((tag) => (
@@ -69,7 +66,9 @@ export function FeedPostCard({ item }: Props) {
         </div>
       </div>
 
-      <footer className={styles.footer}>
+      {item.content ? <p className={styles.comment}>{item.content}</p> : null}
+
+      <footer className={styles.postFooter}>
         <WantToReadButton isbn={item.book.isbn} />
       </footer>
     </article>
