@@ -26,6 +26,12 @@
   color: var(--color-gray-400);
   text-decoration: none;
   padding: var(--space-2) 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 150ms ease-out;
+}
+
+.item:active {
+  transform: scale(0.95);
 }
 
 .item.active {
@@ -42,6 +48,11 @@
   position: relative;
 }
 
+/* 内側の .iconButton がスケールするため、wrapper の :active による二重スケールを抑止 */
+.accountWrapper:active {
+  transform: none;
+}
+
 .iconButton {
   display: flex;
   align-items: center;
@@ -52,6 +63,12 @@
   cursor: pointer;
   padding: var(--space-2) 0;
   width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 150ms ease-out;
+}
+
+.iconButton:active {
+  transform: scale(0.95);
 }
 
 .iconButton.active {
