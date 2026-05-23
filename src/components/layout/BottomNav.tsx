@@ -75,6 +75,15 @@ export function BottomNav() {
                     </span>
                   </div>
                 )}
+                {me && (
+                  <Link
+                    href={`/users/${me.username}/profile`}
+                    className={styles.accountItem}
+                    onClick={toggleAccountMenu}
+                  >
+                    プロフィール
+                  </Link>
+                )}
                 <button className={styles.accountItem} onClick={handleLogout}>
                   ログアウト
                 </button>

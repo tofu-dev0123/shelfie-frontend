@@ -83,6 +83,15 @@ export function Header() {
                       </span>
                     </div>
                   )}
+                  {me && (
+                    <Link
+                      href={`/users/${me.username}/profile`}
+                      className={styles.dropdownItem}
+                      onClick={toggleDropdown}
+                    >
+                      プロフィール
+                    </Link>
+                  )}
                   <button
                     className={styles.dropdownItem}
                     onClick={handleLogout}
