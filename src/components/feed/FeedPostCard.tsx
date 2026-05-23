@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
 import type { FeedItem } from "@/types/feed";
 import { parseContent } from "@/lib/parseContent";
 import { WantToReadButton } from "./WantToReadButton";
@@ -9,9 +13,33 @@ type Props = {
 };
 
 export function FeedPostCard({ item }: Props) {
+  const router = useRouter();
   const postedAt = formatRelativeTime(item.created_at);
+  const detailHref = `/users/${item.user.username}/books/${item.book.isbn}`;
+
+  const handlePostClick = (event: MouseEvent<HTMLElement>) => {
+    // 内側の <a> / <button> がクリックされた場合はそちらに任せる
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+
+    // テキスト選択中の誤遷移を防ぐ
+    if (window.getSelection()?.toString()) return;
+
+    // middle-click / Cmd+click / Ctrl+click は新タブ
+    if (event.button === 1 || event.metaKey || event.ctrlKey) {
+      window.open(detailHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    router.push(detailHref);
+  };
+
   return (
-    <article className={styles.post}>
+    <article
+      className={styles.post}
+      onClick={handlePostClick}
+      onAuxClick={handlePostClick}
+    >
       <header className={styles.postHead}>
         <Link href={`/users/${item.user.username}`} className={styles.user}>
           <span className={styles.avatar} aria-hidden="true">
@@ -34,7 +62,7 @@ export function FeedPostCard({ item }: Props) {
 
       <div className={styles.bookBlock}>
         <Link
-          href={`/users/${item.user.username}/books/${item.book.isbn}`}
+          href={detailHref}
           className={styles.cover}
           aria-label={item.book.title}
         >
@@ -48,10 +76,7 @@ export function FeedPostCard({ item }: Props) {
           ) : null}
         </Link>
         <div className={styles.bookInfo}>
-          <Link
-            href={`/users/${item.user.username}/books/${item.book.isbn}`}
-            className={styles.bookTitle}
-          >
+          <Link href={detailHref} className={styles.bookTitle}>
             {item.book.title}
           </Link>
           <p className={styles.bookAuthor}>{item.book.authors.join("、")}</p>

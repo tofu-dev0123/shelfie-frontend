@@ -1,6 +1,7 @@
 .post {
   padding: var(--space-6) 0;
   border-bottom: 1px solid var(--color-gray-200);
+  cursor: pointer;
 }
 
 .post:last-child {
