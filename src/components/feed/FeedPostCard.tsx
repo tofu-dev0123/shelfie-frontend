@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { FeedItem } from "@/types/feed";
+import { parseContent } from "@/lib/parseContent";
 import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/FeedPostCard.module.css";
 
@@ -54,19 +55,26 @@ export function FeedPostCard({ item }: Props) {
             {item.book.title}
           </Link>
           <p className={styles.bookAuthor}>{item.book.authors.join("、")}</p>
-          {item.tags.length > 0 ? (
-            <ul className={styles.tags}>
-              {item.tags.map((tag) => (
-                <li key={tag} className={styles.tag}>
-                  #{tag}
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </div>
       </div>
 
-      {item.content ? <p className={styles.comment}>{item.content}</p> : null}
+      {item.content ? (
+        <p className={styles.comment}>
+          {parseContent(item.content).map((part, index) =>
+            part.type === "tag" ? (
+              <Link
+                key={index}
+                href={`/feed/tags/${encodeURIComponent(part.tagName)}`}
+                className={styles.tagLink}
+              >
+                {part.value}
+              </Link>
+            ) : (
+              <span key={index}>{part.value}</span>
+            ),
+          )}
+        </p>
+      ) : null}
 
       <footer className={styles.postFooter}>
         <WantToReadButton isbn={item.book.isbn} />

@@ -110,22 +110,6 @@
 .bookAuthor {
   font-size: var(--text-sm);
   color: var(--color-gray-500);
-  margin-bottom: var(--space-3);
-}
-
-.tags {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag {
-  font-size: var(--text-xs);
-  color: var(--color-gray-600);
-  background: var(--color-gray-100);
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-sm);
 }
 
 .comment {
@@ -137,6 +121,15 @@
   white-space: pre-wrap;
   word-break: break-word;
   margin-bottom: var(--space-5);
+}
+
+.tagLink {
+  color: var(--color-primary-600);
+  text-decoration: none;
+}
+
+.tagLink:hover {
+  color: var(--color-primary-700);
 }
 
 .postFooter {
