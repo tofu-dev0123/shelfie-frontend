@@ -1,6 +1,28 @@
-import { apiGet, apiPost, apiDelete } from "./client";
+import {
+  apiGet,
+  apiPost,
+  apiPostMultipart,
+  apiPatch,
+  apiDelete,
+} from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
 import type { User } from "@/types/user";
+
+type UpdateMeInput = {
+  nickname: string;
+  bio: string | null;
+  links: string[];
+};
+
+type UpdateMeResponse = {
+  nickname: string;
+  bio: string | null;
+  links: string[];
+};
+
+type AvatarResponse = {
+  avatar_url: string | null;
+};
 
 /**
  * ユーザーの公開情報を取得する。認証不要。
@@ -39,3 +61,28 @@ export const followUser = (username: string): Promise<void> =>
  */
 export const unfollowUser = (username: string): Promise<void> =>
   apiDelete(API_ENDPOINTS.USER_FOLLOW(username));
+
+/**
+ * 自分のプロフィール（nickname / bio / links）を更新する。
+ * @param data - 更新内容
+ * @returns 更新後のプロフィール
+ */
+export const updateMe = (data: UpdateMeInput): Promise<UpdateMeResponse> =>
+  apiPatch(API_ENDPOINTS.ME, data);
+
+/**
+ * 自分のアバター画像をアップロードする。multipart/form-data で送信する。
+ * @param file - 画像ファイル（JPEG / PNG / WebP、最大 5MB）
+ * @returns 新しい avatar_url
+ */
+export const uploadAvatar = (file: File): Promise<AvatarResponse> => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  return apiPostMultipart(API_ENDPOINTS.ME_AVATAR, formData);
+};
+
+/**
+ * 自分のアバター画像を削除する。冪等。
+ */
+export const deleteAvatar = (): Promise<void> =>
+  apiDelete(API_ENDPOINTS.ME_AVATAR);

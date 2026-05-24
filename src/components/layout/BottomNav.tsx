@@ -77,7 +77,7 @@ export function BottomNav() {
                 )}
                 {me && (
                   <Link
-                    href={`/users/${me.username}/profile`}
+                    href="/profile"
                     className={styles.accountItem}
                     onClick={toggleAccountMenu}
                   >
