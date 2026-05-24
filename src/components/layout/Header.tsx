@@ -85,7 +85,7 @@ export function Header() {
                   )}
                   {me && (
                     <Link
-                      href={`/users/${me.username}/profile`}
+                      href="/profile"
                       className={styles.dropdownItem}
                       onClick={toggleDropdown}
                     >
