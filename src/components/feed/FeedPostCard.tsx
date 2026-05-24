@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
 import type { FeedItem } from "@/types/feed";
+import { parseContent } from "@/lib/parseContent";
 import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/FeedPostCard.module.css";
 
@@ -8,10 +13,34 @@ type Props = {
 };
 
 export function FeedPostCard({ item }: Props) {
+  const router = useRouter();
   const postedAt = formatRelativeTime(item.created_at);
+  const detailHref = `/users/${item.user.username}/books/${item.book.isbn}`;
+
+  const handlePostClick = (event: MouseEvent<HTMLElement>) => {
+    // 内側の <a> / <button> がクリックされた場合はそちらに任せる
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+
+    // テキスト選択中の誤遷移を防ぐ
+    if (window.getSelection()?.toString()) return;
+
+    // middle-click / Cmd+click / Ctrl+click は新タブ
+    if (event.button === 1 || event.metaKey || event.ctrlKey) {
+      window.open(detailHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    router.push(detailHref);
+  };
+
   return (
-    <article className={styles.card}>
-      <header className={styles.head}>
+    <article
+      className={styles.post}
+      onClick={handlePostClick}
+      onAuxClick={handlePostClick}
+    >
+      <header className={styles.postHead}>
         <Link href={`/users/${item.user.username}`} className={styles.user}>
           <span className={styles.avatar} aria-hidden="true">
             {item.user.avatar_url ? (
@@ -31,9 +60,9 @@ export function FeedPostCard({ item }: Props) {
         </time>
       </header>
 
-      <div className={styles.body}>
+      <div className={styles.bookBlock}>
         <Link
-          href={`/users/${item.user.username}/books/${item.book.isbn}`}
+          href={detailHref}
           className={styles.cover}
           aria-label={item.book.title}
         >
@@ -47,29 +76,32 @@ export function FeedPostCard({ item }: Props) {
           ) : null}
         </Link>
         <div className={styles.bookInfo}>
-          <Link
-            href={`/users/${item.user.username}/books/${item.book.isbn}`}
-            className={styles.bookTitle}
-          >
+          <Link href={detailHref} className={styles.bookTitle}>
             {item.book.title}
           </Link>
           <p className={styles.bookAuthor}>{item.book.authors.join("、")}</p>
-          {item.content ? (
-            <p className={styles.comment}>{item.content}</p>
-          ) : null}
-          {item.tags.length > 0 ? (
-            <ul className={styles.tags}>
-              {item.tags.map((tag) => (
-                <li key={tag} className={styles.tag}>
-                  #{tag}
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </div>
       </div>
 
-      <footer className={styles.footer}>
+      {item.content ? (
+        <p className={styles.comment}>
+          {parseContent(item.content).map((part, index) =>
+            part.type === "tag" ? (
+              <Link
+                key={index}
+                href={`/feed/tags/${encodeURIComponent(part.tagName)}`}
+                className={styles.tagLink}
+              >
+                {part.value}
+              </Link>
+            ) : (
+              <span key={index}>{part.value}</span>
+            ),
+          )}
+        </p>
+      ) : null}
+
+      <footer className={styles.postFooter}>
         <WantToReadButton isbn={item.book.isbn} />
       </footer>
     </article>
