@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import useSWRInfinite from "swr/infinite";
 import { getFeed } from "@/lib/api/feed";
 import type { FeedResponse } from "@/types/feed";
@@ -13,10 +13,13 @@ type FeedKey = {
  * フィードを無限スクロールで取得するSWRフック。
  * バックエンドは認証ヘッダの有無でレスポンスが変わるため、signedIn をキーに含めて
  * ログイン状態が変わったらキャッシュを分離する。
+ * 末尾のセンチネル要素が表示領域に入ると次ページを自動取得する。
  * @param signedIn - ログイン状態
- * @returns items, hasMore, isEmpty, isLoading, loadMore
+ * @returns items, hasMore, isEmpty, isLoading, sentinelRef
  */
 export const useFeed = (signedIn: boolean) => {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
   const getKey = (
     pageIndex: number,
     previousPageData: FeedResponse | null,
@@ -42,5 +45,21 @@ export const useFeed = (signedIn: boolean) => {
 
   const loadMore = useCallback(() => setSize((prev) => prev + 1), [setSize]);
 
-  return { items, hasMore, isEmpty, isLoading, loadMore };
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isLoading) {
+          loadMore();
+        }
+      },
+      { rootMargin: "100px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, isLoading, loadMore]);
+
+  return { items, hasMore, isEmpty, isLoading, sentinelRef };
 };
