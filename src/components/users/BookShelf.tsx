@@ -53,7 +53,12 @@ export function BookShelf({ username, isMe }: Props) {
           <>
             <div className={styles.grid}>
               {items.map((item) => (
-                <BookCard key={item.key} book={item.book} username={username} />
+                <BookCard
+                  key={item.key}
+                  book={item.book}
+                  username={username}
+                  linkTo={activeTab === "want" ? "postNew" : "detail"}
+                />
               ))}
             </div>
 

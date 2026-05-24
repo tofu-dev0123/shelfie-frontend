@@ -1,6 +1,7 @@
 import { apiGet, apiPost } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
 import type {
+  Book,
   SearchBooksResponse,
   BookPostsResponse,
   BookPostDetail,
@@ -38,6 +39,15 @@ export const getMyWantToReads = (
     cursor ? `${path}?cursor=${cursor}` : path,
   );
 };
+
+/**
+ * 書籍を ISBN 指定で1冊取得する。Bearer 認証必須。
+ * @param isbn - ISBN-13（13桁の数字）
+ * @returns 書籍情報（isbn・title・authors・thumbnail_url）
+ * @throws 楽天 Books API に書籍が存在しない場合は404エラー
+ */
+export const getBook = (isbn: string): Promise<Book> =>
+  apiGet<Book>(API_ENDPOINTS.BOOK(isbn));
 
 /**
  * 書籍をキーワードで検索する。
