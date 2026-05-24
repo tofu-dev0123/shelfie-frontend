@@ -22,6 +22,7 @@ export function BookPostContent() {
     selectedBook,
     selectBook,
     clearBook,
+    isInitializing,
   } = useBookPostSearch(isSignedIn);
 
   const {
@@ -54,7 +55,11 @@ export function BookPostContent() {
           <i className="fa-solid fa-chevron-left" />
         </button>
 
-        {!selectedBook ? (
+        {isInitializing ? (
+          <div className={styles.searchLoading}>
+            <i className="fa-solid fa-spinner fa-spin" />
+          </div>
+        ) : !selectedBook ? (
           <>
             <input
               type="text"

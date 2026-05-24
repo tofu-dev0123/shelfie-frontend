@@ -2,17 +2,22 @@ import Link from "next/link";
 import type { Book } from "@/types/book";
 import styles from "./styles/BookCard.module.css";
 
+type LinkTo = "detail" | "postNew";
+
 type Props = {
   book: Book;
   username: string;
+  linkTo?: LinkTo;
 };
 
-export function BookCard({ book, username }: Props) {
+export function BookCard({ book, username, linkTo = "detail" }: Props) {
+  const href =
+    linkTo === "postNew"
+      ? `/books/new?isbn=${book.isbn}`
+      : `/users/${username}/books/${book.isbn}`;
+
   return (
-    <Link
-      href={`/users/${username}/books/${book.isbn}`}
-      className={styles.card}
-    >
+    <Link href={href} className={styles.card}>
       <div className={styles.cover}>
         {book.thumbnail_url ? (
           // eslint-disable-next-line @next/next/no-img-element
