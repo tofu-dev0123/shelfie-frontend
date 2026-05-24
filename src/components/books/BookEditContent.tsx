@@ -1,32 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/auth/useAuth";
-import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
-import { useBookPostForm } from "@/hooks/books/useBookPostForm";
+import { useBookEditForm } from "@/hooks/books/useBookEditForm";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
 import { HashtagEditor } from "./HashtagEditor";
 import { PurchaseLinksField } from "./PurchaseLinksField";
 import styles from "./styles/BookPostContent.module.css";
 
-export function BookPostContent() {
+type Props = {
+  isbn: string;
+};
+
+export function BookEditContent({ isbn }: Props) {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
-
   const {
-    keyword,
-    setKeyword,
-    books,
-    isLoading: isSearchLoading,
-    isEmpty,
-    debouncedKeyword,
-    selectedBook,
-    selectBook,
-    clearBook,
-    isInitializing,
-  } = useBookPostSearch(isSignedIn);
-
-  const {
+    post,
+    isLoading,
+    error,
     register,
     control,
     setValue,
@@ -34,7 +24,7 @@ export function BookPostContent() {
     errors,
     isSubmitting,
     content,
-  } = useBookPostForm(selectedBook);
+  } = useBookEditForm(isbn);
 
   const tagCount = extractHashtags(content ?? "").length;
   const tagCountClass =
@@ -56,84 +46,22 @@ export function BookPostContent() {
           <i className="fa-solid fa-chevron-left" />
         </button>
 
-        {isInitializing ? (
+        {isLoading || !post ? (
           <div className={styles.searchLoading}>
             <i className="fa-solid fa-spinner fa-spin" />
           </div>
-        ) : !selectedBook ? (
-          <>
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="投稿する本のタイトルを検索"
-              className={styles.searchInput}
-              autoFocus
-            />
-            {isSearchLoading && (
-              <div className={styles.searchLoading}>
-                <i className="fa-solid fa-spinner fa-spin" />
-              </div>
-            )}
-            {isEmpty && (
-              <p className={styles.emptyText}>
-                「{debouncedKeyword}」に一致する本が見つかりませんでした
-              </p>
-            )}
-            {books.length > 0 && (
-              <div className={styles.results}>
-                <p className={styles.resultsLabel}>検索結果</p>
-                <ul className={styles.resultList}>
-                  {books.map((book) => (
-                    <li
-                      key={book.isbn}
-                      className={styles.resultItem}
-                      onClick={() => selectBook(book)}
-                    >
-                      <div className={styles.bookCover}>
-                        {book.thumbnail_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={book.thumbnail_url}
-                            alt={book.title}
-                            className={styles.bookCoverImage}
-                          />
-                        ) : (
-                          <div className={styles.bookCoverPlaceholder} />
-                        )}
-                      </div>
-                      <div className={styles.bookInfo}>
-                        <p className={styles.bookTitle}>{book.title}</p>
-                        {book.authors.length > 0 && (
-                          <p className={styles.bookAuthor}>
-                            {book.authors.join(", ")}
-                          </p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
+        ) : error ? (
+          <p className={styles.emptyText}>投稿の取得に失敗しました</p>
         ) : (
           <form onSubmit={onSubmit}>
             <div className={styles.formCard}>
-              <button
-                type="button"
-                onClick={clearBook}
-                className={styles.changeLink}
-              >
-                変更する
-              </button>
-
               <div className={styles.bookHero}>
                 <div className={styles.heroCover}>
-                  {selectedBook.thumbnail_url ? (
+                  {post.book.thumbnail_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={selectedBook.thumbnail_url}
-                      alt={selectedBook.title}
+                      src={post.book.thumbnail_url}
+                      alt={post.book.title}
                       className={styles.heroCoverImage}
                     />
                   ) : (
@@ -141,10 +69,10 @@ export function BookPostContent() {
                   )}
                 </div>
                 <div className={styles.bookMeta}>
-                  <h2 className={styles.bookTitleLg}>{selectedBook.title}</h2>
-                  {selectedBook.authors.length > 0 && (
+                  <h2 className={styles.bookTitleLg}>{post.book.title}</h2>
+                  {post.book.authors.length > 0 && (
                     <p className={styles.bookAuthorLg}>
-                      {selectedBook.authors.join(", ")}
+                      {post.book.authors.join(", ")}
                     </p>
                   )}
                 </div>
@@ -197,7 +125,7 @@ export function BookPostContent() {
                 disabled={isSubmitting}
                 className={styles.submitButton}
               >
-                {isSubmitting ? "投稿中..." : "投稿する"}
+                {isSubmitting ? "更新中..." : "更新する"}
               </button>
             </div>
           </form>

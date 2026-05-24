@@ -3,9 +3,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("../client", () => ({
   apiGet: vi.fn(),
   apiPost: vi.fn(),
+  apiPut: vi.fn(),
 }));
 
-import { apiGet, apiPost } from "../client";
+import { apiGet, apiPost, apiPut } from "../client";
 import {
   getUserBooks,
   getMyWantToReads,
@@ -13,11 +14,14 @@ import {
   getTags,
   addWantToRead,
   getBookPostDetail,
+  createBook,
+  updateBook,
 } from "../books";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
   vi.mocked(apiPost).mockReset();
+  vi.mocked(apiPut).mockReset();
 });
 
 const emptyResponse = {
@@ -170,6 +174,57 @@ describe("getBookPostDetail", () => {
     vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
     const result = await getBookPostDetail("haruki_m", "9784873115658");
     expect(result).toEqual(mockResponse);
+  });
+});
+
+describe("createBook", () => {
+  it("正しいエンドポイントにPOSTリクエストを送る（purchase_links なし）", async () => {
+    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
+    await createBook({ isbn: "9784873115658", content: "感想" });
+    expect(apiPost).toHaveBeenCalledWith("/v1/me/books", {
+      isbn: "9784873115658",
+      content: "感想",
+    });
+  });
+
+  it("purchase_links を含めて送信できる", async () => {
+    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
+    await createBook({
+      isbn: "9784873115658",
+      content: "感想",
+      purchase_links: ["https://example.com/a", "https://example.com/b"],
+    });
+    expect(apiPost).toHaveBeenCalledWith("/v1/me/books", {
+      isbn: "9784873115658",
+      content: "感想",
+      purchase_links: ["https://example.com/a", "https://example.com/b"],
+    });
+  });
+});
+
+describe("updateBook", () => {
+  it("正しいエンドポイントにPUTリクエストを送る", async () => {
+    vi.mocked(apiPut).mockResolvedValueOnce(undefined);
+    await updateBook("9784873115658", {
+      content: "更新後の感想",
+      purchase_links: ["https://example.com/a"],
+    });
+    expect(apiPut).toHaveBeenCalledWith("/v1/me/books/9784873115658", {
+      content: "更新後の感想",
+      purchase_links: ["https://example.com/a"],
+    });
+  });
+
+  it("purchase_links に空配列を渡せる（全件削除ケース）", async () => {
+    vi.mocked(apiPut).mockResolvedValueOnce(undefined);
+    await updateBook("9784873115658", {
+      content: "感想だけ",
+      purchase_links: [],
+    });
+    expect(apiPut).toHaveBeenCalledWith("/v1/me/books/9784873115658", {
+      content: "感想だけ",
+      purchase_links: [],
+    });
   });
 });
 

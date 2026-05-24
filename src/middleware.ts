@@ -4,6 +4,7 @@ const isProtectedRoute = createRouteMatcher([
   "/me(.*)",
   "/settings(.*)",
   "/books/new(.*)",
+  "/books/(.*)/edit",
   "/profile(.*)",
 ]);
 
