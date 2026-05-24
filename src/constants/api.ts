@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
   USER_BOOK: (username: string, isbn: string) =>
     `/v1/users/${username}/books/${isbn}`,
   ME_BOOKS: "/v1/me/books",
+  ME_BOOK: (isbn: string) => `/v1/me/books/${isbn}`,
   ME_WANT_TO_READS: "/v1/me/want_to_reads",
   ME_WANT_TO_READ: (isbn: string) => `/v1/me/want_to_reads/${isbn}`,
 

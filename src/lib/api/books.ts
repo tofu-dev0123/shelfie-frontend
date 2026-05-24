@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from "./client";
+import { apiGet, apiPost, apiPut } from "./client";
 import { API_ENDPOINTS } from "@/constants/api";
 import type {
   Book,
@@ -8,6 +8,7 @@ import type {
   WantToReadsResponse,
   TagsResponse,
   CreateBookInput,
+  UpdateBookInput,
 } from "@/types/book";
 
 /**
@@ -81,11 +82,23 @@ export const getTags = (q: string): Promise<TagsResponse> => {
 
 /**
  * 本棚に書籍を投稿する。
- * @param data - 投稿データ（isbn・content・tags）
+ * @param data - 投稿データ（isbn・content・purchase_links）
  * @throws 投稿失敗時にエラー
  */
 export const createBook = (data: CreateBookInput): Promise<void> =>
   apiPost<void>(API_ENDPOINTS.ME_BOOKS, data);
+
+/**
+ * 本棚投稿を更新する。
+ * purchase_links は送信した配列で既存リンクを置き換える（空配列で全件削除）。
+ * @param isbn - 更新対象投稿のISBN-13
+ * @param data - 更新データ（content・purchase_links）
+ * @throws 更新失敗時にエラー
+ */
+export const updateBook = (
+  isbn: string,
+  data: UpdateBookInput,
+): Promise<void> => apiPut<void>(API_ENDPOINTS.ME_BOOK(isbn), data);
 
 /**
  * 本棚投稿詳細を取得する。認証不要。

@@ -104,6 +104,11 @@ export const apiPostMultipart = async <T>(
   return r.data;
 };
 
+export const apiPut = async <T>(path: string, data?: unknown): Promise<T> => {
+  const r = await _client.put<T>(path, data);
+  return r.data;
+};
+
 export const apiPatch = async <T>(path: string, data?: unknown): Promise<T> => {
   const r = await _client.patch<T>(path, data);
   return r.data;
