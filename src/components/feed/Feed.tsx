@@ -7,20 +7,14 @@ import styles from "./styles/Feed.module.css";
 
 export function Feed() {
   const { isSignedIn, isInitializing } = useAuth();
-  const { items, hasMore, isEmpty, isLoading, loadMore } = useFeed(isSignedIn);
+  const { items, isEmpty, isLoading, sentinelRef } = useFeed(isSignedIn);
+
+  const isInitialLoading = isLoading && items.length === 0;
+  const isLoadingMore = isLoading && items.length > 0;
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>フィード</h1>
-        <p className={styles.lead}>
-          {isSignedIn
-            ? "フォロー中のユーザーと自分の投稿を、投稿日時順で表示しています。"
-            : "みんなの読了した本を、投稿日時順で表示しています。"}
-        </p>
-      </header>
-
-      {isInitializing || isLoading ? (
+      {isInitializing || isInitialLoading ? (
         <p className={styles.placeholder}>読み込み中...</p>
       ) : isEmpty ? (
         <p className={styles.placeholder}>
@@ -29,20 +23,24 @@ export function Feed() {
             : "まだ投稿がありません。"}
         </p>
       ) : (
-        <ul className={styles.list}>
-          {items.map((item) => (
-            <li key={item.id}>
-              <FeedPostCard item={item} />
-            </li>
-          ))}
-        </ul>
-      )}
+        <>
+          <ul className={styles.list}>
+            {items.map((item) => (
+              <li key={item.id}>
+                <FeedPostCard item={item} />
+              </li>
+            ))}
+          </ul>
 
-      {hasMore ? (
-        <button type="button" className={styles.loadMore} onClick={loadMore}>
-          さらに読み込む
-        </button>
-      ) : null}
+          <div ref={sentinelRef} className={styles.sentinel} />
+
+          {isLoadingMore ? (
+            <div className={styles.loading}>
+              <i className="fa-solid fa-spinner fa-spin" />
+            </div>
+          ) : null}
+        </>
+      )}
     </div>
   );
 }
