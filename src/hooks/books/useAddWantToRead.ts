@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useSWRConfig } from "swr";
 import { toast } from "sonner";
 import { addWantToRead } from "@/lib/api/books";
@@ -12,13 +13,15 @@ import { logger } from "@/lib/logger";
 /**
  * 読みたいリスト追加操作を管理するフック。
  * APIレスポンスを受けてからUIを更新する（楽観的更新なし）。
- * 追加成功後は useMyWantToReads のキャッシュを無効化する。
+ * 追加成功後は useMyWantToReads のキャッシュを無効化し、
+ * Server Component の book.is_in_my_want_to_read を再取得するため router.refresh() を呼ぶ。
  * @param isbn - 追加対象のISBN-13
  * @returns isPending, handleAdd
  */
 export const useAddWantToRead = (isbn: string) => {
   const [isPending, setIsPending] = useState(false);
   const { mutate } = useSWRConfig();
+  const router = useRouter();
 
   const handleAdd = async () => {
     if (isPending) return;
@@ -34,6 +37,8 @@ export const useAddWantToRead = (isbn: string) => {
           key !== null &&
           (key as { type?: string }).type === "my-want-to-reads",
       );
+      // Server Component が取得した book.is_in_my_want_to_read を最新化するため再フェッチさせる
+      router.refresh();
     } catch (error) {
       // 409 は「すでに追加済み」を意味するため、エラー扱いせず info トーストで通知する
       if (axios.isAxiosError(error) && error.response?.status === 409) {

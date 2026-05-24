@@ -8,9 +8,14 @@ import styles from "./styles/WantToReadButton.module.css";
 type Props = {
   isbn: string;
   authorUsername: string;
+  isInMyWantToRead: boolean | null;
 };
 
-export function WantToReadButton({ isbn, authorUsername }: Props) {
+export function WantToReadButton({
+  isbn,
+  authorUsername,
+  isInMyWantToRead,
+}: Props) {
   const { isSignedIn, isInitializing } = useAuth();
   const { data: me } = useMe(isSignedIn);
   const { isPending, handleClick } = useWantToReadAction(isbn);
@@ -19,13 +24,15 @@ export function WantToReadButton({ isbn, authorUsername }: Props) {
   if (isInitializing) return null;
   if (isSignedIn && me?.username === authorUsername) return null;
 
+  const isAlreadyAdded = isInMyWantToRead === true;
+
   return (
     <div className={styles.wrap}>
       <button
         type="button"
         className={styles.btn}
         onClick={handleClick}
-        disabled={isPending}
+        disabled={isPending || isAlreadyAdded}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +48,7 @@ export function WantToReadButton({ isbn, authorUsername }: Props) {
         >
           <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
         </svg>
-        読みたいリストに追加
+        {isAlreadyAdded ? "読みたいリストに追加済み" : "読みたいリストに追加"}
       </button>
     </div>
   );

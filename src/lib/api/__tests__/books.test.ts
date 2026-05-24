@@ -53,6 +53,7 @@ describe("getUserBooks", () => {
             title: "吾輩は猫である",
             authors: ["夏目漱石"],
             thumbnail_url: null,
+            is_in_my_want_to_read: null,
           },
         },
       ],
@@ -87,6 +88,7 @@ describe("getMyWantToReads", () => {
           title: "ノルウェイの森",
           authors: ["村上春樹"],
           thumbnail_url: null,
+          is_in_my_want_to_read: true,
         },
       ],
       pagination: { next_cursor: null, has_next: false },
@@ -156,6 +158,7 @@ describe("getBookPostDetail", () => {
         title: "リーダブルコード",
         authors: ["Dustin Boswell"],
         thumbnail_url: null,
+        is_in_my_want_to_read: null,
       },
       user: {
         username: "haruki_m",

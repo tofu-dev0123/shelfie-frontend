@@ -4,6 +4,8 @@ export type Book = {
   title: string;
   authors: string[];
   thumbnail_url: string | null;
+  // ログイン中ユーザーが読みたいリストに登録済みかどうか。未ログイン時は null
+  is_in_my_want_to_read: boolean | null;
 };
 
 // カーソルベースページネーション共通型

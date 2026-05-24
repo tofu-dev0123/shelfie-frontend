@@ -102,7 +102,10 @@ export function FeedPostCard({ item }: Props) {
       ) : null}
 
       <footer className={styles.postFooter}>
-        <WantToReadButton isbn={item.book.isbn} />
+        <WantToReadButton
+          isbn={item.book.isbn}
+          isInMyWantToRead={item.book.is_in_my_want_to_read}
+        />
       </footer>
     </article>
   );
