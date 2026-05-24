@@ -3,10 +3,15 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 
 const mutateMock = vi.fn();
+const refreshMock = vi.fn();
 
 vi.mock("swr", () => ({
   default: vi.fn().mockReturnValue({ data: undefined, isLoading: false }),
   useSWRConfig: () => ({ mutate: mutateMock }),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: refreshMock }),
 }));
 
 vi.mock("@/lib/api/books", () => ({
@@ -33,6 +38,7 @@ beforeEach(() => {
   vi.mocked(toast.info).mockReset();
   vi.mocked(logger.error).mockReset();
   mutateMock.mockReset();
+  refreshMock.mockReset();
 });
 
 describe("useAddWantToRead", () => {
@@ -43,7 +49,7 @@ describe("useAddWantToRead", () => {
     expect(result.current.isPending).toBe(false);
   });
 
-  it("追加成功時に addWantToRead が呼ばれ、成功トーストが表示され、キャッシュが無効化される", async () => {
+  it("追加成功時に addWantToRead が呼ばれ、成功トーストが表示され、キャッシュ無効化と router.refresh が行われる", async () => {
     vi.mocked(addWantToRead).mockResolvedValueOnce(undefined);
 
     const { result } = renderHook(() => useAddWantToRead(ISBN));
@@ -55,6 +61,7 @@ describe("useAddWantToRead", () => {
     expect(addWantToRead).toHaveBeenCalledWith(ISBN);
     expect(toast.success).toHaveBeenCalledWith("読みたいリストに追加しました");
     expect(mutateMock).toHaveBeenCalledTimes(1);
+    expect(refreshMock).toHaveBeenCalledTimes(1);
 
     // mutate に渡した matcher 関数が想定どおり動作するか検証
     const matcher = mutateMock.mock.calls[0][0] as (key: unknown) => boolean;
@@ -86,9 +93,10 @@ describe("useAddWantToRead", () => {
     expect(toast.error).not.toHaveBeenCalled();
     expect(logger.error).not.toHaveBeenCalled();
     expect(mutateMock).not.toHaveBeenCalled();
+    expect(refreshMock).not.toHaveBeenCalled();
   });
 
-  it("API失敗時にエラートーストとログを出し、キャッシュ無効化は行わない", async () => {
+  it("API失敗時にエラートーストとログを出し、キャッシュ無効化と refresh は行わない", async () => {
     vi.mocked(addWantToRead).mockRejectedValueOnce(new Error("Network Error"));
 
     const { result } = renderHook(() => useAddWantToRead(ISBN));
@@ -107,6 +115,7 @@ describe("useAddWantToRead", () => {
       }),
     );
     expect(mutateMock).not.toHaveBeenCalled();
+    expect(refreshMock).not.toHaveBeenCalled();
   });
 
   it("処理中は isPending が true になる", async () => {

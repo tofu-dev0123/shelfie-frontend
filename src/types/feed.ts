@@ -11,6 +11,7 @@ export type FeedItem = {
     title: string;
     authors: string[];
     thumbnail_url: string | null;
+    is_in_my_want_to_read: boolean | null;
   };
   user: {
     username: string;

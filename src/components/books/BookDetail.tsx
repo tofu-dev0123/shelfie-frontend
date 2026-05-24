@@ -29,6 +29,7 @@ export function BookDetail({ post }: Props) {
       <WantToReadButton
         isbn={post.book.isbn}
         authorUsername={post.user.username}
+        isInMyWantToRead={post.book.is_in_my_want_to_read}
       />
     </div>
   );
