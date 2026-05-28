@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Spinner } from "@/components/ui/Spinner";
 import { useBookShelf } from "@/hooks/users/useBookShelf";
 import { BookCard } from "./BookCard";
+import { BookShelfSkeleton } from "./BookShelfSkeleton";
 import styles from "./styles/BookShelf.module.css";
 
 type Props = {
@@ -20,6 +22,8 @@ export function BookShelf({ username, isMe }: Props) {
     useBookShelf(username);
 
   const visibleTabs = isMe ? TABS : TABS.filter((t) => t.key === "done");
+  const isInitialLoading = isLoading && items.length === 0;
+  const isLoadingMore = isLoading && items.length > 0;
 
   return (
     <div className={styles.shelfSection}>
@@ -36,7 +40,9 @@ export function BookShelf({ username, isMe }: Props) {
           ))}
         </div>
 
-        {isEmpty && !isLoading ? (
+        {isInitialLoading ? (
+          <BookShelfSkeleton />
+        ) : isEmpty ? (
           <div className={styles.emptyState}>
             <p className={styles.emptyMessage}>
               {activeTab === "done"
@@ -65,9 +71,9 @@ export function BookShelf({ username, isMe }: Props) {
             {/* 無限スクロールのセンチネル */}
             <div ref={sentinelRef} className={styles.sentinel} />
 
-            {isLoading && (
+            {isLoadingMore && (
               <div className={styles.loading}>
-                <i className="fa-solid fa-spinner fa-spin" />
+                <Spinner />
               </div>
             )}
           </>

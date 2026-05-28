@@ -1,7 +1,9 @@
 "use client";
 
+import { Spinner } from "@/components/ui/Spinner";
 import { usePostSearch } from "@/hooks/usePostSearch";
 import { FeedPostCard } from "@/components/feed/FeedPostCard";
+import { FeedSkeleton } from "@/components/feed/FeedSkeleton";
 import styles from "./styles/SearchContent.module.css";
 import postStyles from "./styles/PostSearchResults.module.css";
 
@@ -30,11 +32,7 @@ export function PostSearchResults({ mode, q }: Props) {
   }
 
   if (isFirstLoading) {
-    return (
-      <div className={styles.loading}>
-        <i className="fa-solid fa-spinner fa-spin" />
-      </div>
-    );
+    return <FeedSkeleton />;
   }
 
   if (isEmpty) {
@@ -62,7 +60,7 @@ export function PostSearchResults({ mode, q }: Props) {
       <div ref={sentinelRef} className={styles.sentinel} />
       {isLoading && items.length > 0 && (
         <div className={styles.loading}>
-          <i className="fa-solid fa-spinner fa-spin" />
+          <Spinner />
         </div>
       )}
     </>

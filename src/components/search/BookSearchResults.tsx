@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Spinner } from "@/components/ui/Spinner";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useBookSearch } from "@/hooks/useBookSearch";
+import { BookSearchSkeleton } from "./BookSearchSkeleton";
 import { SearchBookCard } from "./SearchBookCard";
 import styles from "./styles/SearchContent.module.css";
 
@@ -44,11 +46,7 @@ export function BookSearchResults({ q }: Props) {
   }
 
   if (isFirstLoading) {
-    return (
-      <div className={styles.loading}>
-        <i className="fa-solid fa-spinner fa-spin" />
-      </div>
-    );
+    return <BookSearchSkeleton />;
   }
 
   if (isSignedIn && isEmpty) {
@@ -72,7 +70,7 @@ export function BookSearchResults({ q }: Props) {
       <div ref={sentinelRef} className={styles.sentinel} />
       {isLoading && books.length > 0 && (
         <div className={styles.loading}>
-          <i className="fa-solid fa-spinner fa-spin" />
+          <Spinner />
         </div>
       )}
     </>
