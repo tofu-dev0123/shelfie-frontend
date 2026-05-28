@@ -12,15 +12,17 @@ export type ShelfItem = {
  * 本棚のタブ状態と無限スクロールを管理するフック。
  * activeTab に応じて「読了（/v1/users/:username/books）」と
  * 「読みたい（/v1/me/want_to_reads）」を切り替える。
+ * 「読みたい」は自分自身の本棚画面でしか使わないため、isMe が false のときはフェッチをスキップする。
  * @param username - ユーザー名
+ * @param isMe - 表示中の本棚が自分のものかどうか
  * @returns activeTab, setActiveTab, sentinelRef, items, hasMore, isEmpty, isLoading
  */
-export const useBookShelf = (username: string) => {
+export const useBookShelf = (username: string, isMe: boolean) => {
   const [activeTab, setActiveTab] = useState<"done" | "want">("done");
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const done = useUserBooks(username);
-  const want = useMyWantToReads();
+  const want = useMyWantToReads(isMe);
 
   // アクティブタブに応じて使用するフックの状態を切り替える。
   // 非アクティブ側の SWR はフェッチ済みデータがあればキャッシュから返すだけ。

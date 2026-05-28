@@ -19,7 +19,7 @@ const TABS = [
 
 export function BookShelf({ username, isMe }: Props) {
   const { activeTab, setActiveTab, sentinelRef, items, isEmpty, isLoading } =
-    useBookShelf(username);
+    useBookShelf(username, isMe);
 
   const visibleTabs = isMe ? TABS : TABS.filter((t) => t.key === "done");
   const isInitialLoading = isLoading && items.length === 0;
