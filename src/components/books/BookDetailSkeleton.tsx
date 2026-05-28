@@ -1,28 +1,39 @@
+import { Skeleton } from "@/components/ui/Skeleton";
 import styles from "./styles/BookDetailSkeleton.module.css";
 
 export function BookDetailSkeleton() {
   return (
     <div className={styles.page} aria-busy="true" aria-live="polite">
-      <div className={styles.backPlaceholder} aria-hidden="true" />
+      <Skeleton
+        width={40}
+        height={40}
+        radius="full"
+        className={styles.backPlaceholder}
+      />
       <div className={styles.info}>
-        <div className={styles.thumb} />
+        <Skeleton className={styles.thumb} radius="md" />
         <div className={styles.meta}>
-          <div className={styles.lineLg} />
-          <div className={styles.lineSm} />
-          <div className={styles.lineXs} />
+          <Skeleton width="80%" height={24} />
+          <Skeleton width="40%" height={14} />
+          <Skeleton width="30%" height={12} />
         </div>
       </div>
       <div className={styles.author}>
-        <div className={styles.avatar} />
+        <Skeleton
+          width={44}
+          height={44}
+          radius="full"
+          className={styles.avatar}
+        />
         <div className={styles.authorMeta}>
-          <div className={styles.lineSm} />
-          <div className={styles.lineXs} />
+          <Skeleton width="40%" height={14} />
+          <Skeleton width="30%" height={12} />
         </div>
       </div>
       <div className={styles.body}>
-        <div className={styles.lineFull} />
-        <div className={styles.lineFull} />
-        <div className={styles.lineHalf} />
+        <Skeleton width="100%" height={14} />
+        <Skeleton width="100%" height={14} />
+        <Skeleton width="60%" height={14} />
       </div>
     </div>
   );

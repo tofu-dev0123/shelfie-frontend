@@ -1,0 +1,9 @@
+.sm {
+  font-size: var(--text-sm);
+  color: var(--color-gray-400);
+}
+
+.md {
+  font-size: var(--text-lg);
+  color: var(--color-gray-400);
+}

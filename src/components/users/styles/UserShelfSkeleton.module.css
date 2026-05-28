@@ -1,0 +1,45 @@
+.headerSection {
+  padding: var(--space-6) 0 0;
+}
+
+.shelfSection {
+  padding: var(--space-6) 0 var(--space-12);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-10);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.avatar {
+  flex-shrink: 0;
+}
+
+.nameRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.tabs {
+  display: flex;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 2px solid var(--color-gray-200);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 var(--space-4);
+  }
+}

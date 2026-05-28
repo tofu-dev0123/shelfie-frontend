@@ -1,0 +1,73 @@
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.userMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.postedAt {
+  margin-left: auto;
+}
+
+.bookBlock {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.cover {
+  width: 72px;
+  height: 104px;
+}
+
+.bookInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-1);
+  min-width: 0;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-left: 3px solid var(--color-gray-100);
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .bookBlock {
+    grid-template-columns: 64px 1fr;
+    gap: var(--space-3);
+  }
+
+  .cover {
+    width: 64px;
+    height: 92px;
+  }
+}

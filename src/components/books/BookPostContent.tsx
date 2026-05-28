@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/Spinner";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
 import { useBookPostForm } from "@/hooks/books/useBookPostForm";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
+import { BookFormSkeleton } from "./BookFormSkeleton";
 import { HashtagEditor } from "./HashtagEditor";
 import { PurchaseLinksField } from "./PurchaseLinksField";
 import styles from "./styles/BookPostContent.module.css";
@@ -57,9 +59,7 @@ export function BookPostContent() {
         </button>
 
         {isInitializing ? (
-          <div className={styles.searchLoading}>
-            <i className="fa-solid fa-spinner fa-spin" />
-          </div>
+          <BookFormSkeleton />
         ) : !selectedBook ? (
           <>
             <input
@@ -72,7 +72,7 @@ export function BookPostContent() {
             />
             {isSearchLoading && (
               <div className={styles.searchLoading}>
-                <i className="fa-solid fa-spinner fa-spin" />
+                <Spinner />
               </div>
             )}
             {isEmpty && (

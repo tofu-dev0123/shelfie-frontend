@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useBookEditForm } from "@/hooks/books/useBookEditForm";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
+import { BookFormSkeleton } from "./BookFormSkeleton";
 import { HashtagEditor } from "./HashtagEditor";
 import { PurchaseLinksField } from "./PurchaseLinksField";
 import styles from "./styles/BookPostContent.module.css";
@@ -47,9 +48,7 @@ export function BookEditContent({ isbn }: Props) {
         </button>
 
         {isLoading || !post ? (
-          <div className={styles.searchLoading}>
-            <i className="fa-solid fa-spinner fa-spin" />
-          </div>
+          <BookFormSkeleton />
         ) : error ? (
           <p className={styles.emptyText}>投稿の取得に失敗しました</p>
         ) : (
