@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Link from "next/link";
 import { linkifyContent } from "@/lib/linkify";
 import styles from "./styles/BookDetailBody.module.css";
 
@@ -26,10 +27,15 @@ export function BookDetailBody({ content }: Props) {
           );
         }
         if (seg.type === "hashtag") {
+          const tagName = seg.value.slice(1);
           return (
-            <span key={i} className={styles.hashtag}>
+            <Link
+              key={i}
+              href={`/search?type=tags&q=${encodeURIComponent(tagName)}`}
+              className={styles.hashtag}
+            >
               {seg.value}
-            </span>
+            </Link>
           );
         }
         return <Fragment key={i}>{seg.value}</Fragment>;

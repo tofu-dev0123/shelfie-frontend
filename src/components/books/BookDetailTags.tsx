@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./styles/BookDetailTags.module.css";
 
 type Props = {
@@ -9,8 +10,13 @@ export function BookDetailTags({ tags }: Props) {
   return (
     <ul className={styles.list}>
       {tags.map((tag) => (
-        <li key={tag} className={styles.chip}>
-          #{tag}
+        <li key={tag}>
+          <Link
+            href={`/search?type=tags&q=${encodeURIComponent(tag)}`}
+            className={styles.chip}
+          >
+            #{tag}
+          </Link>
         </li>
       ))}
     </ul>

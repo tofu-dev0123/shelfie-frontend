@@ -33,4 +33,7 @@ export const API_ENDPOINTS = {
 
   // フィード
   FEED: "/v1/feed",
+
+  // 投稿
+  POSTS_SEARCH: "/v1/posts/search",
 } as const;
