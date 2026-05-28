@@ -33,6 +33,7 @@ export const MESSAGES = {
     SHELF_FETCH_ERROR: "本棚の取得に失敗しました",
     SEARCH_ERROR: "書籍の検索に失敗しました",
     SEARCH_LOGIN_REQUIRED: "書籍の検索にはログインが必要です",
+    POST_SEARCH_ERROR: "投稿の検索に失敗しました",
     FETCH_ERROR: "書籍の取得に失敗しました",
     WANT_TO_READ_SUCCESS: "読みたいリストに追加しました",
     WANT_TO_READ_ERROR: "読みたいリストへの追加に失敗しました",

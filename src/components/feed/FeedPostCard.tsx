@@ -89,7 +89,7 @@ export function FeedPostCard({ item }: Props) {
             part.type === "tag" ? (
               <Link
                 key={index}
-                href={`/feed/tags/${encodeURIComponent(part.tagName)}`}
+                href={`/search?type=tags&q=${encodeURIComponent(part.tagName)}`}
                 className={styles.tagLink}
               >
                 {part.value}
