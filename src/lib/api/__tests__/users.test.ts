@@ -68,7 +68,7 @@ describe("followUser", () => {
   it("正しいエンドポイントにPOSTリクエストを送る", async () => {
     vi.mocked(apiPost).mockResolvedValueOnce(undefined);
     await followUser("testuser");
-    expect(apiPost).toHaveBeenCalledWith("/v1/users/testuser/follow");
+    expect(apiPost).toHaveBeenCalledWith("/v1/me/follows/testuser");
   });
 });
 
@@ -76,6 +76,6 @@ describe("unfollowUser", () => {
   it("正しいエンドポイントにDELETEリクエストを送る", async () => {
     vi.mocked(apiDelete).mockResolvedValueOnce(undefined);
     await unfollowUser("testuser");
-    expect(apiDelete).toHaveBeenCalledWith("/v1/users/testuser/follow");
+    expect(apiDelete).toHaveBeenCalledWith("/v1/me/follows/testuser");
   });
 });
