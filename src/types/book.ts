@@ -52,22 +52,17 @@ export type TagsResponse = {
 export type CreateBookInput = {
   isbn: string;
   content?: string;
-  purchase_links?: string[];
 };
 
 // PUT /v1/me/books/:isbn リクエスト
-// 更新時は purchase_links を必ず送る（バックエンド仕様で必須）。
-// 送信した配列で既存リンクを置き換えるため、空配列を渡せば全件削除になる。
 export type UpdateBookInput = {
   content: string;
-  purchase_links: string[];
 };
 
 // GET /v1/users/:username/books/:isbn の投稿者情報
 export type BookPostAuthor = {
   username: string;
   nickname: string;
-  avatar_url: string | null;
 };
 
 // GET /v1/users/:username/books/:isbn レスポンス
@@ -79,5 +74,4 @@ export type BookPostDetail = {
   updated_at: string;
   book: Book;
   user: BookPostAuthor;
-  purchase_links: string[];
 };

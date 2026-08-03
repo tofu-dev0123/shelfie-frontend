@@ -5,7 +5,6 @@ import { useBookEditForm } from "@/hooks/books/useBookEditForm";
 import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
 import { BookFormSkeleton } from "./BookFormSkeleton";
 import { HashtagEditor } from "./HashtagEditor";
-import { PurchaseLinksField } from "./PurchaseLinksField";
 import styles from "./styles/BookPostContent.module.css";
 
 type Props = {
@@ -107,14 +106,6 @@ export function BookEditContent({ isbn }: Props) {
                 {errors.content && (
                   <p className={styles.error}>{errors.content.message}</p>
                 )}
-              </div>
-
-              <div className={styles.purchaseLinksArea}>
-                <PurchaseLinksField
-                  control={control}
-                  register={register}
-                  errors={errors}
-                />
               </div>
             </div>
 

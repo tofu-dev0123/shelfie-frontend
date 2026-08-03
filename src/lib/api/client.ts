@@ -87,23 +87,6 @@ export const apiPost = async <T>(path: string, data?: unknown): Promise<T> => {
   return r.data;
 };
 
-/**
- * multipart/form-data でPOSTする。
- * インスタンスのデフォルト Content-Type (application/json) を上書きし、
- * FormData が JSON にシリアライズされて空オブジェクトになる挙動を回避する。
- * @param path - エンドポイントパス
- * @param formData - 送信する FormData
- */
-export const apiPostMultipart = async <T>(
-  path: string,
-  formData: FormData,
-): Promise<T> => {
-  const r = await _client.post<T>(path, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return r.data;
-};
-
 export const apiPut = async <T>(path: string, data?: unknown): Promise<T> => {
   const r = await _client.put<T>(path, data);
   return r.data;

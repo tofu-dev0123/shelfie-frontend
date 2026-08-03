@@ -13,8 +13,8 @@ import type { Book } from "@/types/book";
 
 /**
  * 書籍投稿フォームのフック。
- * タグは本文中のハッシュタグから派生するため、フォーム値としては content と purchase_links を管理する。
- * URL バリデーションを blur 時に走らせるため mode は "onBlur" を指定している。
+ * タグは本文中のハッシュタグから派生するため、フォーム値としては content のみを管理する。
+ * 文字数・タグ数のエラーを送信前に気づかせるため mode は "onBlur" を指定している。
  * @param selectedBook - 選択済みの本（nullになったらフォームをリセットする）
  * @returns register, handleSubmit, control, setValue, onSubmit, errors, isSubmitting, content
  */
@@ -32,7 +32,7 @@ export const useBookPostForm = (selectedBook: Book | null) => {
   } = useForm<BookPostFormData>({
     resolver: zodResolver(bookPostSchema),
     mode: "onBlur",
-    defaultValues: { content: "", purchase_links: [] },
+    defaultValues: { content: "" },
   });
 
   // 本の選択が解除されたらフォームをリセットする
@@ -46,15 +46,10 @@ export const useBookPostForm = (selectedBook: Book | null) => {
 
   const onSubmit = handleSubmit(async (data) => {
     if (!selectedBook || !me?.username) return;
-    // 空欄行はサーバーに送らない
-    const purchaseLinks = data.purchase_links
-      .map((url) => url.trim())
-      .filter((url) => url !== "");
     try {
       await createBook({
         isbn: selectedBook.isbn,
         content: data.content,
-        purchase_links: purchaseLinks,
       });
       toast.success(MESSAGES.BOOK.CREATE_SUCCESS);
       router.push(`/users/${me.username}`);

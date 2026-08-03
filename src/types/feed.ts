@@ -16,7 +16,6 @@ export type FeedItem = {
   user: {
     username: string;
     nickname: string;
-    avatar_url: string | null;
   };
 };
 

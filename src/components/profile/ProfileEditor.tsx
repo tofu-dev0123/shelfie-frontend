@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useProfileForm } from "@/hooks/profile/useProfileForm";
-import { AvatarUploader } from "./AvatarUploader";
 import type { Me } from "@/types/user";
 import styles from "./styles/ProfileEditor.module.css";
 
@@ -30,16 +29,6 @@ export function ProfileEditor({ me }: Props) {
       </Link>
 
       <h1 className={styles.pageTitle}>プロフィール編集</h1>
-
-      <section className={styles.section}>
-        <span className={styles.sectionLabel}>アバター画像</span>
-        <AvatarUploader
-          username={me.username}
-          nickname={me.nickname}
-          avatarUrl={me.avatar_url}
-        />
-        <p className={styles.helperText}>JPEG / PNG / WebP、最大 5MB</p>
-      </section>
 
       <form onSubmit={onSubmit} noValidate>
         <div className={styles.section}>

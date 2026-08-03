@@ -15,15 +15,11 @@
   color: inherit;
 }
 
-.avatar,
 .avatarPlaceholder {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-full);
   flex-shrink: 0;
-}
-
-.avatarPlaceholder {
   background: var(--color-primary-100);
   color: var(--color-primary-600);
   font-weight: var(--font-bold);

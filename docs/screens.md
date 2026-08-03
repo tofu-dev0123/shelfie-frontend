@@ -17,5 +17,5 @@
 | フォロワー一覧                   | `/users/:username/followers`   | 任意           | フォロワーのユーザー一覧                                                              |
 | フォロー中一覧                   | `/users/:username/following`   | 任意           | フォロー中のユーザー一覧                                                              |
 | スキルマップ                     | `/users/:username/skill_map`   | 任意           | タグ別読了数の可視化                                                                  |
-| プロフィール編集                 | `/settings/profile`            | 必須           | nickname / bio / links / アバター画像の編集                                           |
+| プロフィール編集                 | `/settings/profile`            | 必須           | nickname / bio / links の編集                                                         |
 | 検索                             | `/search`                      | 任意           | 本・ユーザーをタブで切り替えて検索する                                                |
