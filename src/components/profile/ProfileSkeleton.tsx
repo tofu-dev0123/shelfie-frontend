@@ -12,11 +12,6 @@ export function ProfileSkeleton() {
 
       <div className={styles.section}>
         <Skeleton width={80} height={13} />
-        <Skeleton width={96} height={96} radius="full" />
-      </div>
-
-      <div className={styles.section}>
-        <Skeleton width={80} height={13} />
         <Skeleton width="100%" height={44} radius="md" />
       </div>
 

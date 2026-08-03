@@ -167,9 +167,7 @@ describe("getBookPostDetail", () => {
       user: {
         username: "haruki_m",
         nickname: "村上春樹",
-        avatar_url: null,
       },
-      purchase_links: [],
     };
     vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
     const result = await getBookPostDetail("haruki_m", "9784873115658");
@@ -178,7 +176,7 @@ describe("getBookPostDetail", () => {
 });
 
 describe("createBook", () => {
-  it("正しいエンドポイントにPOSTリクエストを送る（purchase_links なし）", async () => {
+  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
     vi.mocked(apiPost).mockResolvedValueOnce(undefined);
     await createBook({ isbn: "9784873115658", content: "感想" });
     expect(apiPost).toHaveBeenCalledWith("/v1/me/books", {
@@ -186,44 +184,14 @@ describe("createBook", () => {
       content: "感想",
     });
   });
-
-  it("purchase_links を含めて送信できる", async () => {
-    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
-    await createBook({
-      isbn: "9784873115658",
-      content: "感想",
-      purchase_links: ["https://example.com/a", "https://example.com/b"],
-    });
-    expect(apiPost).toHaveBeenCalledWith("/v1/me/books", {
-      isbn: "9784873115658",
-      content: "感想",
-      purchase_links: ["https://example.com/a", "https://example.com/b"],
-    });
-  });
 });
 
 describe("updateBook", () => {
   it("正しいエンドポイントにPUTリクエストを送る", async () => {
     vi.mocked(apiPut).mockResolvedValueOnce(undefined);
-    await updateBook("9784873115658", {
-      content: "更新後の感想",
-      purchase_links: ["https://example.com/a"],
-    });
+    await updateBook("9784873115658", { content: "更新後の感想" });
     expect(apiPut).toHaveBeenCalledWith("/v1/me/books/9784873115658", {
       content: "更新後の感想",
-      purchase_links: ["https://example.com/a"],
-    });
-  });
-
-  it("purchase_links に空配列を渡せる（全件削除ケース）", async () => {
-    vi.mocked(apiPut).mockResolvedValueOnce(undefined);
-    await updateBook("9784873115658", {
-      content: "感想だけ",
-      purchase_links: [],
-    });
-    expect(apiPut).toHaveBeenCalledWith("/v1/me/books/9784873115658", {
-      content: "感想だけ",
-      purchase_links: [],
     });
   });
 });

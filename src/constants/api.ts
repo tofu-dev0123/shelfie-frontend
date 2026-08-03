@@ -8,7 +8,6 @@ export const API_ENDPOINTS = {
 
   // 自分のプロフィール
   ME: "/v1/me",
-  ME_AVATAR: "/v1/me/avatar",
 
   // ユーザー
   USERS: "/v1/users",

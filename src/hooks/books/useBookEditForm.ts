@@ -44,30 +44,21 @@ export const useBookEditForm = (isbn: string) => {
   } = useForm<BookPostFormData>({
     resolver: zodResolver(bookPostSchema),
     mode: "onBlur",
-    defaultValues: { content: "", purchase_links: [] },
+    defaultValues: { content: "" },
   });
 
   // 投稿取得後にフォームへ初期値を流し込む
   useEffect(() => {
     if (!post) return;
-    reset({
-      content: post.content ?? "",
-      purchase_links: post.purchase_links,
-    });
+    reset({ content: post.content ?? "" });
   }, [post, reset]);
 
   const content = useWatch({ control, name: "content" });
 
   const onSubmit = handleSubmit(async (data) => {
     if (!me?.username) return;
-    const purchaseLinks = data.purchase_links
-      .map((url) => url.trim())
-      .filter((url) => url !== "");
     try {
-      await updateBook(isbn, {
-        content: data.content,
-        purchase_links: purchaseLinks,
-      });
+      await updateBook(isbn, { content: data.content });
       toast.success(MESSAGES.BOOK.UPDATE_SUCCESS);
       router.push(`/users/${me.username}/books/${isbn}`);
     } catch {

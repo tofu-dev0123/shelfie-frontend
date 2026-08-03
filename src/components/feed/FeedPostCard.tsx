@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { MouseEvent } from "react";
 import type { FeedItem } from "@/types/feed";
 import { parseContent } from "@/lib/parseContent";
+import { initialOf } from "@/lib/initial";
 import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/FeedPostCard.module.css";
 
@@ -43,12 +44,7 @@ export function FeedPostCard({ item }: Props) {
       <header className={styles.postHead}>
         <Link href={`/users/${item.user.username}`} className={styles.user}>
           <span className={styles.avatar} aria-hidden="true">
-            {item.user.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={item.user.avatar_url} alt="" />
-            ) : (
-              initialOf(item.user.nickname)
-            )}
+            {initialOf(item.user.nickname)}
           </span>
           <span className={styles.userMeta}>
             <span className={styles.nickname}>{item.user.nickname}</span>
@@ -110,12 +106,6 @@ export function FeedPostCard({ item }: Props) {
     </article>
   );
 }
-
-const initialOf = (name: string): string => {
-  const trimmed = name.trim();
-  if (!trimmed) return "?";
-  return trimmed.slice(0, 1).toUpperCase();
-};
 
 const formatRelativeTime = (iso: string): string => {
   const target = new Date(iso).getTime();

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BookPostAuthor } from "@/types/book";
+import { initialOf } from "@/lib/initial";
 import { BookPostMenu } from "./BookPostMenu";
 import styles from "./styles/BookDetailAuthor.module.css";
 
@@ -25,23 +26,12 @@ export function BookDetailAuthor({
   bookTitle,
   isbn,
 }: Props) {
-  const initial = author.nickname.charAt(0) || "?";
   return (
     <section className={styles.container}>
       <Link href={`/users/${author.username}`} className={styles.left}>
-        {author.avatar_url ? (
-          // next/image は remotePatterns 設定が必要なため、BookCard 同様に img で表示する
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={author.avatar_url}
-            alt={author.nickname}
-            className={styles.avatar}
-          />
-        ) : (
-          <div className={styles.avatarPlaceholder} aria-hidden="true">
-            {initial}
-          </div>
-        )}
+        <div className={styles.avatarPlaceholder} aria-hidden="true">
+          {initialOf(author.nickname)}
+        </div>
         <div className={styles.names}>
           <span className={styles.nickname}>{author.nickname}</span>
           <span className={styles.sub}>

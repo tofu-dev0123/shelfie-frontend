@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { User } from "@/types/user";
+import { initialOf } from "@/lib/initial";
 import { FollowButton } from "./FollowButton";
 import styles from "./styles/ShelfHeader.module.css";
 
@@ -34,17 +35,8 @@ export function ShelfHeader({ user, isMe, isLoggedIn }: Props) {
 function UserIdentity({ user }: { user: User }) {
   return (
     <>
-      <div className={styles.avatar}>
-        {user.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={user.avatar_url}
-            alt={user.nickname}
-            className={styles.avatarImage}
-          />
-        ) : (
-          <i className={`fa-solid fa-user ${styles.avatarIcon}`} />
-        )}
+      <div className={styles.avatar} aria-hidden="true">
+        {initialOf(user.nickname)}
       </div>
 
       <div className={styles.nameRow}>

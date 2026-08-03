@@ -37,12 +37,6 @@
   margin-bottom: var(--space-3);
 }
 
-.helperText {
-  font-size: var(--text-xs);
-  color: var(--color-gray-500);
-  margin-top: var(--space-2);
-}
-
 .input,
 .textarea {
   width: 100%;

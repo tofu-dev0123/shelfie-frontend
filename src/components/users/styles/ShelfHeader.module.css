@@ -36,22 +36,13 @@
   height: 56px;
   border-radius: var(--radius-full);
   flex-shrink: 0;
-  overflow: hidden;
   background: var(--color-primary-100);
+  color: var(--color-primary-600);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.avatarImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatarIcon {
-  font-size: 22px;
-  color: var(--color-primary-600);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
 }
 
 .nameRow {
@@ -83,10 +74,7 @@
   .avatar {
     width: 44px;
     height: 44px;
-  }
-
-  .avatarIcon {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
   }
 
   .nickname {

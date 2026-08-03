@@ -340,21 +340,6 @@
   margin-top: var(--space-2);
 }
 
-/* ── 購入リンクエリア ── */
-
-.purchaseLinksArea {
-  margin-top: var(--space-6);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-gray-200);
-}
-
-@media (max-width: 640px) {
-  .purchaseLinksArea {
-    margin-top: var(--space-5);
-    padding-top: var(--space-5);
-  }
-}
-
 /* ── 送信ボタン（カード内・右下） ── */
 
 .submitRow {

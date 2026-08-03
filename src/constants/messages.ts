@@ -16,12 +16,6 @@ export const MESSAGES = {
     UNFOLLOW_ERROR: "フォローを外すのに失敗しました",
     UPDATE_SUCCESS: "プロフィールを更新しました",
     UPDATE_ERROR: "プロフィールの更新に失敗しました",
-    AVATAR_UPLOAD_SUCCESS: "アバターを更新しました",
-    AVATAR_UPLOAD_ERROR: "アバターのアップロードに失敗しました",
-    AVATAR_DELETE_SUCCESS: "アバターを削除しました",
-    AVATAR_DELETE_ERROR: "アバターの削除に失敗しました",
-    AVATAR_TYPE_ERROR: "JPEG / PNG / WebP の画像をアップロードしてください",
-    AVATAR_SIZE_ERROR: "ファイルサイズは 5MB 以下にしてください",
   },
   BOOK: {
     CREATE_SUCCESS: "投稿しました",

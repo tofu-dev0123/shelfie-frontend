@@ -4,7 +4,6 @@ import { BookDetailInfo } from "./BookDetailInfo";
 import { BookDetailAuthor } from "./BookDetailAuthor";
 import { BookDetailTags } from "./BookDetailTags";
 import { BookDetailBody } from "./BookDetailBody";
-import { BookDetailPurchaseLinks } from "./BookDetailPurchaseLinks";
 import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/BookDetail.module.css";
 
@@ -25,7 +24,6 @@ export function BookDetail({ post }: Props) {
       />
       <BookDetailTags tags={post.tags} />
       <BookDetailBody content={post.content} />
-      <BookDetailPurchaseLinks links={post.purchase_links} />
       <WantToReadButton
         isbn={post.book.isbn}
         authorUsername={post.user.username}

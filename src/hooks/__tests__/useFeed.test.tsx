@@ -31,7 +31,6 @@ const sampleItem = {
   user: {
     username: "komusan",
     nickname: "コムさん",
-    avatar_url: null,
   },
 };
 
