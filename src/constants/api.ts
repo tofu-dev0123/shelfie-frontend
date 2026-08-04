@@ -13,7 +13,6 @@ export const API_ENDPOINTS = {
   USERS: "/v1/users",
   USERNAME_CHECK: "/v1/users/username/check",
   USER: (username: string) => `/v1/users/${username}`,
-  USER_FOLLOW: (username: string) => `/v1/me/follows/${username}`,
 
   // 本
   BOOKS: "/v1/books",

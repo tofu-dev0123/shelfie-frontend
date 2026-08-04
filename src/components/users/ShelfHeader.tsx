@@ -1,16 +1,14 @@
 import Link from "next/link";
 import type { User } from "@/types/user";
 import { initialOf } from "@/lib/initial";
-import { FollowButton } from "./FollowButton";
 import styles from "./styles/ShelfHeader.module.css";
 
 type Props = {
   user: User;
   isMe: boolean;
-  isLoggedIn: boolean;
 };
 
-export function ShelfHeader({ user, isMe, isLoggedIn }: Props) {
+export function ShelfHeader({ user, isMe }: Props) {
   return (
     <div className={styles.section}>
       <div className={styles.container}>
@@ -24,8 +22,6 @@ export function ShelfHeader({ user, isMe, isLoggedIn }: Props) {
               <UserIdentity user={user} />
             </div>
           )}
-
-          {!isMe && isLoggedIn && <FollowButton username={user.username} />}
         </div>
       </div>
     </div>

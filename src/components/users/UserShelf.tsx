@@ -25,7 +25,7 @@ export function UserShelf({ username, fallbackUser }: Props) {
 
   return (
     <>
-      <ShelfHeader user={user} isMe={isMe} isLoggedIn={isSignedIn} />
+      <ShelfHeader user={user} isMe={isMe} />
       <BookShelf username={username} isMe={isMe} />
     </>
   );

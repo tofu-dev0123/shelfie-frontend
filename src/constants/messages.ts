@@ -10,10 +10,6 @@ export const MESSAGES = {
     LOGOUT_ERROR: "ログアウトに失敗しました",
   },
   USER: {
-    FOLLOW_SUCCESS: "フォローしました",
-    FOLLOW_ERROR: "フォローに失敗しました",
-    UNFOLLOW_SUCCESS: "フォローを外しました",
-    UNFOLLOW_ERROR: "フォローを外すのに失敗しました",
     UPDATE_SUCCESS: "プロフィールを更新しました",
     UPDATE_ERROR: "プロフィールの更新に失敗しました",
   },
