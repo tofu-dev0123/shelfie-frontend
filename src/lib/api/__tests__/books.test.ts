@@ -9,10 +9,8 @@ vi.mock("../client", () => ({
 import { apiGet, apiPost, apiPut } from "../client";
 import {
   getUserBooks,
-  getMyWantToReads,
   searchBooks,
   getTags,
-  addWantToRead,
   getBookPostDetail,
   createBook,
   updateBook,
@@ -57,7 +55,6 @@ describe("getUserBooks", () => {
             title: "吾輩は猫である",
             authors: ["夏目漱石"],
             thumbnail_url: null,
-            is_in_my_want_to_read: null,
           },
         },
       ],
@@ -65,40 +62,6 @@ describe("getUserBooks", () => {
     };
     vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
     const result = await getUserBooks("testuser");
-    expect(result).toEqual(mockResponse);
-  });
-});
-
-describe("getMyWantToReads", () => {
-  it("正しいエンドポイントにGETリクエストを送る（カーソルなし）", async () => {
-    vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
-    await getMyWantToReads();
-    expect(apiGet).toHaveBeenCalledWith("/v1/me/want_to_reads");
-  });
-
-  it("正しいエンドポイントにGETリクエストを送る（カーソルあり）", async () => {
-    vi.mocked(apiGet).mockResolvedValueOnce(emptyResponse);
-    await getMyWantToReads("cursor_xyz");
-    expect(apiGet).toHaveBeenCalledWith(
-      "/v1/me/want_to_reads?cursor=cursor_xyz",
-    );
-  });
-
-  it("レスポンスをそのまま返す", async () => {
-    const mockResponse = {
-      items: [
-        {
-          isbn: "9784001234567",
-          title: "ノルウェイの森",
-          authors: ["村上春樹"],
-          thumbnail_url: null,
-          is_in_my_want_to_read: true,
-        },
-      ],
-      pagination: { next_cursor: null, has_next: false },
-    };
-    vi.mocked(apiGet).mockResolvedValueOnce(mockResponse);
-    const result = await getMyWantToReads();
     expect(result).toEqual(mockResponse);
   });
 });
@@ -126,21 +89,6 @@ describe("searchBooks", () => {
   });
 });
 
-describe("addWantToRead", () => {
-  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
-    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
-    await addWantToRead("9784123456789");
-    expect(apiPost).toHaveBeenCalledWith("/v1/me/want_to_reads/9784123456789");
-  });
-
-  it("エラーが発生した場合は例外を再スローする", async () => {
-    vi.mocked(apiPost).mockRejectedValueOnce(new Error("network error"));
-    await expect(addWantToRead("9784123456789")).rejects.toThrow(
-      "network error",
-    );
-  });
-});
-
 describe("getBookPostDetail", () => {
   it("正しいエンドポイントにGETリクエストを送る", async () => {
     vi.mocked(apiGet).mockResolvedValueOnce({});
@@ -162,7 +110,6 @@ describe("getBookPostDetail", () => {
         title: "リーダブルコード",
         authors: ["Dustin Boswell"],
         thumbnail_url: null,
-        is_in_my_want_to_read: null,
       },
       user: {
         username: "haruki_m",

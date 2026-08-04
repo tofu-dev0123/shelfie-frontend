@@ -29,11 +29,6 @@ export const MESSAGES = {
     SEARCH_LOGIN_REQUIRED: "書籍の検索にはログインが必要です",
     POST_SEARCH_ERROR: "投稿の検索に失敗しました",
     FETCH_ERROR: "書籍の取得に失敗しました",
-    WANT_TO_READ_SUCCESS: "読みたいリストに追加しました",
-    WANT_TO_READ_ERROR: "読みたいリストへの追加に失敗しました",
-    WANT_TO_READ_ALREADY_ADDED: "すでに読みたいリストに追加済みです",
-    WANT_TO_READ_LOGIN_REQUIRED:
-      "読みたいリストに追加するにはログインが必要です",
   },
   SHARE: {
     COPY_SUCCESS: "URLをコピーしました",

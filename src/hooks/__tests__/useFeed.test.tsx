@@ -26,7 +26,6 @@ const sampleItem = {
     title: "リーダブルコード",
     authors: ["Dustin Boswell"],
     thumbnail_url: null,
-    is_in_my_want_to_read: null,
   },
   user: {
     username: "komusan",

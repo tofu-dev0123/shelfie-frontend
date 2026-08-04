@@ -6,7 +6,6 @@ import type { MouseEvent } from "react";
 import type { FeedItem } from "@/types/feed";
 import { parseContent } from "@/lib/parseContent";
 import { initialOf } from "@/lib/initial";
-import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/FeedPostCard.module.css";
 
 type Props = {
@@ -96,13 +95,6 @@ export function FeedPostCard({ item }: Props) {
           )}
         </p>
       ) : null}
-
-      <footer className={styles.postFooter}>
-        <WantToReadButton
-          isbn={item.book.isbn}
-          isInMyWantToRead={item.book.is_in_my_want_to_read}
-        />
-      </footer>
     </article>
   );
 }

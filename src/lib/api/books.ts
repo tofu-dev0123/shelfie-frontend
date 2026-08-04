@@ -5,7 +5,6 @@ import type {
   SearchBooksResponse,
   BookPostsResponse,
   BookPostDetail,
-  WantToReadsResponse,
   TagsResponse,
   CreateBookInput,
   UpdateBookInput,
@@ -24,21 +23,6 @@ export const getUserBooks = (
 ): Promise<BookPostsResponse> => {
   const path = API_ENDPOINTS.USER_BOOKS(username);
   return apiGet<BookPostsResponse>(cursor ? `${path}?cursor=${cursor}` : path);
-};
-
-/**
- * 自分の読みたいリストを取得する。Bearer 認証必須。
- * @param cursor - ページネーションカーソル（省略時は先頭から取得）
- * @returns 読みたいリストレスポンス（items・pagination）
- * @throws 取得失敗時にエラー
- */
-export const getMyWantToReads = (
-  cursor?: string | null,
-): Promise<WantToReadsResponse> => {
-  const path = API_ENDPOINTS.ME_WANT_TO_READS;
-  return apiGet<WantToReadsResponse>(
-    cursor ? `${path}?cursor=${cursor}` : path,
-  );
 };
 
 /**
@@ -111,11 +95,3 @@ export const getBookPostDetail = (
   isbn: string,
 ): Promise<BookPostDetail> =>
   apiGet<BookPostDetail>(API_ENDPOINTS.USER_BOOK(username, isbn));
-
-/**
- * 読みたいリストに書籍を追加する。Bearer 認証必須。
- * @param isbn - ISBN-13（13桁の数字）
- * @throws 追加失敗時にエラー（401はclient.tsで自動処理、404は楽天APIに書籍が存在しない場合）
- */
-export const addWantToRead = (isbn: string): Promise<void> =>
-  apiPost<void>(API_ENDPOINTS.ME_WANT_TO_READ(isbn));
