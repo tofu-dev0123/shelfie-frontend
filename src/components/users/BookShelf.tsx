@@ -12,44 +12,21 @@ type Props = {
   isMe: boolean;
 };
 
-const TABS = [
-  { key: "done" as const, label: "読了" },
-  { key: "want" as const, label: "読みたい" },
-];
-
 export function BookShelf({ username, isMe }: Props) {
-  const { activeTab, setActiveTab, sentinelRef, items, isEmpty, isLoading } =
-    useBookShelf(username, isMe);
+  const { sentinelRef, items, isEmpty, isLoading } = useBookShelf(username);
 
-  const visibleTabs = isMe ? TABS : TABS.filter((t) => t.key === "done");
   const isInitialLoading = isLoading && items.length === 0;
   const isLoadingMore = isLoading && items.length > 0;
 
   return (
     <div className={styles.shelfSection}>
       <div className={styles.container}>
-        <div className={styles.tabs}>
-          {visibleTabs.map((tab) => (
-            <button
-              key={tab.key}
-              className={`${styles.tab} ${activeTab === tab.key ? styles.active : ""}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
         {isInitialLoading ? (
           <BookShelfSkeleton />
         ) : isEmpty ? (
           <div className={styles.emptyState}>
-            <p className={styles.emptyMessage}>
-              {activeTab === "done"
-                ? "まだ読了した本がありません"
-                : "まだ読みたい本がありません"}
-            </p>
-            {isMe && activeTab === "done" && (
+            <p className={styles.emptyMessage}>まだ読了した本がありません</p>
+            {isMe && (
               <Link href="/books/new" className={styles.postButton}>
                 本を投稿する
               </Link>
@@ -59,12 +36,7 @@ export function BookShelf({ username, isMe }: Props) {
           <>
             <div className={styles.grid}>
               {items.map((item) => (
-                <BookCard
-                  key={item.key}
-                  book={item.book}
-                  username={username}
-                  linkTo={activeTab === "want" ? "postNew" : "detail"}
-                />
+                <BookCard key={item.key} book={item.book} username={username} />
               ))}
             </div>
 

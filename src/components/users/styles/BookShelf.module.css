@@ -8,35 +8,6 @@
   padding: 0 var(--space-10);
 }
 
-.tabs {
-  display: flex;
-  border-bottom: 2px solid var(--color-gray-200);
-  margin-bottom: var(--space-6);
-}
-
-.tab {
-  padding: var(--space-3) var(--space-5);
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  cursor: pointer;
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
-  color: var(--color-gray-500);
-  background: none;
-  transition: color 0.15s ease;
-}
-
-.tab:hover {
-  color: var(--color-gray-700);
-}
-
-.tab.active {
-  color: var(--color-primary-600);
-  border-bottom-color: var(--color-primary-600);
-  font-weight: var(--font-semibold);
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);

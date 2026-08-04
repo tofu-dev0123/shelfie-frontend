@@ -4,8 +4,6 @@ export type Book = {
   title: string;
   authors: string[];
   thumbnail_url: string | null;
-  // ログイン中ユーザーが読みたいリストに登録済みかどうか。未ログイン時は null
-  is_in_my_want_to_read: boolean | null;
 };
 
 // カーソルベースページネーション共通型
@@ -32,12 +30,6 @@ export type BookPost = {
 // GET /v1/users/:username/books レスポンス
 export type BookPostsResponse = {
   items: BookPost[];
-  pagination: Pagination;
-};
-
-// GET /v1/me/want_to_reads レスポンス
-export type WantToReadsResponse = {
-  items: Book[];
   pagination: Pagination;
 };
 

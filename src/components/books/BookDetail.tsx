@@ -4,7 +4,6 @@ import { BookDetailInfo } from "./BookDetailInfo";
 import { BookDetailAuthor } from "./BookDetailAuthor";
 import { BookDetailTags } from "./BookDetailTags";
 import { BookDetailBody } from "./BookDetailBody";
-import { WantToReadButton } from "./WantToReadButton";
 import styles from "./styles/BookDetail.module.css";
 
 type Props = {
@@ -24,11 +23,6 @@ export function BookDetail({ post }: Props) {
       />
       <BookDetailTags tags={post.tags} />
       <BookDetailBody content={post.content} />
-      <WantToReadButton
-        isbn={post.book.isbn}
-        authorUsername={post.user.username}
-        isInMyWantToRead={post.book.is_in_my_want_to_read}
-      />
     </div>
   );
 }
