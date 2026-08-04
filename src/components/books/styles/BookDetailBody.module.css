@@ -14,8 +14,3 @@
   text-underline-offset: 2px;
   word-break: break-all;
 }
-
-.hashtag {
-  color: var(--color-primary-600);
-  font-weight: var(--font-medium);
-}

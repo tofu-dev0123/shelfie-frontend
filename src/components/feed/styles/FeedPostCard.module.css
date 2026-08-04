@@ -117,15 +117,6 @@
   margin-bottom: var(--space-5);
 }
 
-.tagLink {
-  color: var(--color-primary-600);
-  text-decoration: none;
-}
-
-.tagLink:hover {
-  color: var(--color-primary-700);
-}
-
 @media (max-width: 640px) {
   .bookBlock {
     grid-template-columns: 64px 1fr;

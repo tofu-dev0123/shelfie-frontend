@@ -80,19 +80,9 @@ export function FeedPostCard({ item }: Props) {
 
       {item.content ? (
         <p className={styles.comment}>
-          {parseContent(item.content).map((part, index) =>
-            part.type === "tag" ? (
-              <Link
-                key={index}
-                href={`/search?type=tags&q=${encodeURIComponent(part.tagName)}`}
-                className={styles.tagLink}
-              >
-                {part.value}
-              </Link>
-            ) : (
-              <span key={index}>{part.value}</span>
-            ),
-          )}
+          {parseContent(item.content).map((part, index) => (
+            <span key={index}>{part.value}</span>
+          ))}
         </p>
       ) : null}
     </article>
