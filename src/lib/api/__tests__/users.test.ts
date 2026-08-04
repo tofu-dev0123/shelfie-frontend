@@ -2,17 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("../client", () => ({
   apiGet: vi.fn(),
-  apiPost: vi.fn(),
-  apiDelete: vi.fn(),
 }));
 
-import { apiGet, apiPost, apiDelete } from "../client";
-import { getUser, checkUsername, followUser, unfollowUser } from "../users";
+import { apiGet } from "../client";
+import { getUser, checkUsername } from "../users";
 
 beforeEach(() => {
   vi.mocked(apiGet).mockReset();
-  vi.mocked(apiPost).mockReset();
-  vi.mocked(apiDelete).mockReset();
 });
 
 describe("getUser", () => {
@@ -61,21 +57,5 @@ describe("checkUsername", () => {
     expect(apiGet).toHaveBeenCalledWith(
       "/v1/users/username/check?value=test%20user",
     );
-  });
-});
-
-describe("followUser", () => {
-  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
-    vi.mocked(apiPost).mockResolvedValueOnce(undefined);
-    await followUser("testuser");
-    expect(apiPost).toHaveBeenCalledWith("/v1/me/follows/testuser");
-  });
-});
-
-describe("unfollowUser", () => {
-  it("正しいエンドポイントにDELETEリクエストを送る", async () => {
-    vi.mocked(apiDelete).mockResolvedValueOnce(undefined);
-    await unfollowUser("testuser");
-    expect(apiDelete).toHaveBeenCalledWith("/v1/me/follows/testuser");
   });
 });

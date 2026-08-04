@@ -4,8 +4,6 @@ export type Me = {
   username: string;
   nickname: string;
   bio: string | null;
-  followers_count: number;
-  following_count: number;
   books_count: number;
   links: string[];
 };
@@ -15,9 +13,6 @@ export type User = {
   username: string;
   nickname: string;
   bio: string | null;
-  followers_count: number;
-  following_count: number;
   books_count: number;
   links: string[];
-  is_following: boolean;
 };
