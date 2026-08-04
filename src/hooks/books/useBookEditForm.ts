@@ -16,7 +16,7 @@ import type { BookPostDetail } from "@/types/book";
  * 書籍投稿編集フォームのフック。
  * 既存投稿を取得してフォーム初期値にセットし、更新後はユーザーの本棚へ遷移する。
  * @param isbn - 編集対象投稿のISBN-13
- * @returns post, isLoading, isUnauthorized, register, control, setValue, onSubmit, errors, isSubmitting, content
+ * @returns post, isLoading, error, register, onSubmit, errors, isSubmitting, content
  */
 export const useBookEditForm = (isbn: string) => {
   const router = useRouter();
@@ -38,7 +38,6 @@ export const useBookEditForm = (isbn: string) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
     reset,
     control,
   } = useForm<BookPostFormData>({
@@ -72,8 +71,6 @@ export const useBookEditForm = (isbn: string) => {
     isLoading: isMeLoading || isPostLoading,
     error,
     register,
-    control,
-    setValue,
     onSubmit,
     errors,
     isSubmitting,

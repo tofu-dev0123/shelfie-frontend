@@ -4,7 +4,6 @@ import type { Pagination } from "./book";
 export type FeedItem = {
   id: number;
   content: string | null;
-  tags: string[];
   created_at: string;
   book: {
     isbn: string;

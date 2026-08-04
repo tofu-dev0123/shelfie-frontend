@@ -5,9 +5,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useBookPostSearch } from "@/hooks/books/useBookPostSearch";
 import { useBookPostForm } from "@/hooks/books/useBookPostForm";
-import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
 import { BookFormSkeleton } from "./BookFormSkeleton";
-import { HashtagEditor } from "./HashtagEditor";
 import styles from "./styles/BookPostContent.module.css";
 
 export function BookPostContent() {
@@ -27,23 +25,8 @@ export function BookPostContent() {
     isInitializing,
   } = useBookPostSearch(isSignedIn);
 
-  const {
-    register,
-    control,
-    setValue,
-    onSubmit,
-    errors,
-    isSubmitting,
-    content,
-  } = useBookPostForm(selectedBook);
-
-  const tagCount = extractHashtags(content ?? "").length;
-  const tagCountClass =
-    tagCount > MAX_HASHTAGS
-      ? styles.tagCountError
-      : tagCount === MAX_HASHTAGS
-        ? styles.tagCountWarn
-        : "";
+  const { register, onSubmit, errors, isSubmitting, content } =
+    useBookPostForm(selectedBook);
 
   return (
     <div className={styles.page}>
@@ -156,26 +139,16 @@ export function BookPostContent() {
                     <span className={styles.required}>必須</span>
                   </label>
                   <span className={styles.charCount}>
-                    <span className={tagCountClass}>
-                      タグ {tagCount}/{MAX_HASHTAGS}
-                    </span>
-                    {" ・ "}
                     {content?.length ?? 0}/1000
                   </span>
                 </div>
-                <HashtagEditor
+                <textarea
                   id="content"
-                  register={register}
-                  control={control}
-                  setValue={setValue}
+                  {...register("content")}
                   rows={5}
-                  placeholder="読んだ感想を書いてください（#でタグ付け）"
+                  placeholder="読んだ感想を書いてください"
+                  className={styles.textarea}
                 />
-                <p className={styles.tagHint}>
-                  <i className="fa-solid fa-hashtag" />
-                  本文中に「#タグ名」と書くとタグ付けされます（最大
-                  {MAX_HASHTAGS}個）
-                </p>
                 {errors.content && (
                   <p className={styles.error}>{errors.content.message}</p>
                 )}

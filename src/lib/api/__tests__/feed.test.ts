@@ -41,7 +41,6 @@ describe("getFeed", () => {
         {
           id: 1,
           content: "とても良い本でした",
-          tags: ["ビジネス"],
           created_at: "2026-04-22T00:00:00Z",
           book: {
             isbn: "9784873116068",

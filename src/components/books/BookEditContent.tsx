@@ -2,9 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useBookEditForm } from "@/hooks/books/useBookEditForm";
-import { extractHashtags, MAX_HASHTAGS } from "@/lib/hashtag";
 import { BookFormSkeleton } from "./BookFormSkeleton";
-import { HashtagEditor } from "./HashtagEditor";
 import styles from "./styles/BookPostContent.module.css";
 
 type Props = {
@@ -18,21 +16,11 @@ export function BookEditContent({ isbn }: Props) {
     isLoading,
     error,
     register,
-    control,
-    setValue,
     onSubmit,
     errors,
     isSubmitting,
     content,
   } = useBookEditForm(isbn);
-
-  const tagCount = extractHashtags(content ?? "").length;
-  const tagCountClass =
-    tagCount > MAX_HASHTAGS
-      ? styles.tagCountError
-      : tagCount === MAX_HASHTAGS
-        ? styles.tagCountWarn
-        : "";
 
   return (
     <div className={styles.page}>
@@ -83,26 +71,16 @@ export function BookEditContent({ isbn }: Props) {
                     <span className={styles.required}>必須</span>
                   </label>
                   <span className={styles.charCount}>
-                    <span className={tagCountClass}>
-                      タグ {tagCount}/{MAX_HASHTAGS}
-                    </span>
-                    {" ・ "}
                     {content?.length ?? 0}/1000
                   </span>
                 </div>
-                <HashtagEditor
+                <textarea
                   id="content"
-                  register={register}
-                  control={control}
-                  setValue={setValue}
+                  {...register("content")}
                   rows={5}
-                  placeholder="読んだ感想を書いてください（#でタグ付け）"
+                  placeholder="読んだ感想を書いてください"
+                  className={styles.textarea}
                 />
-                <p className={styles.tagHint}>
-                  <i className="fa-solid fa-hashtag" />
-                  本文中に「#タグ名」と書くとタグ付けされます（最大
-                  {MAX_HASHTAGS}個）
-                </p>
                 {errors.content && (
                   <p className={styles.error}>{errors.content.message}</p>
                 )}

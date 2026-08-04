@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { MouseEvent } from "react";
 import type { FeedItem } from "@/types/feed";
-import { parseContent } from "@/lib/parseContent";
 import { initialOf } from "@/lib/initial";
 import styles from "./styles/FeedPostCard.module.css";
 
@@ -78,13 +77,7 @@ export function FeedPostCard({ item }: Props) {
         </div>
       </div>
 
-      {item.content ? (
-        <p className={styles.comment}>
-          {parseContent(item.content).map((part, index) => (
-            <span key={index}>{part.value}</span>
-          ))}
-        </p>
-      ) : null}
+      {item.content ? <p className={styles.comment}>{item.content}</p> : null}
     </article>
   );
 }

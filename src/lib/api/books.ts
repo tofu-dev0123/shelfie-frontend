@@ -5,7 +5,6 @@ import type {
   SearchBooksResponse,
   BookPostsResponse,
   BookPostDetail,
-  TagsResponse,
   CreateBookInput,
   UpdateBookInput,
 } from "@/types/book";
@@ -50,18 +49,6 @@ export const searchBooks = (
   return apiGet<SearchBooksResponse>(
     `${API_ENDPOINTS.BOOKS_SEARCH}?${params.toString()}`,
   );
-};
-
-/**
- * タグをサジェスト用に検索する。
- * q は必須（最大50文字）。バックエンドは最大10件返す。
- * @param q - 検索クエリ（URLエンコードせずに渡す）
- * @returns マッチしたタグのレスポンス
- * @throws 取得失敗時にエラー
- */
-export const getTags = (q: string): Promise<TagsResponse> => {
-  const params = new URLSearchParams({ q });
-  return apiGet<TagsResponse>(`${API_ENDPOINTS.TAGS}?${params.toString()}`);
 };
 
 /**
