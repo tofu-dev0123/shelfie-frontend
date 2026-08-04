@@ -21,33 +21,27 @@ describe("linkifyContent", () => {
     ]);
   });
 
-  it("ハッシュタグを検出して hashtag セグメントを返す", () => {
-    const result = linkifyContent("前 #タグ 後");
+  it("複数のURLを検出する", () => {
+    const result = linkifyContent(
+      "https://example.com と https://example.org/page",
+    );
     expect(result).toEqual([
-      { type: "text", value: "前 " },
-      { type: "hashtag", value: "#タグ" },
-      { type: "text", value: " 後" },
+      { type: "url", value: "https://example.com" },
+      { type: "text", value: " と " },
+      { type: "url", value: "https://example.org/page" },
     ]);
   });
 
-  it("URLとハッシュタグが混在するケース", () => {
-    const result = linkifyContent(
-      "#プログラミング https://example.com と #技術書",
-    );
-    expect(result).toEqual([
-      { type: "hashtag", value: "#プログラミング" },
-      { type: "text", value: " " },
-      { type: "url", value: "https://example.com" },
-      { type: "text", value: " と " },
-      { type: "hashtag", value: "#技術書" },
-    ]);
+  it("ハッシュタグはただのテキストとして扱う", () => {
+    const result = linkifyContent("前 #タグ 後");
+    expect(result).toEqual([{ type: "text", value: "前 #タグ 後" }]);
   });
 
   it("改行を含むテキストは text セグメント側で保持される", () => {
-    const result = linkifyContent("一行目\n二行目 #タグ");
+    const result = linkifyContent("一行目\n二行目 https://example.com");
     expect(result).toEqual([
       { type: "text", value: "一行目\n二行目 " },
-      { type: "hashtag", value: "#タグ" },
+      { type: "url", value: "https://example.com" },
     ]);
   });
 });

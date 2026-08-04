@@ -13,10 +13,9 @@ import type { Book } from "@/types/book";
 
 /**
  * 書籍投稿フォームのフック。
- * タグは本文中のハッシュタグから派生するため、フォーム値としては content のみを管理する。
- * 文字数・タグ数のエラーを送信前に気づかせるため mode は "onBlur" を指定している。
+ * 文字数超過のエラーを送信前に気づかせるため mode は "onBlur" を指定している。
  * @param selectedBook - 選択済みの本（nullになったらフォームをリセットする）
- * @returns register, handleSubmit, control, setValue, onSubmit, errors, isSubmitting, content
+ * @returns register, onSubmit, errors, isSubmitting, content
  */
 export const useBookPostForm = (selectedBook: Book | null) => {
   const router = useRouter();
@@ -26,7 +25,6 @@ export const useBookPostForm = (selectedBook: Book | null) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
     reset,
     control,
   } = useForm<BookPostFormData>({
@@ -61,8 +59,6 @@ export const useBookPostForm = (selectedBook: Book | null) => {
 
   return {
     register,
-    control,
-    setValue,
     onSubmit,
     errors,
     isSubmitting,

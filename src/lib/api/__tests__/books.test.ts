@@ -10,7 +10,6 @@ import { apiGet, apiPost, apiPut } from "../client";
 import {
   getUserBooks,
   searchBooks,
-  getTags,
   getBookPostDetail,
   createBook,
   updateBook,
@@ -48,7 +47,6 @@ describe("getUserBooks", () => {
         {
           id: 1,
           content: null,
-          tags: [],
           created_at: "2026-01-01T00:00:00Z",
           book: {
             isbn: "abc",
@@ -102,7 +100,6 @@ describe("getBookPostDetail", () => {
     const mockResponse = {
       id: 1,
       content: "よかった",
-      tags: ["技術書"],
       created_at: "2026-03-05T00:00:00Z",
       updated_at: "2026-03-05T00:00:00Z",
       book: {
@@ -140,26 +137,5 @@ describe("updateBook", () => {
     expect(apiPut).toHaveBeenCalledWith("/v1/me/books/9784873115658", {
       content: "更新後の感想",
     });
-  });
-});
-
-describe("getTags", () => {
-  it("クエリを q パラメータに付けて GET する（英数字）", async () => {
-    vi.mocked(apiGet).mockResolvedValueOnce({ tags: [] });
-    await getTags("Ru");
-    expect(apiGet).toHaveBeenCalledWith("/v1/tags?q=Ru");
-  });
-
-  it("クエリを q パラメータに付けて GET する（日本語・URLエンコード）", async () => {
-    vi.mocked(apiGet).mockResolvedValueOnce({ tags: [] });
-    await getTags("日本");
-    expect(apiGet).toHaveBeenCalledWith("/v1/tags?q=%E6%97%A5%E6%9C%AC");
-  });
-
-  it("レスポンスをそのまま返す", async () => {
-    const mock = { tags: [{ name: "Ruby" }, { name: "Rails" }] };
-    vi.mocked(apiGet).mockResolvedValueOnce(mock);
-    const result = await getTags("R");
-    expect(result).toEqual(mock);
   });
 });

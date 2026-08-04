@@ -22,7 +22,6 @@ export type SearchBooksResponse = {
 export type BookPost = {
   id: number;
   content: string | null;
-  tags: string[];
   created_at: string;
   book: Book;
 };
@@ -33,14 +32,7 @@ export type BookPostsResponse = {
   pagination: Pagination;
 };
 
-// GET /v1/tags レスポンス
-export type TagsResponse = {
-  tags: { name: string }[];
-};
-
 // POST /v1/me/books リクエスト
-// tags はバックエンドで content 内の #ハッシュタグから自動抽出されるため、
-// フロント側からは送信しない。
 export type CreateBookInput = {
   isbn: string;
   content?: string;
@@ -61,7 +53,6 @@ export type BookPostAuthor = {
 export type BookPostDetail = {
   id: number;
   content: string | null;
-  tags: string[];
   created_at: string;
   updated_at: string;
   book: Book;

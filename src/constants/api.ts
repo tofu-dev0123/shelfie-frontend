@@ -25,9 +25,6 @@ export const API_ENDPOINTS = {
   ME_BOOKS: "/v1/me/books",
   ME_BOOK: (isbn: string) => `/v1/me/books/${isbn}`,
 
-  // タグ
-  TAGS: "/v1/tags",
-
   // フィード
   FEED: "/v1/feed",
 } as const;
