@@ -40,13 +40,6 @@ export function Header() {
           本棚
         </Link>
         <Link
-          href="/feed"
-          className={`${styles.navLink} ${pathname.startsWith("/feed") ? styles.active : ""}`}
-        >
-          <i className="fa-solid fa-rss" />
-          フィード
-        </Link>
-        <Link
           href="/search"
           className={`${styles.navLink} ${pathname.startsWith("/search") ? styles.active : ""}`}
         >

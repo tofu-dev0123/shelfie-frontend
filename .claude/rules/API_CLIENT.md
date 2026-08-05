@@ -13,10 +13,10 @@ npm install axios
 ```
 lib/api/
 ├── client.ts     # axios インスタンス・メソッドハンドラ
+├── auth.ts
 ├── users.ts
 ├── books.ts
-├── follows.ts
-└── feed.ts
+└── me.ts
 ```
 
 ---
