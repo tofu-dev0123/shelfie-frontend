@@ -75,9 +75,6 @@ import { Spinner } from "@/components/ui/Spinner";
 
 ```
 components/
-├── feed/
-│   ├── Feed.tsx
-│   └── FeedSkeleton.tsx
 ├── users/
 │   ├── BookShelf.tsx
 │   ├── BookShelfSkeleton.tsx
@@ -85,8 +82,7 @@ components/
 │   └── UserShelfSkeleton.tsx
 ├── search/
 │   ├── BookSearchResults.tsx
-│   ├── BookSearchSkeleton.tsx
-│   └── PostSearchResults.tsx  // 内部で FeedSkeleton を流用
+│   └── BookSearchSkeleton.tsx
 ├── books/
 │   ├── BookDetail.tsx
 │   ├── BookDetailSkeleton.tsx
@@ -106,22 +102,22 @@ components/
 
 ```tsx
 import { Skeleton } from "@/components/ui/Skeleton";
-import styles from "./styles/FeedSkeleton.module.css";
+import styles from "./styles/BookShelfSkeleton.module.css";
 
 type Props = {
-  count?: number;  // 表示する行数を呼び出し側から調整できるようにする
+  count?: number;  // 表示する件数を呼び出し側から調整できるようにする
 };
 
-export function FeedSkeleton({ count = 3 }: Props) {
+export function BookShelfSkeleton({ count = 12 }: Props) {
   return (
-    <ul className={styles.list} aria-busy="true" aria-live="polite">
+    <div className={styles.grid} aria-busy="true" aria-live="polite">
       {Array.from({ length: count }).map((_, i) => (
-        <li key={i} className={styles.item}>
-          <Skeleton width={40} height={40} radius="full" />
+        <div key={i} className={styles.card}>
+          <Skeleton className={styles.cover} radius="md" />
           {/* ... */}
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 ```
@@ -147,7 +143,7 @@ Server Components で初期データを fetch する画面のみ `loading.tsx` �
 
 Client Components 主体の画面では `loading.tsx` を置かず、コンポーネント側のスケルトン分岐に任せる。
 
-- `/feed`, `/search`, `/profile`, `/books/new`, `/books/[isbn]/edit` など
+- `/search`, `/profile`, `/books/new`, `/books/[isbn]/edit` など
 
 理由: `loading.tsx` 表示直後にコンポーネントマウントされて再びスケルトンが描画されるため二重ローディングになる。
 
@@ -168,11 +164,11 @@ return <FooView data={data} />;
 
 ```tsx
 const { isSignedIn, isInitializing } = useAuth();
-const { items, isLoading, ... } = useFeed(isSignedIn);
+const { items, isLoading, ... } = useSomething(isSignedIn);
 
 const isInitialLoading = isLoading && items.length === 0;
 
-if (isInitializing || isInitialLoading) return <FeedSkeleton />;
+if (isInitializing || isInitialLoading) return <FooSkeleton />;
 ```
 
 ### 無限スクロール（初回・追加読み込みの両対応）
@@ -181,7 +177,7 @@ if (isInitializing || isInitialLoading) return <FeedSkeleton />;
 const isInitialLoading = isLoading && items.length === 0;
 const isLoadingMore = isLoading && items.length > 0;
 
-if (isInitialLoading) return <FeedSkeleton />;
+if (isInitialLoading) return <BookShelfSkeleton />;
 
 return (
   <>

@@ -29,13 +29,6 @@ export function BottomNav() {
         <i className={`fa-solid fa-book-open ${styles.icon}`} />
       </Link>
       <Link
-        href="/feed"
-        className={`${styles.item} ${pathname.startsWith("/feed") ? styles.active : ""}`}
-        aria-label="フィード"
-      >
-        <i className={`fa-solid fa-rss ${styles.icon}`} />
-      </Link>
-      <Link
         href="/search"
         className={`${styles.item} ${pathname.startsWith("/search") ? styles.active : ""}`}
         aria-label="探す"

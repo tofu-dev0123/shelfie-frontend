@@ -58,7 +58,7 @@ setUser(user)
 const handleLogin = async () => {
   if (token) {
     if (result === 'ok') {
-      router.push('/feed')
+      router.push('/')
     } else {
       router.push('/signup')
     }
@@ -72,7 +72,7 @@ const handleLogin = async () => {
     router.push('/signup')
     return
   }
-  router.push('/feed')
+  router.push('/')
 }
 ```
 

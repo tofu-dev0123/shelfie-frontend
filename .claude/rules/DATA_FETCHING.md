@@ -80,7 +80,7 @@ SWRキーは `API_ENDPOINTS` の定数を使う。文字列を直書きしない
 // ✅ 正しい
 useSWR(API_ENDPOINTS.USER(username), ...)
 useSWR(API_ENDPOINTS.BOOK(bookId), ...)
-useSWR(API_ENDPOINTS.FEED, ...)
+useSWR(API_ENDPOINTS.ME, ...)
 
 // ❌ 避ける（文字列リテラルの直書き）
 useSWR(`/users/${username}`, ...)
@@ -96,10 +96,10 @@ useSWR(`/books/${bookId}`, ...)
 ```
 lib/api/
 ├── client.ts     # axios インスタンス・メソッドハンドラ（API_CLIENT.md参照）
+├── auth.ts
 ├── users.ts
 ├── books.ts
-├── follows.ts
-└── feed.ts
+└── me.ts
 ```
 
 ### fetch関数の書き方

@@ -6,8 +6,7 @@
 src/
 ├── app/                        # Next.js ルーティング（App Router）
 │   ├── (public)/               # 認証不要・任意ページ
-│   │   ├── page.tsx            # ホーム・フィード
-│   │   ├── feed/               # フィード（認証任意・未ログインでも閲覧可）
+│   │   ├── page.tsx            # ホーム
 │   │   ├── login/
 │   │   ├── users/
 │   │   └── books/
@@ -19,8 +18,7 @@ src/
 │   ├── ui/                     # 汎用プリミティブ（Button, Input, Avatar など）
 │   ├── layout/                 # Header, Footer, Nav など
 │   ├── books/                  # 本・本棚関連コンポーネント
-│   ├── users/                  # ユーザー・フォロー関連コンポーネント
-│   └── feed/                   # フィード関連コンポーネント
+│   └── users/                  # ユーザー・本棚関連コンポーネント
 ├── lib/
 │   └── api/                    # fetch関数（Server Components・SWR両方から呼ぶ）
 ├── constants/                  # 定数（APIエンドポイント、ステータス値など）
@@ -40,7 +38,7 @@ src/
 
 ### `components/`
 - `ui/`: 完全に汎用のプリミティブのみ。shadcn/ui は使わず独自実装
-- ドメインフォルダ（`books/`, `users/`, `feed/`）: 機能に関連するコンポーネントを配置
+- ドメインフォルダ（`books/`, `users/`, `search/` など）: 機能に関連するコンポーネントを配置
 
 ### `constants/`
 アプリ全体で使い回す定数を集約。特定のコンポーネント内でしか使わない定数（タブ名など）はコンポーネントそばに置く。

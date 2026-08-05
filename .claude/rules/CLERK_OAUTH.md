@@ -46,7 +46,7 @@ export default function SignUpPage() {
   const signUpWith = async (strategy: OAuthStrategy) => {
     const { error } = await signUp.sso({
       strategy,
-      redirectUrl: '/feed',                // 全要件揃っていれば直接ここへ
+      redirectUrl: '/',                // 全要件揃っていれば直接ここへ
       redirectCallbackUrl: '/sso-callback', // 追加処理が必要な場合はここへ
     })
     if (error) console.error(error)
@@ -100,7 +100,7 @@ export default function SSOCallbackPage() {
       // ケース1: サインインが完了している
       if (signIn.status === 'complete') {
         await signIn.finalize({
-          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/feed')) },
+          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/')) },
         })
         return
       }
@@ -110,7 +110,7 @@ export default function SSOCallbackPage() {
         await signIn.create({ transfer: true })
         if (signIn.status === 'complete') {
           await signIn.finalize({
-            navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/feed')) },
+            navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/')) },
           })
           return
         }
@@ -126,7 +126,7 @@ export default function SSOCallbackPage() {
       // ケース4: サインアップ完了
       if (signUp.status === 'complete') {
         await signUp.finalize({
-          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/feed')) },
+          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/')) },
         })
         return
       }
@@ -142,7 +142,7 @@ export default function SSOCallbackPage() {
       if (sessionId) {
         await clerk.setActive({
           session: sessionId,
-          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/feed')) },
+          navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/')) },
         })
         return
       }
@@ -201,7 +201,7 @@ export default function SignUpContinuePage() {
 
     if (signUp.status === 'complete') {
       await signUp.finalize({
-        navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/feed')) },
+        navigate: async ({ decorateUrl }) => { router.push(decorateUrl('/')) },
       })
     } else if (signUp.status === 'missing_requirements') {
       // まだ不足あり（メール認証等）→ 追加ステップへ
