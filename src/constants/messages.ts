@@ -1,9 +1,7 @@
 export const MESSAGES = {
   AUTH: {
-    LOGIN_ERROR:
-      "ログインに失敗しました。しばらく経ってから再度お試しください。",
-    LOGIN_AUTH_ERROR: "認証に失敗しました。再度お試しください。",
-    SIGNUP_ERROR: "サインアップに失敗しました",
+    SIGNUP_SESSION_EXPIRED:
+      "サインアップの有効期限が切れました。もう一度お試しください。",
     SIGNUP_SERVER_ERROR:
       "サインアップに失敗しました。しばらく経ってから再度お試しください。",
     SIGNUP_VALIDATION_ERROR: "入力内容に誤りがあります。ご確認ください。",
@@ -34,3 +32,19 @@ export const MESSAGES = {
     SAVE_SUCCESS: "保存しました",
   },
 } as const;
+
+/**
+ * OAuth コールバック失敗時に Rails が /login?error=<code> で返すエラーコードと表示文言の対応。
+ * クエリパラメータは誰でも書き換えられるため、この辞書に無いコードは表示しない
+ * （任意の文言を Shelfie の画面として表示させられるのを防ぐ）。
+ * キーはバックエンドの Oauth::CallbackService の定数と一致させること。
+ */
+export const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  cancelled: "ログインをキャンセルしました",
+  invalid_state: "セッションの有効期限が切れました。もう一度お試しください",
+  provider_error: "認証に失敗しました。時間をおいてお試しください",
+  email_unavailable:
+    "GitHub のメールアドレスが認証されていません。GitHub 側で認証してからお試しください",
+  email_already_registered:
+    "このメールアドレスは別の方法で登録済みです。最初に使ったサービスでログインしてください",
+};

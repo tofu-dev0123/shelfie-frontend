@@ -1,92 +1,92 @@
-import { useEffect, useRef, useState } from "react";
-import { useAuth, useClerk } from "@clerk/nextjs";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { login } from "@/lib/api/auth";
+import { getSignupContext } from "@/lib/api/auth";
 import { MESSAGES } from "@/constants/messages";
 import { logger } from "@/lib/logger";
+import type { SignupContext } from "@/types/auth";
 
-export type SignupView = "oauth" | "form" | "loading" | "error";
+export type SignupView = "loading" | "form" | "error";
+
+type State = {
+  view: SignupView;
+  context: SignupContext | null;
+};
+
+type Action =
+  | { type: "START" }
+  | { type: "SUCCESS"; context: SignupContext }
+  | { type: "FAIL" };
+
+const INITIAL_STATE: State = { view: "loading", context: null };
+
+export const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "START":
+      return INITIAL_STATE;
+    case "SUCCESS":
+      return { view: "form", context: action.context };
+    case "FAIL":
+      return { view: "error", context: null };
+  }
+};
 
 /**
  * サインアップページの表示状態を管理するフック。
- * Clerk の認証状態に応じて OAuth 画面・プロフィール設定フォームを切り替える。
- * Rails 連携エラー時はエラー画面を表示し、再試行またはサインアウトを選択できる。
+ * signup_token（HttpOnly Cookie）を使って signup_context を取得し、
+ * ニックネームのプリフィル値とセッションの有効性を得る。
  * @returns view - 現在表示すべき画面の種別
- * @returns handleRetry - Rails 連携を再試行する
- * @returns handleGoToLogin - Clerk セッションをクリアしてログイン画面へ戻る
+ * @returns context - プリフィルに使うメールアドレスとニックネーム候補
+ * @returns handleRetry - signup_context の取得を再試行する
+ * @returns handleGoToLogin - ログイン画面へ戻る
  */
 export const useSignupPage = () => {
-  const { isSignedIn, isLoaded, getToken } = useAuth();
-  const { signOut } = useClerk();
   const router = useRouter();
-  // Railsログイン成功後にフォームを表示するためのフラグ
-  const [formReady, setFormReady] = useState(false);
-  // Rails 連携失敗時にエラー画面を表示するためのフラグ
-  const [loginFailed, setLoginFailed] = useState(false);
-  // ページ滞在中に login() を複数回呼ばないためのフラグ
-  const loginAttempted = useRef(false);
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  // 初回マウント時に signup_context を二重に叩かないためのフラグ
+  const hasFetched = useRef(false);
 
-  // isLoaded・isSignedIn から同期的に計算できる状態はEffectを介さず派生させる
-  const view: SignupView = !isLoaded
-    ? "loading"
-    : !isSignedIn
-      ? "oauth"
-      : loginFailed
-        ? "error"
-        : formReady
-          ? "form"
-          : "loading";
-
-  useEffect(() => {
-    if (view === "oauth") router.push("/signup");
-  }, [view, router]);
-
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn || loginAttempted.current) return;
-    loginAttempted.current = true;
-
-    const tryLogin = async () => {
-      try {
-        const token = await getToken();
-        if (!token) {
-          toast.error(MESSAGES.AUTH.SIGNUP_ERROR);
-          return;
-        }
-        const result = await login(token);
-        if (result === "ok") {
-          router.push("/");
-        } else {
-          setFormReady(true);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 401) {
-          toast.error(MESSAGES.AUTH.LOGIN_AUTH_ERROR);
-        } else {
-          toast.error(MESSAGES.AUTH.LOGIN_ERROR);
-        }
-        setLoginFailed(true);
+  const load = useCallback(async () => {
+    try {
+      dispatch({ type: "SUCCESS", context: await getSignupContext() });
+    } catch (error) {
+      // 401 は signup_token が無い、または10分の期限を過ぎた場合。
+      // 再試行しても回復しないので OAuth からやり直してもらう
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        logger.warn("signup_tokenが無効。ログイン画面へ戻す");
+        toast.error(MESSAGES.AUTH.SIGNUP_SESSION_EXPIRED);
+        router.replace("/login");
+        return;
       }
-    };
+      logger.error("サインアップコンテキストの取得失敗", {
+        endpoint: axios.isAxiosError(error) ? error.config?.url : undefined,
+        status: axios.isAxiosError(error) ? error.response?.status : undefined,
+      });
+      toast.error(MESSAGES.AUTH.SIGNUP_SERVER_ERROR);
+      dispatch({ type: "FAIL" });
+    }
+  }, [router]);
 
-    tryLogin();
-  }, [isSignedIn, isLoaded, getToken, router]);
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    load();
+  }, [load]);
 
   const handleRetry = () => {
-    setLoginFailed(false);
-    loginAttempted.current = false;
+    dispatch({ type: "START" });
+    load();
   };
 
-  const handleGoToLogin = async () => {
-    try {
-      await signOut();
-      router.push("/login");
-    } catch {
-      logger.error("サインアウト失敗（エラー画面からの遷移）");
-      router.push("/login");
-    }
+  const handleGoToLogin = () => {
+    router.push("/login");
   };
 
-  return { view, handleRetry, handleGoToLogin };
+  return {
+    view: state.view,
+    context: state.context,
+    handleRetry,
+    handleGoToLogin,
+  };
 };

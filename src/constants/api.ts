@@ -1,10 +1,18 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+// OAuth の入口。JSON API ではなくブラウザのトップレベル遷移で叩くため /v1 の外にある
+export const OAUTH_PROVIDERS = ["google", "github"] as const;
+
+export type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
+
+export const OAUTH_START_URL = (provider: OAuthProvider): string =>
+  `${API_BASE_URL}/auth/${provider}`;
+
 export const API_ENDPOINTS = {
   // 認証
-  AUTH_LOGIN: "/v1/auth/login",
   AUTH_LOGOUT: "/v1/auth/logout",
   AUTH_REFRESH: "/v1/auth/refresh",
+  AUTH_SIGNUP_CONTEXT: "/v1/auth/signup_context",
 
   // 自分のプロフィール
   ME: "/v1/me",

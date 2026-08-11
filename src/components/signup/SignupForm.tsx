@@ -8,7 +8,12 @@ import { useSignupForm } from "@/hooks/signup/useSignupForm";
 import { useUsernameCheck } from "@/hooks/signup/useUsernameCheck";
 import styles from "./styles/SignupForm.module.css";
 
-export function SignupForm() {
+type Props = {
+  email: string;
+  defaultNickname: string;
+};
+
+export function SignupForm({ email, defaultNickname }: Props) {
   const { onSubmit } = useSignupForm();
   const {
     register,
@@ -17,6 +22,7 @@ export function SignupForm() {
     formState: { errors, isSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupFormSchema),
+    defaultValues: { username: "", nickname: defaultNickname },
   });
 
   const username = useWatch({ control, name: "username", defaultValue: "" });
@@ -37,6 +43,7 @@ export function SignupForm() {
         </div>
 
         <h1 className={styles.heading}>プロフィールを設定しましょう</h1>
+        <p className={styles.email}>{email} として登録します</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.field}>

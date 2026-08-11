@@ -1,5 +1,10 @@
 import { LoginOAuth } from "@/components/login/LoginOAuth";
 
-export default function LoginPage() {
-  return <LoginOAuth />;
+type Props = {
+  searchParams: Promise<{ error?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: Props) {
+  const { error } = await searchParams;
+  return <LoginOAuth error={error} />;
 }

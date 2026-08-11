@@ -12,8 +12,9 @@ npm install axios
 
 ```
 lib/api/
-├── client.ts     # axios インスタンス・メソッドハンドラ
-├── auth.ts
+├── client.ts      # axios インスタンス・メソッドハンドラ
+├── auth.ts        # サインアップ・ログアウト・トークンリフレッシュ
+├── serverAuth.ts  # Server Components 専用（Cookie を明示的に転送する）
 ├── users.ts
 ├── books.ts
 └── me.ts
@@ -105,54 +106,72 @@ export const apiDelete = async <T>(path: string): Promise<T> => {
 }
 
 // ----------------------------------------------------------------
-// サーバーサイド用メソッドハンドラ（Server Components から使用）
-// Clerk トークンを引数で受け取る
+// 認証系用 axios インスタンス
+// signup_token / refresh_token Cookie で認証するエンドポイント専用
 // ----------------------------------------------------------------
-const serverHeaders = (token: string) => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${token}`,
+const _authClient = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
 
-export const serverGet = async <T>(path: string, token: string): Promise<T> => {
-  const r = await axios.get<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true })
+// ログのみ。401 のサイレントリフレッシュは付けない
+_authClient.interceptors.request.use((config) => { ... })
+_authClient.interceptors.response.use((res) => { ... }, (error) => { ... })
+
+export const authGet = async <T>(path: string): Promise<T> => {
+  const r = await _authClient.get<T>(path)
   return r.data
 }
 
-export const serverPost = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
-  const r = await axios.post<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true })
-  return r.data
-}
-
-export const serverPatch = async <T>(path: string, token: string, data?: unknown): Promise<T> => {
-  const r = await axios.patch<T>(`${BASE_URL}${path}`, data, { headers: serverHeaders(token), withCredentials: true })
-  return r.data
-}
-
-export const serverDelete = async <T>(path: string, token: string): Promise<T> => {
-  const r = await axios.delete<T>(`${BASE_URL}${path}`, { headers: serverHeaders(token), withCredentials: true })
+export const authPost = async <T>(path: string, data?: unknown): Promise<T> => {
+  const r = await _authClient.post<T>(path, data)
   return r.data
 }
 ```
+
+### なぜ認証系だけインスタンスを分けるのか
+
+`_client` のレスポンスインターセプターは **401 = アクセストークンの期限切れ** という前提で書かれている。
+
+一方 `GET /v1/auth/signup_context` と `POST /v1/users` は `signup_token` Cookie で認証し、`POST /v1/auth/refresh` は `refresh_token` Cookie で認証する。これらが返す 401 は「アクセストークンが切れた」ではない。`_client` に乗せると無意味なリフレッシュが走り、失敗して `window.location.href = '/login'` でページごと吹き飛ぶため、呼び出し元がエラーを処理できなくなる。
+
+同じ 401 に別の意味が乗るので、経路を分ける。
+
+| ハンドラ | 認証方法 | 401 の扱い |
+|---|---|---|
+| `apiGet` / `apiPost` / `apiPut` / `apiPatch` / `apiDelete` | `Authorization: Bearer <access_token>` | サイレントリフレッシュ → 失敗なら `/login` |
+| `authGet` / `authPost` | Cookie（`signup_token` / `refresh_token`） | そのまま reject（呼び出し元が判断する） |
 
 ---
 
 ## lib/api/*.ts の書き方
 
-各関数は `token` を受け取ったらサーバー用、なければクライアント用ハンドラを使う。
-
 ```ts
 // lib/api/users.ts
-import { apiGet, apiPatch, serverGet } from './client'
+import { apiGet, apiPatch } from './client'
 import { API_ENDPOINTS } from '@/constants/api'
 import type { User } from '@/types/user'
 
-export const getUser = (username: string, token?: string): Promise<User> =>
-  token
-    ? serverGet(API_ENDPOINTS.USER(username), token)
-    : apiGet(API_ENDPOINTS.USER(username))
+export const getUser = (username: string): Promise<User> =>
+  apiGet(API_ENDPOINTS.USER(username))
 
 export const updateUser = (data: UpdateUserInput): Promise<User> =>
   apiPatch(API_ENDPOINTS.ME, data)
+```
+
+認証系のみ `authGet` / `authPost` を使う。
+
+```ts
+// lib/api/auth.ts
+export const getSignupContext = (): Promise<SignupContext> =>
+  authGet(API_ENDPOINTS.AUTH_SIGNUP_CONTEXT)
+
+// トークンは渡さない。signup_token Cookie がブラウザから自動送信される
+export const signup = async (data: SignupFormData): Promise<void> => {
+  const res = await authPost<{ access_token: string }>(API_ENDPOINTS.USERS, data)
+  useAuthStore.getState().setAccessToken(res.access_token)
+}
 ```
 
 ---
@@ -161,7 +180,7 @@ export const updateUser = (data: UpdateUserInput): Promise<User> =>
 
 | レイヤー | 役割 |
 |---|---|
-| `client.ts` | 401のサイレントリフレッシュ、それ以外はreject |
+| `client.ts` | `_client` は401のサイレントリフレッシュ、それ以外はreject。`_authClient` は常にreject |
 | `lib/api/*.ts` | エラー処理は行わない（rejectをそのまま伝播） |
 | コンポーネント / フック | `try/catch` でキャッチしてトースト通知 |
 
@@ -189,19 +208,20 @@ const follow = async () => {
 
 ## Server Components からの呼び出し
 
+公開エンドポイントは `lib/api/` の関数をそのまま呼ぶ。取得結果は SWR の `fallbackData` として渡し、クライアント側の初回フェッチを省略する。
+
 ```ts
-// app/(public)/users/[username]/page.tsx
-import { auth } from '@clerk/nextjs/server'
+// app/(main)/users/[username]/page.tsx
 import { getUser } from '@/lib/api/users'
 
-export default async function UserPage({ params }: { params: { username: string } }) {
-  const { getToken } = auth()
-  const token = await getToken()
-
-  const user = await getUser(params.username, token ?? undefined)
-  return <UserProfile user={user} />
+export default async function UserPage({ params }: Props) {
+  const { username } = await params
+  const user = await getUser(username)
+  return <UserShelf username={username} fallbackUser={user} />
 }
 ```
+
+認証が必要な情報を Server Components で取得する場合は、Cookie を明示的に転送する専用実装を置く（`lib/api/serverAuth.ts` の `resolveUsernameByRefreshToken` が該当）。Zustand ストアはサーバー側では空なので、`apiGet` に認証を期待してはいけない。
 
 ---
 
@@ -209,5 +229,7 @@ export default async function UserPage({ params }: { params: { username: string 
 
 ```
 # .env.local
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
+
+`/auth/*`（OAuth の入口）もこの直下にある。末尾に `/v1` を含めないこと。

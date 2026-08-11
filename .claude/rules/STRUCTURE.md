@@ -13,7 +13,7 @@ src/
 │   ├── (protected)/            # 認証必須ページ（レイアウトでガード）
 │   │   ├── me/
 │   │   └── settings/
-│   └── signup/                 # Clerk認証済みだが特殊なので独立
+│   └── signup/                 # Railsがsignup_token付きで送り込む先（プロフィール入力）
 ├── components/                 # UIコンポーネント
 │   ├── ui/                     # 汎用プリミティブ（Button, Input, Avatar など）
 │   ├── layout/                 # Header, Footer, Nav など
@@ -26,7 +26,7 @@ src/
 ├── schemas/                    # Zodスキーマ（フォームバリデーション）
 ├── store/                      # Zustandストア（アクセストークンなど）
 ├── types/                      # TypeScript型定義（Railsレスポンス型など）
-└── middleware.ts               # Clerk認証ガード
+└── middleware.ts               # Cookie存在チェックによるUXガード（認可はRails側）
 ```
 
 ## 各ディレクトリの役割

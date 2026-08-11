@@ -18,8 +18,9 @@ export function Landing() {
             他の人の本棚を覗けば、次に読みたい 1 冊に出会えます。
           </p>
           <div className={styles.heroCta}>
+            {/* 新規・既存の判定は Rails のコールバックが行うため、導線は /login に一本化する */}
             <Link
-              href="/signup"
+              href="/login"
               className={`${styles.btn} ${styles.btnPrimary}`}
             >
               無料ではじめる
@@ -80,7 +81,7 @@ export function Landing() {
           <h3 className={styles.ctaTitle}>さっそく本棚を作ってみよう</h3>
           <p className={styles.ctaDesc}>登録は無料。いつでも退会できます。</p>
         </div>
-        <Link href="/signup" className={`${styles.btn} ${styles.btnOnDark}`}>
+        <Link href="/login" className={`${styles.btn} ${styles.btnOnDark}`}>
           無料ではじめる
         </Link>
       </section>

@@ -52,16 +52,12 @@ const user = await getUser(username)
 
 /**
  * ユーザー情報を取得する。
- * tokenを渡した場合はServer Components用のサーバーサイドリクエストを使用する。
  * @param username - ユーザー名
- * @param token - Clerk JWTトークン（Server Componentsから呼ぶ場合に指定）
  * @returns ユーザー情報
  * @throws ユーザーが存在しない場合は404エラー
  */
-export const getUser = (username: string, token?: string): Promise<User> =>
-  token
-    ? serverGet(API_ENDPOINTS.USER(username), token)
-    : apiGet(API_ENDPOINTS.USER(username))
+export const getUser = (username: string): Promise<User> =>
+  apiGet(API_ENDPOINTS.USER(username))
 ```
 
 ```ts
