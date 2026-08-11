@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Spinner } from "@/components/ui/Spinner";
 import { useBookShelf } from "@/hooks/users/useBookShelf";
+import type { BookPostsResponse } from "@/types/book";
 import { BookCard } from "./BookCard";
 import { BookShelfSkeleton } from "./BookShelfSkeleton";
 import styles from "./styles/BookShelf.module.css";
@@ -10,10 +11,14 @@ import styles from "./styles/BookShelf.module.css";
 type Props = {
   username: string;
   isMe: boolean;
+  fallbackBooks: BookPostsResponse;
 };
 
-export function BookShelf({ username, isMe }: Props) {
-  const { sentinelRef, items, isEmpty, isLoading } = useBookShelf(username);
+export function BookShelf({ username, isMe, fallbackBooks }: Props) {
+  const { sentinelRef, items, isEmpty, isLoading } = useBookShelf(
+    username,
+    fallbackBooks,
+  );
 
   const isInitialLoading = isLoading && items.length === 0;
   const isLoadingMore = isLoading && items.length > 0;
@@ -25,6 +30,7 @@ export function BookShelf({ username, isMe }: Props) {
           <BookShelfSkeleton />
         ) : isEmpty ? (
           <div className={styles.emptyState}>
+            <div className={styles.emptyShelf} aria-hidden="true" />
             <p className={styles.emptyMessage}>まだ読了した本がありません</p>
             {isMe && (
               <Link href="/books/new" className={styles.postButton}>
@@ -34,7 +40,7 @@ export function BookShelf({ username, isMe }: Props) {
           </div>
         ) : (
           <>
-            <div className={styles.grid}>
+            <div className={styles.shelf}>
               {items.map((item) => (
                 <BookCard key={item.key} book={item.book} username={username} />
               ))}

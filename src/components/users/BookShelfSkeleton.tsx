@@ -7,12 +7,9 @@ type Props = {
 
 export function BookShelfSkeleton({ count = 12 }: Props) {
   return (
-    <div className={styles.grid} aria-busy="true" aria-live="polite">
+    <div className={styles.shelf} aria-busy="true" aria-live="polite">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className={styles.card}>
-          <Skeleton className={styles.cover} radius="md" />
-          <Skeleton width="80%" height={13} />
-        </div>
+        <Skeleton key={i} radius="sm" className={styles.spine} />
       ))}
     </div>
   );

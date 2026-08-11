@@ -1,6 +1,10 @@
 import { useCallback } from "react";
 import useSWRInfinite from "swr/infinite";
+import { toast } from "sonner";
 import { getUserBooks } from "@/lib/api/books";
+import { API_ENDPOINTS } from "@/constants/api";
+import { MESSAGES } from "@/constants/messages";
+import { logger } from "@/lib/logger";
 import type { BookPostsResponse } from "@/types/book";
 
 type BookKey = {
@@ -12,9 +16,13 @@ type BookKey = {
 /**
  * ユーザーの本棚（読了した本の投稿一覧）を無限スクロールで取得するSWRフック。
  * @param username - ユーザー名
+ * @param fallbackFirstPage - Server Componentsで取得した1ページ目。渡すと初回フェッチを省略する
  * @returns books, hasMore, isEmpty, isLoading, loadMore
  */
-export const useUserBooks = (username: string) => {
+export const useUserBooks = (
+  username: string,
+  fallbackFirstPage?: BookPostsResponse,
+) => {
   const getKey = (
     pageIndex: number,
     previousPageData: BookPostsResponse | null,
@@ -30,6 +38,16 @@ export const useUserBooks = (username: string) => {
   const { data, setSize, isLoading } = useSWRInfinite<BookPostsResponse>(
     getKey,
     ({ username, cursor }: BookKey) => getUserBooks(username, cursor),
+    {
+      ...(fallbackFirstPage ? { fallbackData: [fallbackFirstPage] } : {}),
+      onError: () => {
+        logger.error("本棚取得失敗", {
+          endpoint: API_ENDPOINTS.USER_BOOKS(username),
+        });
+        toast.error(MESSAGES.BOOK.SHELF_FETCH_ERROR);
+      },
+      shouldRetryOnError: false,
+    },
   );
 
   const books = data ? data.flatMap((d) => d?.items ?? []) : [];
