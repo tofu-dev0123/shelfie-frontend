@@ -3,9 +3,11 @@ import styles from "./styles/BookDetailInfo.module.css";
 
 type Props = {
   book: Book;
+  /** モーダルから使う際に aria-labelledby の参照先とするための id */
+  titleId?: string;
 };
 
-export function BookDetailInfo({ book }: Props) {
+export function BookDetailInfo({ book, titleId }: Props) {
   return (
     <section className={styles.container}>
       <div className={styles.thumbWrap}>
@@ -22,7 +24,9 @@ export function BookDetailInfo({ book }: Props) {
         )}
       </div>
       <div className={styles.meta}>
-        <h1 className={styles.title}>{book.title}</h1>
+        <h1 id={titleId} className={styles.title}>
+          {book.title}
+        </h1>
         <p className={styles.authors}>{book.authors.join(" ")}</p>
         <p className={styles.isbn}>ISBN: {book.isbn}</p>
       </div>

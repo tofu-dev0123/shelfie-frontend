@@ -1,0 +1,51 @@
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.closeButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-full);
+  color: var(--color-gray-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background: var(--color-gray-100);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-primary-600);
+  outline-offset: 2px;
+}
+
+.body {
+  padding: var(--space-2) var(--space-4) var(--space-6);
+}
+
+/* 詳細ページ用の区切り線がモーダルでは末尾に残ってしまうため落とす */
+.body > :last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    padding: var(--space-4) var(--space-5) 0;
+  }
+
+  .body {
+    padding: var(--space-2) var(--space-8) var(--space-8);
+  }
+}

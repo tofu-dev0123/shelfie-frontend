@@ -1,22 +1,75 @@
 .shelfSection {
-  padding: var(--space-6) 0 var(--space-12);
+  padding: var(--space-8) 0 var(--space-12);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-10);
+  padding: 0 var(--space-4);
 }
 
-.grid {
+.shelf {
+  /*
+   * 3列。書影の実寸（楽天 largeImageUrl は 200x200 のバウンディングボックスで
+   * 2:3 の書影なら幅およそ133px）を超えて拡大しないよう上限を設けつつ、
+   * 狭い端末では縮ませる。差し引く80pxの内訳は
+   * コンテナ左右padding(16x2) + 棚板のはみ出し(12x2) + 列間(12x2)
+   */
+  --shelf-cover-w: min(104px, (100vw - 80px) / 3);
+  /* 書影は 2:3。段の高さを確定させるため長さとして持つ */
+  --shelf-cover-h: calc(var(--shelf-cover-w) * 1.5);
+  --shelf-plank-h: 8px;
+  --shelf-row-space: var(--space-6);
+
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-4);
+  /* 1段あたりの冊数はブレークポイントごとに固定する */
+  grid-template-columns: repeat(3, var(--shelf-cover-w));
+  /* 棚の幅を中身ぴったりにして中央へ寄せる */
+  width: fit-content;
+  margin-inline: auto;
+  column-gap: var(--space-3);
+  row-gap: calc(var(--shelf-plank-h) + var(--shelf-row-space));
+  align-items: end;
+
+  /* 最終段の棚板を描く余白 */
+  padding-bottom: calc(var(--shelf-plank-h) + var(--shelf-row-space));
+  /*
+   * 棚板は背景（background-origin は padding-box）で描いているため、
+   * 横方向の padding を足すと本の位置は変えずに棚板だけ左右へはみ出せる
+   */
+  padding-inline: var(--space-3);
+
+  /*
+   * 棚板は各段の本の下に敷く。段数は画面幅で変わるため要素として置けない。
+   * 1段分の高さで繰り返す背景グラデーションとして描くことで、段数が動的でも崩れない。
+   */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent var(--shelf-cover-h),
+    var(--color-primary-700) var(--shelf-cover-h),
+    var(--color-primary-900) calc(var(--shelf-cover-h) + var(--shelf-plank-h)),
+    transparent calc(var(--shelf-cover-h) + var(--shelf-plank-h)),
+    transparent
+      calc(var(--shelf-cover-h) + var(--shelf-plank-h) + var(--shelf-row-space))
+  );
 }
 
 .emptyState {
+  padding: var(--space-10) 0 var(--space-16);
   text-align: center;
-  padding: var(--space-16) 0;
+}
+
+/* 本が無いことを「空の棚」として見せる */
+.emptyShelf {
+  height: 8px;
+  margin-bottom: var(--space-8);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-700),
+    var(--color-primary-900)
+  );
 }
 
 .emptyMessage {
@@ -52,14 +105,32 @@
   font-size: var(--text-lg);
 }
 
-/* モバイル */
-@media (max-width: 640px) {
+@media (min-width: 768px) {
   .container {
-    padding: 0 var(--space-4);
+    padding: 0 var(--space-10);
   }
 
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-3);
+  .shelf {
+    /* 4列。差し引く168pxは padding(40x2) + はみ出し(20x2) + 列間(16x3) */
+    --shelf-cover-w: min(140px, (100vw - 168px) / 4);
+    --shelf-plank-h: 10px;
+    --shelf-row-space: var(--space-8);
+
+    grid-template-columns: repeat(4, var(--shelf-cover-w));
+    column-gap: var(--space-4);
+    padding-inline: var(--space-5);
+  }
+
+  .emptyShelf {
+    height: 10px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .shelf {
+    /* 6列。差し引く200pxは padding(40x2) + はみ出し(20x2) + 列間(16x5) */
+    --shelf-cover-w: min(140px, (100vw - 200px) / 6);
+
+    grid-template-columns: repeat(6, var(--shelf-cover-w));
   }
 }

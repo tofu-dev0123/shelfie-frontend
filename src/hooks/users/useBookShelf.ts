@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useUserBooks } from "./useUserBooks";
-import type { Book } from "@/types/book";
+import type { Book, BookPostsResponse } from "@/types/book";
 
 export type ShelfItem = {
   key: string;
@@ -10,13 +10,19 @@ export type ShelfItem = {
 /**
  * 本棚（読了 = /v1/users/:username/books）の無限スクロールを管理するフック。
  * @param username - ユーザー名
+ * @param fallbackFirstPage - Server Componentsで取得した1ページ目。渡すと初回フェッチを省略する
  * @returns sentinelRef, items, hasMore, isEmpty, isLoading
  */
-export const useBookShelf = (username: string) => {
+export const useBookShelf = (
+  username: string,
+  fallbackFirstPage?: BookPostsResponse,
+) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { books, hasMore, isEmpty, isLoading, loadMore } =
-    useUserBooks(username);
+  const { books, hasMore, isEmpty, isLoading, loadMore } = useUserBooks(
+    username,
+    fallbackFirstPage,
+  );
 
   const items: ShelfItem[] = books.map((post) => ({
     key: String(post.id),

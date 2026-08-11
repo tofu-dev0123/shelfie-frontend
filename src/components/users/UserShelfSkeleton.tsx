@@ -1,35 +1,29 @@
-import { Skeleton } from "@/components/ui/Skeleton";
 import { BookShelfSkeleton } from "./BookShelfSkeleton";
 import styles from "./styles/UserShelfSkeleton.module.css";
 
 export function UserShelfSkeleton() {
   return (
-    <>
-      <div className={styles.headerSection}>
-        <div className={styles.container}>
-          <div className={styles.header}>
-            <Skeleton
-              width={56}
-              height={56}
-              radius="full"
-              className={styles.avatar}
-            />
-            <div className={styles.nameRow}>
-              <Skeleton width={180} height={18} />
-              <Skeleton width={120} height={13} />
-            </div>
+    <div aria-busy="true" aria-live="polite">
+      {/*
+        ヒーローは暗い背景なので、グレーのShimmerを載せると浮いてしまう。
+        Skeletonプリミティブではなく半透明のブロックで骨格を示す
+      */}
+      <div className={styles.hero}>
+        <div className={styles.inner}>
+          <div className={styles.avatar} />
+          <div className={styles.meta}>
+            <div className={styles.nickname} />
+            <div className={styles.sub} />
+            <div className={styles.bio} />
           </div>
         </div>
       </div>
 
       <div className={styles.shelfSection}>
         <div className={styles.container}>
-          <div className={styles.tabs}>
-            <Skeleton width={64} height={16} />
-          </div>
           <BookShelfSkeleton />
         </div>
       </div>
-    </>
+    </div>
   );
 }
