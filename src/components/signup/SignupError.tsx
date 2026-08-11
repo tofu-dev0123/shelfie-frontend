@@ -2,7 +2,7 @@ import styles from "./styles/SignupError.module.css";
 
 type Props = {
   onRetry: () => void;
-  onGoToLogin: () => Promise<void>;
+  onGoToLogin: () => void;
 };
 
 export function SignupError({ onRetry, onGoToLogin }: Props) {

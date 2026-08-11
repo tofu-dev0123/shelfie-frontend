@@ -6,10 +6,13 @@
 
 ### 概要
 
-1. ユーザーがClerkでGoogle/GitHubログイン
-2. フロントがClerk JWTをRails `/v1/auth/login` に送信
-3. Railsが独自のアクセストークン（レスポンスボディ）とリフレッシュトークン（HttpOnly Cookie）を発行
-4. 以降のAPIリクエストは `Authorization: Bearer <access_token>` ヘッダーで認証
+1. ユーザーが `<a href="{API}/auth/{provider}">` を踏む（ブラウザのトップレベル遷移）
+2. Rails が OAuth を完遂し、新規/既存を判定する（フロントは一切関与しない）
+3. 既存ユーザーならリフレッシュトークン（HttpOnly Cookie）を発行して `/` へ、新規ユーザーならサインアップトークンを発行して `/signup` へリダイレクト
+4. フロントは起動時の `refreshAccessToken()` でアクセストークンを取得する
+5. 以降のAPIリクエストは `Authorization: Bearer <access_token>` ヘッダーで認証
+
+**フロントに認証ロジックは無い。** OAuth のコールバック処理・トークン交換・プロバイダ SDK の初期化はすべて Rails 側にある。
 
 ### トークン管理
 
@@ -17,6 +20,7 @@
 |---|---|---|
 | アクセストークン | Zustandストア（メモリ） | 60分 |
 | リフレッシュトークン | HttpOnly Cookie（ブラウザが自動送信） | 30日 |
+| サインアップトークン | HttpOnly Cookie（ブラウザが自動送信） | 10分 |
 
 アクセストークンはlocalStorageに保存しない（XSS対策）。
 

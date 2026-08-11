@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("../client", () => ({
-  serverPost: vi.fn(),
+  authGet: vi.fn(),
+  authPost: vi.fn(),
   apiDelete: vi.fn(),
 }));
 
@@ -17,101 +18,100 @@ vi.mock("@/store/authStore", () => ({
 vi.mock("@/lib/logger", () => ({
   logger: {
     info: vi.fn(),
+    warn: vi.fn(),
     error: vi.fn(),
   },
 }));
 
-import { serverPost, apiDelete } from "../client";
+import { authGet, authPost, apiDelete } from "../client";
 import { useAuthStore } from "@/store/authStore";
-import { login, signup, logout } from "../auth";
+import { getSignupContext, signup, logout, refreshAccessToken } from "../auth";
 
-beforeEach(() => {
-  vi.mocked(serverPost).mockReset();
-  vi.mocked(apiDelete).mockReset();
-  vi.mocked(useAuthStore.getState).mockReturnValue({
+const mockStore = (overrides = {}) => {
+  const state = {
     setAccessToken: vi.fn(),
     clearAccessToken: vi.fn(),
     accessToken: null,
-    status: "idle",
+    status: "idle" as const,
     setStatus: vi.fn(),
-  });
+    ...overrides,
+  };
+  vi.mocked(useAuthStore.getState).mockReturnValue(state);
+  return state;
+};
+
+beforeEach(() => {
+  vi.mocked(authGet).mockReset();
+  vi.mocked(authPost).mockReset();
+  vi.mocked(apiDelete).mockReset();
+  mockStore();
 });
 
-describe("login", () => {
-  it("ログイン成功時に 'ok' を返し、アクセストークンを保存する", async () => {
-    const setAccessToken = vi.fn();
-    vi.mocked(useAuthStore.getState).mockReturnValue({
-      setAccessToken,
-      clearAccessToken: vi.fn(),
-      accessToken: null,
-      status: "idle",
-      setStatus: vi.fn(),
-    });
-    vi.mocked(serverPost).mockResolvedValueOnce({ access_token: "token123" });
+describe("getSignupContext", () => {
+  it("正しいエンドポイントにGETリクエストを送る", async () => {
+    const context = {
+      email: "test@example.com",
+      nickname_suggestion: "テスト",
+    };
+    vi.mocked(authGet).mockResolvedValueOnce(context);
 
-    const result = await login("clerk-token");
+    const result = await getSignupContext();
 
-    expect(result).toBe("ok");
-    expect(serverPost).toHaveBeenCalledWith("/v1/auth/login", "clerk-token");
-    expect(setAccessToken).toHaveBeenCalledWith("token123");
+    expect(authGet).toHaveBeenCalledWith("/v1/auth/signup_context");
+    expect(result).toEqual(context);
   });
 
-  it("404エラーのとき 'not_found' を返す", async () => {
-    const axiosError = Object.assign(new Error("Not Found"), {
+  it("signup_tokenが無効な場合のエラーはそのまま伝播する", async () => {
+    const axiosError = Object.assign(new Error("Unauthorized"), {
       isAxiosError: true,
-      response: { status: 404 },
+      response: { status: 401 },
     });
-    vi.mocked(serverPost).mockRejectedValueOnce(axiosError);
+    vi.mocked(authGet).mockRejectedValueOnce(axiosError);
 
-    const result = await login("clerk-token");
-    expect(result).toBe("not_found");
-  });
-
-  it("404以外のエラーはthrowする", async () => {
-    vi.mocked(serverPost).mockRejectedValueOnce(new Error("Server Error"));
-    await expect(login("clerk-token")).rejects.toThrow("Server Error");
+    await expect(getSignupContext()).rejects.toThrow("Unauthorized");
   });
 });
 
 describe("signup", () => {
-  it("正しいエンドポイントにPOSTリクエストを送る", async () => {
-    const setAccessToken = vi.fn();
-    vi.mocked(useAuthStore.getState).mockReturnValue({
-      setAccessToken,
-      clearAccessToken: vi.fn(),
-      accessToken: null,
-      status: "idle",
-      setStatus: vi.fn(),
-    });
-    vi.mocked(serverPost).mockResolvedValueOnce({ access_token: "token456" });
+  it("トークンを渡さずPOSTリクエストを送り、アクセストークンを保存する", async () => {
+    const { setAccessToken } = mockStore();
+    vi.mocked(authPost).mockResolvedValueOnce({ access_token: "token456" });
 
     const formData = { username: "testuser", nickname: "テスト" };
-    await signup("clerk-token", formData);
+    await signup(formData);
 
-    expect(serverPost).toHaveBeenCalledWith(
-      "/v1/users",
-      "clerk-token",
-      formData,
-    );
+    expect(authPost).toHaveBeenCalledWith("/v1/users", formData);
     expect(setAccessToken).toHaveBeenCalledWith("token456");
   });
 });
 
 describe("logout", () => {
   it("正しいエンドポイントにDELETEリクエストを送り、トークンをクリアする", async () => {
-    const clearAccessToken = vi.fn();
-    vi.mocked(useAuthStore.getState).mockReturnValue({
-      setAccessToken: vi.fn(),
-      clearAccessToken,
-      accessToken: null,
-      status: "idle",
-      setStatus: vi.fn(),
-    });
+    const { clearAccessToken } = mockStore();
     vi.mocked(apiDelete).mockResolvedValueOnce(undefined);
 
     await logout();
 
     expect(apiDelete).toHaveBeenCalledWith("/v1/auth/logout");
     expect(clearAccessToken).toHaveBeenCalled();
+  });
+});
+
+describe("refreshAccessToken", () => {
+  it("成功時にtrueを返し、アクセストークンを保存する", async () => {
+    const { setAccessToken } = mockStore();
+    vi.mocked(authPost).mockResolvedValueOnce({ access_token: "refreshed" });
+
+    const result = await refreshAccessToken();
+
+    expect(authPost).toHaveBeenCalledWith("/v1/auth/refresh");
+    expect(result).toBe(true);
+    expect(setAccessToken).toHaveBeenCalledWith("refreshed");
+  });
+
+  it("失敗時はthrowせずfalseを返す", async () => {
+    vi.mocked(authPost).mockRejectedValueOnce(new Error("Unauthorized"));
+
+    await expect(refreshAccessToken()).resolves.toBe(false);
   });
 });

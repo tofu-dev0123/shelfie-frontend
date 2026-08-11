@@ -2,11 +2,15 @@
 
 ## 基本方針
 
-認証状態のSource of Truthはバックエンド（Rails）発行のアクセストークンに一元化する。Clerkは **OAuthプロバイダへの委譲と Clerk JWT の発行にのみ** 使用し、認証状態の判定・参照には使わない。
+**認証フローの当事者は Rails である。** OAuth のプロバイダ連携・state 検証・トークン交換・新規/既存の判定はすべて Rails 側にあり、フロントは次の3つしかしない。
 
-- 認証状態の参照は `@/hooks/auth/useAuth` を必ず経由する
-- `@clerk/nextjs` からの `useAuth` / `useClerk` / `useUser` / `SignedIn` / `SignedOut` の import は原則禁止
-- Clerk 依存を許可する範囲は `CLERK_OAUTH.md` の冒頭ファイル一覧を参照
+1. `<a href="{API}/auth/{provider}">` を置く
+2. Cookie で認証される API を叩く（`authGet` / `authPost`）
+3. アクセストークンをメモリ（Zustand）に保持する
+
+認証状態の Source of Truth は Rails 発行のアクセストークン。参照は必ず `@/hooks/auth/useAuth` を経由する。
+
+**OAuth SDK やクライアントライブラリを新規に導入しないこと。** フロントは `client_secret` も署名鍵も持たない。
 
 ---
 
@@ -15,27 +19,56 @@
 ### ログイン（既存ユーザー）
 
 ```
-1. ユーザーが Clerk で GitHub/Google ログイン
-2. Clerk JWT を取得
-3. Rails POST /v1/auth/login に Clerk JWT を送信
-4. Rails がアクセストークン（レスポンスボディ）とリフレッシュトークン（HttpOnly Cookie）を返す
-5. authStore にアクセストークンを保存（status は "authenticated" に遷移）
-6. フィード画面へリダイレクト
+1. /login で <a href="{API}/auth/google"> を踏む
+2. ブラウザが Rails → Google → Rails と遷移する（フロントは一切関与しない）
+3. Rails が user_identities を引いて既存ユーザーと判定
+4. refresh_token Cookie をセットして / へリダイレクト
+5. 起動時の useAuthInitializer が refreshAccessToken() を呼ぶ
+6. アクセストークンを authStore に保存（status は "authenticated" に遷移）
 ```
 
 ### サインアップ（新規ユーザー）
 
 ```
-1. ユーザーが Clerk で GitHub/Google ログイン
-2. Clerk JWT を取得
-3. Rails POST /v1/auth/login → 404（Railsにユーザーが存在しない）
-4. /signup/continue へリダイレクト
-5. ユーザーがユーザー名などの追加情報を入力
-6. Rails POST /v1/users に Clerk JWT + 入力データを送信
-7. Rails がユーザーを作成し、アクセストークンとリフレッシュトークンを返す
-8. authStore にアクセストークンを保存（status は "authenticated" に遷移）
-9. フィード画面へリダイレクト
+1. /login で <a href="{API}/auth/github"> を踏む（ログインと同一の導線）
+2. Rails が新規ユーザーと判定 → signup_token Cookie をセットして /signup へリダイレクト
+3. GET /v1/auth/signup_context（Cookie）→ { email, nickname_suggestion }
+     ├─ 200 → nickname 欄にプリフィルしてフォーム表示
+     └─ 401 → セッション切れ。入力させる前に /login へ戻す
+4. username 入力のたびに GET /v1/users/username/check（デバウンス）
+5. POST /v1/users { nickname, username }（Cookie のみ。トークンは渡さない）
+6. 201 { access_token } → authStore に保存 → / へ
 ```
+
+**ログインとサインアップで画面を分けない。** 新規/既存を判定するのは Rails のコールバックなので、フロントの導線は `/login` に一本化する。`/signup` は Rails が `signup_token` 付きで送り込む先であり、プロフィール入力専用のページ。
+
+### OAuth 失敗時
+
+Rails は `/login?error=<code>` へリダイレクトする。コードと文言の対応は `constants/messages.ts` の `OAUTH_ERROR_MESSAGES` にあり、キーはバックエンドの `Oauth::CallbackService` の定数と一致させる。
+
+| `error` | 意味 |
+|---|---|
+| `cancelled` | 同意画面でキャンセルされた |
+| `invalid_state` | state 検証に失敗（CSRF 疑い・セッション切れ） |
+| `provider_error` | プロバイダ起因、または想定外の例外 |
+| `email_unavailable` | GitHub のメールアドレスが未認証 |
+| `email_already_registered` | 同一メールが別プロバイダで登録済み |
+
+`?error=` は誰でも書き換えられるため、**辞書に無いコードは表示しない**。任意の文言を Shelfie の画面として出せてしまうため。
+
+---
+
+## トークン
+
+| トークン | 保存場所 | 有効期限 | 用途 |
+|---|---|---|---|
+| アクセストークン | Zustandストア（メモリ） | 60分 | `Authorization: Bearer` |
+| リフレッシュトークン | HttpOnly Cookie | 30日 | `POST /v1/auth/refresh` |
+| サインアップトークン | HttpOnly Cookie | 10分 | `GET /v1/auth/signup_context` / `POST /v1/users` |
+
+Cookie はいずれも HttpOnly なので **JS からは読めない**。ブラウザが自動送信するだけで、フロントがトークンを保持して再送する処理は存在しない。
+
+アクセストークンは localStorage に保存しない（XSS対策）。
 
 ---
 
@@ -61,7 +94,7 @@ type AuthStatus = "idle" | "initializing" | "authenticated" | "unauthenticated";
                                   └─ refresh 失敗 ─▶ unauthenticated
 
  authenticated ──(logout)──▶ unauthenticated
- unauthenticated ──(login/signup)──▶ authenticated
+ unauthenticated ──(signup)──▶ authenticated
 ```
 
 `setAccessToken` / `clearAccessToken` は status も同時更新するため、`accessToken !== null` と `status === "authenticated"` は常に一致する。
@@ -84,54 +117,17 @@ export function Header() {
 - `isSignedIn`: Rails 認証済みかどうか（`status === "authenticated"`）
 - `isInitializing`: リフレッシュ試行が未完了かどうか（`status === "idle" || "initializing"`）
 
-### Clerk の `useAuth` との違い
-
-Clerk の `{ isLoaded, isSignedIn }` とは意味が異なる。Clerk セッションの有無ではなく **Rails トークンの有無** を示す。Clerk セッションが残っていても Rails 側でログアウト済みなら `isSignedIn === false` となる。
-
 ---
 
 ## リロード時のトークン復元
 
 `useAuthInitializer` が起動時に 1 回だけ `/v1/auth/refresh` を叩く。未ログインユーザーは 401 が必ず 1 回発生するが、リロード時のみで SPA 内遷移では発火しないため許容する。
 
-```ts
-export const useAuthInitializer = () => {
-  const status = useAuthStore((s) => s.status);
-  const setStatus = useAuthStore((s) => s.setStatus);
-
-  useEffect(() => {
-    if (status !== "idle") return;
-    setStatus("initializing");
-    (async () => {
-      const ok = await refreshAccessToken();
-      if (!ok) setStatus("unauthenticated");
-    })();
-  }, [status, setStatus]);
-};
-```
-
----
-
-## Clerk JWT の取得
-
-Clerk JWT が必要なのは `login()` / `signup()` を呼ぶ認証エントリポイントのみ。該当ファイルでのみ `@clerk/nextjs` の `useAuth().getToken()` を使用する。
-
-```ts
-// hooks/signup/useSignupForm.ts 等、認証エントリポイント専用
-import { useAuth as useClerkAuth } from "@clerk/nextjs";
-
-const { getToken } = useClerkAuth();
-const clerkToken = await getToken();
-await signup(clerkToken, data);
-```
-
-自作 `useAuth` と名前が衝突するので、必要に応じて `useClerkAuth` などで別名 import する。
-
 ---
 
 ## ログアウト
 
-ログアウトは必ず `useLogout` フックを経由する。lib 層から `useClerk` を呼ぶことは Hook Rules 違反のため禁止。
+`useLogout` フックを経由する。
 
 ```ts
 import { useLogout } from "@/hooks/auth/useLogout";
@@ -142,67 +138,31 @@ export function LogoutButton() {
 }
 ```
 
-`useLogout` の内部では以下を順に実行する：
-
-1. Rails logout（`/v1/auth/logout`）— リフレッシュトークン Cookie を削除し `authStore` の status を `"unauthenticated"` に
-2. Clerk `signOut()` — Clerk セッション Cookie を削除
-3. `/`（ホーム画面）へリダイレクト
-
-Clerk セッションを残したままにすると、次回ログイン時に `/sso-callback` の `signIn.status === "complete"` 分岐が誤動作するため、`signOut()` は必ず呼ぶこと。
+内部では Rails の `DELETE /v1/auth/logout` を叩いてリフレッシュトークン Cookie を削除し、`authStore` を `"unauthenticated"` にしてホームへ遷移する。
 
 ---
 
 ## middleware.ts
 
-Clerk middleware を UX 上の粗いガードとして使用する。実際の認可は Rails API の Bearer トークン検証に委ねる。
+`refresh_token` Cookie の**存在**だけを見る UX 上のガード。実際の認可は Rails API の Bearer トークン検証に委ねる。
 
 ```ts
-// src/middleware.ts
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-
-const isProtectedRoute = createRouteMatcher([
-  "/me(.*)",
-  "/settings(.*)",
-  "/books/new(.*)",
-]);
-
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
-});
+const hasRefreshToken = req.cookies.has("refresh_token");
 ```
 
-Next.js middleware は Rails ドメインの HttpOnly Cookie を読めないため、Rails トークンでのミドルウェア保護は不可能。Clerk セッションがあるユーザーのみを通過させ、Rails API 側で最終的な認可判定を行う設計とする。
+- 保護ページに Cookie 無しで来たら `/login` へ
+- `/signup` に Cookie ありで来たら `/` へ（サインアップ済みユーザーのリロード対策）
+
+**Cookie の存在は有効性を意味しない。** 失効済みトークンでも Cookie は残りうるので、無効だった場合は API の 401 に委ねる。
+
+### COOKIE_DOMAIN への依存
+
+Rails の Cookie が Next.js 側から読めるのは、バックエンドの `COOKIE_DOMAIN` が親ドメイン（`.shelfie.jp` など）に設定されているからである。**空だと Cookie が API ドメイン限定になり、API 通信は動くまま Next.js 側の判定だけが静かに死ぬ**（middleware のガードと `(main)/page.tsx` の SSR リダイレクトが機能しなくなる）。
+
+ローカルでは Cookie がポートを区別しないため、`localhost:8080` が発行した Cookie が `localhost:3000` にも送られる。
 
 ---
 
-## lib/api/auth.ts の実装
+## `_authClient` を使う理由
 
-認証エンドポイントは Clerk トークンを使うため、`serverPost` / `apiDelete` を使用する。
-
-```ts
-// lib/api/auth.ts
-export const login = async (
-  clerkToken: string,
-): Promise<"ok" | "not_found"> => {
-  try {
-    const data = await serverPost<{ access_token: string }>(
-      API_ENDPOINTS.AUTH_LOGIN,
-      clerkToken,
-    );
-    useAuthStore.getState().setAccessToken(data.access_token);
-    return "ok";
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      return "not_found";
-    }
-    throw error;
-  }
-};
-
-export const logout = async (): Promise<void> => {
-  await apiDelete(API_ENDPOINTS.AUTH_LOGOUT);
-  useAuthStore.getState().clearAccessToken();
-};
-```
-
-`setAccessToken` / `clearAccessToken` は status を同時更新するため、`lib/api/auth.ts` 側で `setStatus` を明示的に呼ぶ必要はない。
+認証系のエンドポイントは Cookie で認証し、アクセストークンを持たない。`_client` のインターセプターは 401 を「アクセストークンの期限切れ」と解釈してサイレントリフレッシュ後に `/login` へ飛ばすため、これらを乗せてはいけない。詳細は `API_CLIENT.md` を参照。

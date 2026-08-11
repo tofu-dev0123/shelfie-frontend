@@ -11,7 +11,7 @@ Shelfie。読了した本を投稿して本棚を作成・公開できる読書�
 - **フレームワーク**: Next.js 16 (App Router)
 - **言語**: TypeScript
 - **スタイリング**: CSS Modules
-- **認証**: Clerk（GitHub / Google ログイン、JWT + リフレッシュトークン）
+- **認証**: Rails 側で OAuth を所有（GitHub / Google ログイン、アクセストークン + リフレッシュトークン）
 - **バックエンド**: Rails（別リポジトリ）、REST API 通信
 - **データベース**: PostgreSQL（バックエンド側）
 

@@ -13,7 +13,6 @@
     "test:run": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.0.7",
     "@fortawesome/fontawesome-free": "^7.2.0",
     "@hookform/resolvers": "^5.2.2",
     "axios": "^1.14.0",

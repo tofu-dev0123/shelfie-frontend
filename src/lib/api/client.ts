@@ -103,52 +103,46 @@ export const apiDelete = async <T>(path: string): Promise<T> => {
 };
 
 // ----------------------------------------------------------------
-// サーバーサイド用メソッドハンドラ（Server Components から使用）
+// 認証系用 axios インスタンス
+// signup_token / refresh_token Cookie で認証するエンドポイント専用。
+// これらはアクセストークンを持たないため、401 が返っても「アクセストークンの
+// 期限切れ」を意味しない。_client のインターセプターに乗せると無意味な
+// リフレッシュが走った上でログイン画面へ強制遷移してしまうので、経路を分ける
 // ----------------------------------------------------------------
-const serverHeaders = (token: string) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`,
+const _authClient = axios.create({
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
-export const serverGet = async <T>(path: string, token: string): Promise<T> => {
-  const r = await axios.get<T>(`${BASE_URL}${path}`, {
-    headers: serverHeaders(token),
-    withCredentials: true,
-  });
+_authClient.interceptors.request.use((config) => {
+  logger.info("認証APIリクエスト送信", { endpoint: config.url });
+  return config;
+});
+
+_authClient.interceptors.response.use(
+  (response) => {
+    logger.info("認証APIレスポンス受信", {
+      endpoint: response.config.url,
+      status: response.status,
+    });
+    return response;
+  },
+  (error) => {
+    logger.warn("認証APIリクエスト失敗", {
+      endpoint: error.config?.url,
+      status: error.response?.status,
+    });
+    return Promise.reject(error);
+  },
+);
+
+export const authGet = async <T>(path: string): Promise<T> => {
+  const r = await _authClient.get<T>(path);
   return r.data;
 };
 
-export const serverPost = async <T>(
-  path: string,
-  token: string,
-  data?: unknown,
-): Promise<T> => {
-  const r = await axios.post<T>(`${BASE_URL}${path}`, data, {
-    headers: serverHeaders(token),
-    withCredentials: true,
-  });
-  return r.data;
-};
-
-export const serverPatch = async <T>(
-  path: string,
-  token: string,
-  data?: unknown,
-): Promise<T> => {
-  const r = await axios.patch<T>(`${BASE_URL}${path}`, data, {
-    headers: serverHeaders(token),
-    withCredentials: true,
-  });
-  return r.data;
-};
-
-export const serverDelete = async <T>(
-  path: string,
-  token: string,
-): Promise<T> => {
-  const r = await axios.delete<T>(`${BASE_URL}${path}`, {
-    headers: serverHeaders(token),
-    withCredentials: true,
-  });
+export const authPost = async <T>(path: string, data?: unknown): Promise<T> => {
+  const r = await _authClient.post<T>(path, data);
   return r.data;
 };

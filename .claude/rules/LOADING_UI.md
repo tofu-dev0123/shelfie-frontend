@@ -46,11 +46,10 @@ import { Spinner } from "@/components/ui/Spinner";
 
 アプリ全体を覆うフルスクリーン待機画面。ロゴアニメ付き。
 
-**使用箇所は以下の3つに限定する：**
+**使用箇所は以下の2つに限定する：**
 
 - `src/app/loading.tsx`（ルートのフォールバック）
-- `src/app/signup/continue/page.tsx`（サインアップフロー中の待機）
-- `src/components/auth/SSOCallback.tsx`（OAuth コールバック処理中）
+- `src/app/signup/page.tsx`（`signup_context` 取得中の待機）
 
 各画面の途中状態（SWR の `isLoading` など）には使わない。
 
@@ -64,7 +63,7 @@ import { Spinner } from "@/components/ui/Spinner";
 | Client Components の初回フェッチ | 画面別スケルトン |
 | 無限スクロールの追加読み込み | `Spinner` |
 | 認証ブート（`isInitializing`）と初回フェッチが混在 | 画面別スケルトン（`isInitializing || isInitialLoading` でまとめる） |
-| OAuth コールバック・サインアップフロー待機 | `Loading` |
+| サインアップフロー待機（`signup_context` 取得中） | `Loading` |
 
 ---
 

@@ -1,44 +1,41 @@
-import axios from "axios";
-import { serverPost, apiDelete } from "./client";
+import { authGet, authPost, apiDelete } from "./client";
 import { useAuthStore } from "@/store/authStore";
 import { API_ENDPOINTS } from "@/constants/api";
 import { logger } from "@/lib/logger";
 import type { SignupFormData } from "@/schemas/auth";
+import type { SignupContext } from "@/types/auth";
 
-export const login = async (
-  clerkToken: string,
-): Promise<"ok" | "not_found"> => {
-  try {
-    const data = await serverPost<{ access_token: string }>(
-      API_ENDPOINTS.AUTH_LOGIN,
-      clerkToken,
-    );
-    useAuthStore.getState().setAccessToken(data.access_token);
-    logger.info("ログイン成功");
-    return "ok";
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      logger.info("Railsにユーザーが存在しない。サインアップへリダイレクト");
-      return "not_found";
-    }
-    logger.error("ログイン失敗");
-    throw error;
-  }
-};
+/**
+ * サインアップ画面の初期表示に必要な情報を取得する。
+ * 認証は signup_token（HttpOnly Cookie）で行うため引数は不要。
+ * @returns OAuth プロバイダから取得したメールアドレスとニックネーム候補
+ * @throws signup_token が無い、または期限切れの場合は401エラー
+ */
+export const getSignupContext = (): Promise<SignupContext> =>
+  authGet(API_ENDPOINTS.AUTH_SIGNUP_CONTEXT);
 
-export const signup = async (
-  clerkToken: string,
-  data: SignupFormData,
-): Promise<void> => {
-  const res = await serverPost<{ access_token: string }>(
+/**
+ * ユーザーを新規作成しログイン状態にする。
+ * 認証は signup_token（HttpOnly Cookie）で行うためトークンは渡さない。
+ * @param data - ユーザー名とニックネーム
+ * @returns なし
+ * @throws 入力が不正な場合は422、signup_tokenが無効な場合は401エラー
+ */
+export const signup = async (data: SignupFormData): Promise<void> => {
+  const res = await authPost<{ access_token: string }>(
     API_ENDPOINTS.USERS,
-    clerkToken,
     data,
   );
   useAuthStore.getState().setAccessToken(res.access_token);
   logger.info("サインアップ成功");
 };
 
+/**
+ * ログアウトする。
+ * Rails 側でリフレッシュトークンを失効させ、ストアのアクセストークンを破棄する。
+ * @returns なし
+ * @throws リクエストが失敗した場合はエラー
+ */
 export const logout = async (): Promise<void> => {
   await apiDelete(API_ENDPOINTS.AUTH_LOGOUT);
   useAuthStore.getState().clearAccessToken();
@@ -52,12 +49,10 @@ export const logout = async (): Promise<void> => {
  */
 export const refreshAccessToken = async (): Promise<boolean> => {
   try {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.AUTH_REFRESH}`,
-      {},
-      { withCredentials: true },
+    const res = await authPost<{ access_token: string }>(
+      API_ENDPOINTS.AUTH_REFRESH,
     );
-    useAuthStore.getState().setAccessToken(res.data.access_token);
+    useAuthStore.getState().setAccessToken(res.access_token);
     logger.info("アクセストークン復元成功");
     return true;
   } catch {

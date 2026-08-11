@@ -95,8 +95,9 @@ useSWR(`/books/${bookId}`, ...)
 
 ```
 lib/api/
-├── client.ts     # axios インスタンス・メソッドハンドラ（API_CLIENT.md参照）
+├── client.ts      # axios インスタンス・メソッドハンドラ（API_CLIENT.md参照）
 ├── auth.ts
+├── serverAuth.ts  # Server Components 専用
 ├── users.ts
 ├── books.ts
 └── me.ts
@@ -106,18 +107,18 @@ lib/api/
 
 ```ts
 // lib/api/users.ts
-import { apiGet, apiPatch, serverGet } from './client'
+import { apiGet, apiPatch } from './client'
 import { API_ENDPOINTS } from '@/constants/api'
 import type { User } from '@/types/user'
 
-export const getUser = (username: string, token?: string): Promise<User> =>
-  token
-    ? serverGet(API_ENDPOINTS.USER(username), token)
-    : apiGet(API_ENDPOINTS.USER(username))
+export const getUser = (username: string): Promise<User> =>
+  apiGet(API_ENDPOINTS.USER(username))
 
 export const updateUser = (data: UpdateUserInput): Promise<User> =>
   apiPatch(API_ENDPOINTS.ME, data)
 ```
+
+Cookie で認証する認証系エンドポイントのみ `authGet` / `authPost` を使う（`API_CLIENT.md` 参照）。
 
 - 1関数1エンドポイント
 - エンドポイントパスは必ず `API_ENDPOINTS` から参照する

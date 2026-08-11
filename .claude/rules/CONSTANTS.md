@@ -36,10 +36,9 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!
 
 export const API_ENDPOINTS = {
   // 認証
-  AUTH_LOGIN: '/v1/auth/login',
-  AUTH_SIGNUP: '/v1/auth/signup',
   AUTH_LOGOUT: '/v1/auth/logout',
   AUTH_REFRESH: '/v1/auth/refresh',
+  AUTH_SIGNUP_CONTEXT: '/v1/auth/signup_context',
 
   // ユーザー
   USERS: '/v1/users',
