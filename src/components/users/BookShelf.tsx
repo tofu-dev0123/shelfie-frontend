@@ -1,0 +1,62 @@
+"use client";
+
+import Link from "next/link";
+import { Spinner } from "@/components/ui/Spinner";
+import { useBookShelf } from "@/hooks/users/useBookShelf";
+import type { BookPostsResponse } from "@/types/book";
+import { BookCard } from "./BookCard";
+import { BookShelfSkeleton } from "./BookShelfSkeleton";
+import styles from "./styles/BookShelf.module.css";
+
+type Props = {
+  username: string;
+  isMe: boolean;
+  fallbackBooks: BookPostsResponse;
+};
+
+export function BookShelf({ username, isMe, fallbackBooks }: Props) {
+  const { sentinelRef, items, isEmpty, isLoading } = useBookShelf(
+    username,
+    fallbackBooks,
+  );
+
+  const isInitialLoading = isLoading && items.length === 0;
+  const isLoadingMore = isLoading && items.length > 0;
+
+  return (
+    <div className={styles.shelfSection}>
+      <div className={styles.container}>
+        {isInitialLoading ? (
+          <BookShelfSkeleton />
+        ) : isEmpty ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyShelf} aria-hidden="true" />
+            <p className={styles.emptyMessage}>まだ読了した本がありません</p>
+            {isMe && (
+              <Link href="/books/new" className={styles.postButton}>
+                本を投稿する
+              </Link>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className={styles.shelf}>
+              {items.map((item) => (
+                <BookCard key={item.key} book={item.book} username={username} />
+              ))}
+            </div>
+
+            {/* 無限スクロールのセンチネル */}
+            <div ref={sentinelRef} className={styles.sentinel} />
+
+            {isLoadingMore && (
+              <div className={styles.loading}>
+                <Spinner />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

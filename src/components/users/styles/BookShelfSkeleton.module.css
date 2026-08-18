@@ -1,0 +1,53 @@
+/* BookShelf.module.css の .shelf と同じ骨格を再現する */
+.shelf {
+  --shelf-cover-w: min(104px, (100vw - 80px) / 3);
+  --shelf-cover-h: calc(var(--shelf-cover-w) * 1.5);
+  --shelf-plank-h: 8px;
+  --shelf-row-space: var(--space-6);
+
+  display: grid;
+  grid-template-columns: repeat(3, var(--shelf-cover-w));
+  width: fit-content;
+  margin-inline: auto;
+  column-gap: var(--space-3);
+  row-gap: calc(var(--shelf-plank-h) + var(--shelf-row-space));
+  align-items: end;
+  padding-bottom: calc(var(--shelf-plank-h) + var(--shelf-row-space));
+  padding-inline: var(--space-3);
+
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent var(--shelf-cover-h),
+    var(--color-primary-700) var(--shelf-cover-h),
+    var(--color-primary-900) calc(var(--shelf-cover-h) + var(--shelf-plank-h)),
+    transparent calc(var(--shelf-cover-h) + var(--shelf-plank-h)),
+    transparent
+      calc(var(--shelf-cover-h) + var(--shelf-plank-h) + var(--shelf-row-space))
+  );
+}
+
+.spine {
+  width: var(--shelf-cover-w);
+  height: var(--shelf-cover-h);
+}
+
+@media (min-width: 768px) {
+  .shelf {
+    --shelf-cover-w: min(140px, (100vw - 168px) / 4);
+    --shelf-plank-h: 10px;
+    --shelf-row-space: var(--space-8);
+
+    grid-template-columns: repeat(4, var(--shelf-cover-w));
+    column-gap: var(--space-4);
+    padding-inline: var(--space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .shelf {
+    --shelf-cover-w: min(140px, (100vw - 200px) / 6);
+
+    grid-template-columns: repeat(6, var(--shelf-cover-w));
+  }
+}

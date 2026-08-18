@@ -1,0 +1,118 @@
+/* ShelfHeader.module.css のヒーローと同じ寸法を再現する */
+.hero {
+  min-height: 168px;
+  background: var(--color-primary-900);
+  display: flex;
+  align-items: flex-end;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-5);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+/*
+ * ヒーローは暗い面なので Skeleton プリミティブのグレーのShimmerが浮いてしまう。
+ * 白の半透明で骨格を描き、ローディング中であることは明滅で伝える
+ */
+.avatar,
+.nickname,
+.sub,
+.bio {
+  animation: pulseOnDark 1.6s ease-in-out infinite;
+}
+
+@keyframes pulseOnDark {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-on-dark-surface);
+}
+
+.meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.nickname {
+  width: 160px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--color-on-dark-surface-strong);
+}
+
+.sub {
+  width: 120px;
+  height: 13px;
+  margin-top: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-on-dark-surface);
+}
+
+.bio {
+  width: 100%;
+  max-width: 320px;
+  height: 13px;
+  margin-top: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-on-dark-surface);
+}
+
+.shelfSection {
+  padding: var(--space-8) 0 var(--space-12);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    min-height: 200px;
+  }
+
+  .inner {
+    padding: var(--space-10) var(--space-10) var(--space-6);
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .nickname {
+    width: 200px;
+    height: 24px;
+  }
+
+  .container {
+    padding: 0 var(--space-10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar,
+  .nickname,
+  .sub,
+  .bio {
+    animation: none;
+  }
+}

@@ -1,0 +1,95 @@
+.shelf {
+  background: var(--color-primary-50);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding-bottom: var(--space-3);
+  border-bottom: 3px solid var(--color-primary-600);
+}
+
+.row + .row {
+  margin-top: var(--space-6);
+}
+
+.book {
+  position: relative;
+  flex: 1 1 0;
+  height: 150px;
+  border-radius: 2px 2px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.book::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.12) 0,
+    transparent 12%,
+    transparent 88%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+.title {
+  writing-mode: vertical-rl;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.05em;
+  padding: var(--space-3) 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.deep {
+  background: var(--color-primary-900);
+}
+.navy {
+  background: var(--color-primary-700);
+}
+.main {
+  background: var(--color-primary-600);
+}
+.light {
+  background: var(--color-book-light);
+}
+.cool {
+  background: var(--color-book-cool);
+}
+.red {
+  background: var(--color-book-red);
+}
+.green {
+  background: var(--color-book-green);
+}
+.yellow {
+  background: var(--color-book-yellow);
+}
+.violet {
+  background: var(--color-book-violet);
+}
+
+@media (max-width: 640px) {
+  .shelf {
+    padding: var(--space-4);
+  }
+  .book {
+    height: 110px;
+  }
+  .title {
+    font-size: 9px;
+  }
+}

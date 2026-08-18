@@ -1,0 +1,17 @@
+.page {
+  padding: var(--space-5) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-10);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: 720px;
+  }
+}
