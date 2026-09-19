@@ -7,9 +7,9 @@ describe("bookPostSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("コメントが空文字の場合はエラー", () => {
+  it("コメントが空文字でも通過する（任意入力のため）", () => {
     const result = bookPostSchema.safeParse({ content: "" });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 
   it("コメントが1000文字超の場合はエラー", () => {
