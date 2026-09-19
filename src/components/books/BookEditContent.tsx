@@ -68,7 +68,7 @@ export function BookEditContent({ isbn }: Props) {
                 <div className={styles.commentHeader}>
                   <label htmlFor="content" className={styles.label}>
                     コメント
-                    <span className={styles.required}>必須</span>
+                    <span className={styles.optional}>任意</span>
                   </label>
                   <span className={styles.charCount}>
                     {content?.length ?? 0}/1000
@@ -78,7 +78,7 @@ export function BookEditContent({ isbn }: Props) {
                   id="content"
                   {...register("content")}
                   rows={5}
-                  placeholder="読んだ感想を書いてください"
+                  placeholder="読んだ感想があれば書いてみましょう"
                   className={styles.textarea}
                 />
                 {errors.content && (

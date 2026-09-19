@@ -45,9 +45,10 @@ export const useBookPostForm = (selectedBook: Book | null) => {
   const onSubmit = handleSubmit(async (data) => {
     if (!selectedBook || !me?.username) return;
     try {
+      // コメントは任意。未入力ならキーごと送らず、バックエンドに null で保存させる
       await createBook({
         isbn: selectedBook.isbn,
-        content: data.content,
+        content: data.content || undefined,
       });
       toast.success(MESSAGES.BOOK.CREATE_SUCCESS);
       router.push(`/users/${me.username}`);
